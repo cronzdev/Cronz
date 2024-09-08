@@ -1,0 +1,11 @@
+add_library(${CRONZ_LIBRARY_NAME} INTERFACE)
+add_library(${CRONZ_LIBRARY_NAME}::${CRONZ_LIBRARY_NAME} ALIAS ${CRONZ_LIBRARY_NAME})
+
+set_target_properties(${CRONZ_LIBRARY_NAME} PROPERTIES
+                      CXX_STANDARD 20
+                      CXX_STANDARD_REQUIRED ON
+)
+
+target_include_directories(${CRONZ_LIBRARY_NAME} INTERFACE
+                           ${CRONZ_INCLUDE_DIR} $<BUILD_INTERFACE:${CRONZ_INCLUDE_DIR}> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
