@@ -1,0 +1,8 @@
+# Editor
+.idea
+
+# CMake
+cmake-build
+
+# Documentation
+docs
