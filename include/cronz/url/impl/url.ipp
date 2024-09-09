@@ -138,9 +138,6 @@ CRONZ_BEGIN_MODULE_NAMESPACE(URL)
     }
 
     inline bool URL::stringify(std::string &str, const std::size_t &offset) const noexcept {
-        if (scheme && !authority)
-            return false;
-
         if (const std::size_t len = (offset + length()); len > str.size()) {
             try {
                 str.resize(len);
