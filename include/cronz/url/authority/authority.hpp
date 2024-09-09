@@ -61,7 +61,6 @@ CRONZ_BEGIN_MODULE_NAMESPACE(URL)
         /**
          * @brief Tells the length of the string representation.
          * @return Length of the string representation.
-         * @warning If host is empty, this returns `0`.
          */
         CRONZ_NODISCARD_L1 std::size_t length() const noexcept;
 
@@ -124,7 +123,6 @@ CRONZ_BEGIN_MODULE_NAMESPACE(URL)
         /**
          * @brief Tells whether all the components are empty.
          * @return `true` if all the components are empty, otherwise, `false`.
-         * @warning If host is empty, this returns `true`.
          */
         CRONZ_NODISCARD_L1 bool empty() const noexcept;
 
