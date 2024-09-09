@@ -19,15 +19,15 @@ CRONZ_BEGIN_MODULE_NAMESPACE(URL)
 
     // Properties.
     inline std::size_t Authority::length() const noexcept {
-        if (!host)
-            return static_cast<std::size_t>(0);
-
         std::size_t len = host.length();
 
         if (userInformation) {
             len += userInformation.length();
             len += static_cast<std::size_t>(1);
         }
+
+        if (host)
+            len += host.length();
 
         if (static_cast<Port>(0) != port) {
             len += CalculatePortLength(port);
@@ -133,7 +133,7 @@ CRONZ_BEGIN_MODULE_NAMESPACE(URL)
 
     // Instance-based utility functions.
     inline bool Authority::empty() const noexcept {
-        return host.empty() || (userInformation.empty() && host.empty() && static_cast<Port>(0) == port);
+        return userInformation.empty() && host.empty() && static_cast<Port>(0) == port;
     }
 
     inline void Authority::clear() noexcept {
