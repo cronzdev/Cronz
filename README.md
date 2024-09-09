@@ -23,10 +23,11 @@ See the table below for the current support for third-party libraries:
 The library consists of the following components. Components currently being built are also listed.
 
 - [X] IP
-  - [X] IPv4 parser.
-  - [X] IPv6 parser.
+  - [X] IPv4 parser
+  - [X] IPv6 parser
 - [X] URL
   - [X] Builder/Parser
+  - [ ] Unicode hostname support
 - [ ] Session Manager
 - [ ] HTTP
   - [ ] Header Manager
