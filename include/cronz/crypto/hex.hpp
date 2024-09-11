@@ -18,6 +18,9 @@
 
 #include "cronz/crypto/types.hpp"
 
+#include <array>
+#include <cstdint>
+
 CRONZ_BEGIN_MODULE_NAMESPACE(Crypto)
     /**
      * @ingroup cronz_crypto_hex
