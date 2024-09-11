@@ -8,7 +8,7 @@
  * https://opensource.org/license/mit/
  */
 
-#include <cronz/url.hpp>
+#include <cronz/crypto/hex.hpp>
 
 #include <gtest/gtest.h>
 
@@ -278,10 +278,10 @@ TEST(URL, Hex) {
         char n1_ = '\0';
         char n2_ = '\0';
 
-        EXPECT_TRUE(Cronz::URL::HexToByte(n1, n2, byte_));
+        EXPECT_TRUE(Cronz::Crypto::HexToByte(n1, n2, byte_));
         EXPECT_EQ(byte, byte_);
 
-        Cronz::URL::ByteToHex(byte, n1_, n2_);
+        Cronz::Crypto::ByteToHex(byte, n1_, n2_);
         EXPECT_EQ(n1, n1_);
         EXPECT_EQ(n2, n2_);
     }
@@ -292,7 +292,7 @@ TEST(URL, Hex) {
         const bool expectation = ('0' <= character && character <= '9') || ('a' <= character && character <= 'f') || (
             'A' <= character && character <= 'F');
 
-        EXPECT_EQ(expectation, Cronz::URL::IsHexDigit(character));
+        EXPECT_EQ(expectation, Cronz::Crypto::IsHexDigit(character));
     }
 }
 
