@@ -20,7 +20,6 @@
 #include "cronz/url/encode.hpp"
 #include "cronz/url/decode.hpp"
 #include "cronz/url/fragment.hpp"
-#include "cronz/url/hex.hpp"
 #include "cronz/url/path.hpp"
 #include "cronz/url/query.hpp"
 #include "cronz/url/scheme.hpp"
