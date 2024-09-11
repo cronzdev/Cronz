@@ -15,6 +15,7 @@
  * @defgroup cronz Cronz
  */
 
+#include "cronz/crypto.hpp"
 #include "cronz/config.hpp"
 #include "cronz/ip.hpp"
 #include "cronz/url.hpp"
