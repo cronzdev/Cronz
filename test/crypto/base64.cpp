@@ -30,18 +30,22 @@ TEST(Crypto, Base64) {
         const std::string &encoded = std::get<1>(Case);
         const std::string &encodedPadded = std::get<2>(Case);
 
-        const std::string b64encoded = Cronz::Crypto::Base64Encode<false>(str);
-        const std::string b64encodedPadded = Cronz::Crypto::Base64Encode<true>(str);
-
-        const std::string b64decoded = Cronz::Crypto::Base64Decode(b64encoded);
-        const std::string b64decodedPadded = Cronz::Crypto::Base64Decode(b64encodedPadded);
-
+        std::string b64encoded;
         EXPECT_EQ(encoded.length(), Cronz::Crypto::CalculateBase64EncodedLength<false>(str.length()));
+        EXPECT_TRUE(Cronz::Crypto::Base64Encode<false>(str, b64encoded, Cronz::Crypto::Base64Alphabet));
         EXPECT_EQ(encoded, b64encoded);
+
+        std::string b64encodedPadded;
+        EXPECT_EQ(encodedPadded.length(), Cronz::Crypto::CalculateBase64EncodedLength<true>(str.length()));
+        EXPECT_TRUE(Cronz::Crypto::Base64Encode<true>(str, b64encodedPadded, Cronz::Crypto::Base64Alphabet));
+        EXPECT_EQ(encodedPadded, b64encodedPadded);
+
+        std::string b64decoded;
+        EXPECT_TRUE(Cronz::Crypto::Base64Decode<std::string>(encoded, b64decoded, Cronz::Crypto::Base64AlphabetIndicesMap));
         EXPECT_EQ(str, b64decoded);
 
-        EXPECT_EQ(encodedPadded.length(), Cronz::Crypto::CalculateBase64EncodedLength<true>(str.length()));
-        EXPECT_EQ(encodedPadded, b64encodedPadded);
+        std::string b64decodedPadded;
+        EXPECT_TRUE(Cronz::Crypto::Base64Decode<std::string>(encodedPadded, b64decodedPadded, Cronz::Crypto::Base64AlphabetIndicesMap));
         EXPECT_EQ(str, b64decodedPadded);
     }
 }
