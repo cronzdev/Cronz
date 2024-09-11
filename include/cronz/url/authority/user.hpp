@@ -11,7 +11,7 @@
 #ifndef CRONZ_URL_AUTHORITY_USER_HPP
 #define CRONZ_URL_AUTHORITY_USER_HPP 1
 
-#include "cronz/url/hex.hpp"
+#include "cronz/crypto/hex.hpp"
 
 CRONZ_BEGIN_MODULE_NAMESPACE(URL)
     class UserInformation {
