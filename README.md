@@ -22,6 +22,9 @@ See the table below for the current support for third-party libraries:
 
 The library consists of the following components. Components currently being built are also listed.
 
+- [X] Cryptography
+  - [X] Base64
+  - [X] Hex
 - [X] IP
   - [X] IPv4 parser
   - [X] IPv6 parser
