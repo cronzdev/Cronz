@@ -12,7 +12,7 @@
 #define CRONZ_URL_IMPL_DECODE_HPP 1
 
 #include "cronz/url/decode.hpp"
-#include "cronz/url/hex.hpp"
+#include "cronz/crypto/hex.hpp"
 
 #include <limits>
 
@@ -66,8 +66,9 @@ CRONZ_BEGIN_MODULE_NAMESPACE(URL)
         auto j = static_cast<std::size_t>(0);
         for (auto i = static_cast<std::size_t>(0); i < length; ++i) {
             if ('%' == encoded[i]) {
-                if (!HexToByte(encoded[i + static_cast<std::size_t>(1)], encoded[i + static_cast<std::size_t>(2)],
-                               reinterpret_cast<std::uint8_t&>(decoded[j])))
+                if (!Crypto::HexToByte(encoded[i + static_cast<std::size_t>(1)],
+                                       encoded[i + static_cast<std::size_t>(2)],
+                                       reinterpret_cast<std::uint8_t&>(decoded[j])))
                     return false;
 
                 i += static_cast<std::size_t>(2);
@@ -86,8 +87,9 @@ CRONZ_BEGIN_MODULE_NAMESPACE(URL)
         auto dIndex = static_cast<std::size_t>(0);
         for (auto eIndex = static_cast<std::size_t>(0); eIndex < str.size(); ++eIndex, ++dIndex) {
             if ('%' == str[eIndex]) {
-                if (!HexToByte(str[eIndex + static_cast<std::size_t>(1)], str[eIndex + static_cast<std::size_t>(2)],
-                               reinterpret_cast<std::uint8_t&>(str[dIndex])))
+                if (!Crypto::HexToByte(str[eIndex + static_cast<std::size_t>(1)],
+                                       str[eIndex + static_cast<std::size_t>(2)],
+                                       reinterpret_cast<std::uint8_t&>(str[dIndex])))
                     return false;
 
                 eIndex += static_cast<std::size_t>(2);
