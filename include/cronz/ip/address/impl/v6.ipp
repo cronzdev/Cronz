@@ -12,7 +12,7 @@
 #define CRONZ_IP_ADDRESS_IMPL_V6_IPP 1
 
 #include "cronz/ip/address/v6.hpp"
-#include "cronz/url/hex.hpp"
+#include "cronz/crypto/hex.hpp"
 
 #include <algorithm>
 #include <cstring>
@@ -130,8 +130,8 @@ CRONZ_BEGIN_MODULE_NAMESPACE(IP)
                 characters.fill('0');
                 memcpy(characters.data() + (characters.size() - currentLength), previous, currentLength);
 
-                if (!URL::HexToByte(characters[0], characters[1], bytes[0]) ||
-                    !URL::HexToByte(characters[2], characters[3], bytes[1]))
+                if (!Crypto::HexToByte(characters[0], characters[1], bytes[0]) ||
+                    !Crypto::HexToByte(characters[2], characters[3], bytes[1]))
                     return false;
 
                 memcpy(&groups[groupIndex++], bytes.data(), bytes.size());
@@ -218,25 +218,25 @@ CRONZ_BEGIN_MODULE_NAMESPACE(IP)
 
                 if (static_cast<std::uint8_t>(0) != b1) {
                     if (static_cast<std::uint8_t>(16) <= b1) {
-                        URL::ByteToHex<true>(b1, str[o], str[o + static_cast<std::size_t>(1)]);
+                        Crypto::ByteToHex<true>(b1, str[o], str[o + static_cast<std::size_t>(1)]);
                         o += static_cast<std::size_t>(2);
                     }
                     else {
-                        URL::ByteToHex<true>(b1, temp, str[o]);
+                        Crypto::ByteToHex<true>(b1, temp, str[o]);
                         o += static_cast<std::size_t>(1);
                     }
 
-                    URL::ByteToHex<true>(b2, str[o], str[o + static_cast<std::size_t>(1)]);
+                    Crypto::ByteToHex<true>(b2, str[o], str[o + static_cast<std::size_t>(1)]);
 
                     o += static_cast<std::size_t>(2);
                 }
                 else {
                     if (static_cast<std::uint8_t>(16) <= b2) {
-                        URL::ByteToHex<true>(b2, str[o], str[o + static_cast<std::size_t>(1)]);
+                        Crypto::ByteToHex<true>(b2, str[o], str[o + static_cast<std::size_t>(1)]);
                         o += static_cast<std::size_t>(2);
                     }
                     else {
-                        URL::ByteToHex<true>(b2, temp, str[o]);
+                        Crypto::ByteToHex<true>(b2, temp, str[o]);
                         o += static_cast<std::size_t>(1);
                     }
                 }
@@ -249,8 +249,8 @@ CRONZ_BEGIN_MODULE_NAMESPACE(IP)
             std::size_t j;
             for (i = static_cast<std::size_t>(0), j = static_cast<std::size_t>(0); i < len; i += static_cast<
                      std::size_t>(5), j += static_cast<std::size_t>(2)) {
-                URL::ByteToHex<true>(bytes[j], str[i], str[i + static_cast<std::size_t>(1)]);
-                URL::ByteToHex<true>(bytes[j + static_cast<std::size_t>(1)], str[i + static_cast<std::size_t>(2)],
+                Crypto::ByteToHex<true>(bytes[j], str[i], str[i + static_cast<std::size_t>(1)]);
+                Crypto::ByteToHex<true>(bytes[j + static_cast<std::size_t>(1)], str[i + static_cast<std::size_t>(2)],
                                      str[i + static_cast<std::size_t>(3)]);
             }
 
