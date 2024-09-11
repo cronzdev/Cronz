@@ -12,7 +12,7 @@
 #define CRONZ_URL_IMPL_ENCODE_HPP 1
 
 #include "cronz/url/encode.hpp"
-#include "cronz/url/hex.hpp"
+#include "cronz/crypto/hex.hpp"
 
 CRONZ_BEGIN_MODULE_NAMESPACE(URL)
     inline bool ShouldEncodeCharacter(const char &character) noexcept {
@@ -70,8 +70,8 @@ CRONZ_BEGIN_MODULE_NAMESPACE(URL)
         for (auto i = static_cast<std::size_t>(0); i < length; ++i) {
             if (ShouldEncodeCharacter(decoded[i])) {
                 encoded[j++] = '%';
-                ByteToHex<false>(static_cast<std::uint8_t>(decoded[i]), encoded[j],
-                                 encoded[j + static_cast<std::size_t>(1)]);
+                Crypto::ByteToHex<false>(static_cast<std::uint8_t>(decoded[i]), encoded[j],
+                                         encoded[j + static_cast<std::size_t>(1)]);
                 j += static_cast<std::size_t>(2);
             }
             else {
@@ -100,8 +100,8 @@ CRONZ_BEGIN_MODULE_NAMESPACE(URL)
             if (const char &c = str[decodedLength - dIndex]; ShouldEncodeCharacter(c)) {
                 eIndex -= static_cast<std::size_t>(3);
                 str[eIndex] = '%';
-                ByteToHex<false>(static_cast<std::uint8_t>(c), str[eIndex + static_cast<std::size_t>(1)],
-                                 str[eIndex + static_cast<std::size_t>(2)]);
+                Crypto::ByteToHex<false>(static_cast<std::uint8_t>(c), str[eIndex + static_cast<std::size_t>(1)],
+                                         str[eIndex + static_cast<std::size_t>(2)]);
             }
             else {
                 str[--eIndex] = c;
