@@ -188,7 +188,6 @@ CRONZ_BEGIN_IP_NAMESPACE
 
                 // Copy the IPv4 bytes to the address.
                 memcpy(&bytes[bytes.size() - v4.bytes.size()], v4.bytes.data(), v4.bytes.size());
-                printf("bytes: %hhu.%hhu.%hhu.%hhu\n", bytes[12], bytes[13], bytes[14], bytes[15]);
 
                 if (colon != end) {
                     // IPv4 has to be at the end.
@@ -277,10 +276,6 @@ CRONZ_BEGIN_IP_NAMESPACE
             } catch (...) {
                 return false;
             }
-        }
-
-        for (const std::uint16_t group: groups) {
-            printf("%hhu\n", group);
         }
 
         if (compressed) {
