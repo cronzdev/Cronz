@@ -1,0 +1,7 @@
+.idea
+.vscode
+cmake-build
+test
+main.cpp
+two.cpp
+specification.txt
