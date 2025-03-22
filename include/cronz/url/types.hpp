@@ -13,4 +13,13 @@
 
 #include "cronz/internal/namespace.hpp"
 
+#include <algorithm>
+#include <cstdint>
+#include <limits>
+#include <string>
+#include <vector>
+
+#define CRONZ_BEGIN_URL_NAMESPACE   CRONZ_BEGIN_MAIN_NAMESPACE
+#define CRONZ_END_URL_NAMESPACE     CRONZ_END_MAIN_NAMESPACE
+
 #endif // CRONZ_URL_TYPES_HPP
