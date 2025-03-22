@@ -21,7 +21,7 @@ CRONZ_BEGIN_URI_NAMESPACE
      * @return `true` if the character should be encoded.
      * @return `false` if the character should not be encoded.
      */
-    CRONZ_NODISCARD_L1 bool URLShouldEncode(char character) noexcept;
+    CRONZ_NODISCARD_L1 bool URIShouldEncode(char character) noexcept;
 
     /**
      * @ingroup cronz_uri
@@ -30,10 +30,10 @@ CRONZ_BEGIN_URI_NAMESPACE
      * @return `true` if the component should be encoded.
      * @return `false` if the component should not be encoded.
      * @remark This function checks if any character in the given string should be encoded. Thus, rather than checking
-     * the whole URL, it is more accurate to check a part of the URL. This function is not smart enough to detect the
-     * separators, etc. in the URL.
+     * the whole URI, it is more accurate to check a part of the URI. This function is not smart enough to detect the
+     * separators, etc. in the URI.
      */
-    CRONZ_NODISCARD_L1 bool URLShouldEncodeComponent(std::string_view component) noexcept;
+    CRONZ_NODISCARD_L1 bool URIShouldEncodeComponent(std::string_view component) noexcept;
 
     /**
      * @ingroup cronz_uri
@@ -41,7 +41,7 @@ CRONZ_BEGIN_URI_NAMESPACE
      * @param[in] component The component to calculate the size.
      * @return The size of the encoded string.
      */
-    CRONZ_NODISCARD_L1 std::size_t URLCalculateEncodedComponentLength(std::string_view component) noexcept;
+    CRONZ_NODISCARD_L1 std::size_t URICalculateEncodedComponentLength(std::string_view component) noexcept;
 
     /**
      * @ingroup cronz_uri
@@ -52,7 +52,7 @@ CRONZ_BEGIN_URI_NAMESPACE
      * @return `false` if the encoding is not successful.
      * @remark Upon failure, the content of the component is undefined.
      */
-    CRONZ_NODISCARD_L2 bool URLEncodeComponent(std::string_view component, std::string &encoded) noexcept;
+    CRONZ_NODISCARD_L2 bool URIEncodeComponent(std::string_view component, std::string &encoded) noexcept;
 
     /**
      * @ingroup cronz_uri
@@ -64,7 +64,7 @@ CRONZ_BEGIN_URI_NAMESPACE
      * @return `false` if the encoding is not successful.
      * @remark Upon failure, the content of the encoded is undefined.
      */
-    CRONZ_NODISCARD_L2 bool URLEncodeComponent(std::string_view component, std::string &encoded,
+    CRONZ_NODISCARD_L2 bool URIEncodeComponent(std::string_view component, std::string &encoded,
                                                std::size_t &offset) noexcept;
 
     /**
@@ -75,7 +75,7 @@ CRONZ_BEGIN_URI_NAMESPACE
      * @return `false` if the encoding is not successful.
      * @remark Upon failure, the content of the component is undefined.
      */
-    CRONZ_NODISCARD_L1 bool URLEncodeComponentInPlace(std::string &component) noexcept;
+    CRONZ_NODISCARD_L1 bool URIEncodeComponentInPlace(std::string &component) noexcept;
 
 CRONZ_END_URI_NAMESPACE
 

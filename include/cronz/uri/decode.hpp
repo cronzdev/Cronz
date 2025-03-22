@@ -19,9 +19,9 @@ CRONZ_BEGIN_URI_NAMESPACE
      * @brief Calculate the size of the decoded string.
      * @param[in] component The component to calculate the size.
      * @return The size of the decoded string.
-     * @return `std::numeric_limits<std::size_t>::max()` if the component is not a valid URL component.
+     * @return `std::numeric_limits<std::size_t>::max()` if the component is not a valid URI component.
      */
-    CRONZ_NODISCARD_L1 std::size_t URLCalculateDecodedComponentLength(std::string_view component) noexcept;
+    CRONZ_NODISCARD_L1 std::size_t URICalculateDecodedComponentLength(std::string_view component) noexcept;
 
     /**
      * @ingroup cronz_uri
@@ -32,7 +32,7 @@ CRONZ_BEGIN_URI_NAMESPACE
      * @return `false` if the decoding is not successful.
      * @remark Upon failure, the content of the decoded is undefined.
      */
-    CRONZ_NODISCARD_L2 bool URLDecodeComponent(std::string_view component, std::string &decoded) noexcept;
+    CRONZ_NODISCARD_L2 bool URIDecodeComponent(std::string_view component, std::string &decoded) noexcept;
 
     /**
      * @ingroup cronz_uri
@@ -44,7 +44,7 @@ CRONZ_BEGIN_URI_NAMESPACE
      * @return `false` if the decoding is not successful.
      * @remark Upon failure, the content of the decoded is undefined.
      */
-    CRONZ_NODISCARD_L2 bool URLDecodeComponent(std::string_view component, std::string &decoded,
+    CRONZ_NODISCARD_L2 bool URIDecodeComponent(std::string_view component, std::string &decoded,
                                                std::size_t &offset) noexcept;
 
     /**
@@ -55,7 +55,7 @@ CRONZ_BEGIN_URI_NAMESPACE
      * @return `false` if the decoding is not successful.
      * @remark Upon failure, the content of the component is undefined.
      */
-    CRONZ_NODISCARD_L2 bool URLDecodeComponentInPlace(std::string &component) noexcept;
+    CRONZ_NODISCARD_L2 bool URIDecodeComponentInPlace(std::string &component) noexcept;
 
 CRONZ_END_URI_NAMESPACE
 

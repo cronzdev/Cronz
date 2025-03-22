@@ -17,7 +17,7 @@
 #include "cronz/rfc/rule/hexdig.hpp"
 
 CRONZ_BEGIN_URI_NAMESPACE
-    inline std::size_t URLCalculateDecodedComponentLength(const std::string_view component) noexcept {
+    inline std::size_t URICalculateDecodedComponentLength(const std::string_view component) noexcept {
         std::size_t len = component.length();
 
         auto i = static_cast<std::size_t>(0);
@@ -37,14 +37,14 @@ CRONZ_BEGIN_URI_NAMESPACE
         return len;
     }
 
-    inline bool URLDecodeComponent(const std::string_view component, std::string &decoded) noexcept {
+    inline bool URIDecodeComponent(const std::string_view component, std::string &decoded) noexcept {
         auto offset = static_cast<std::size_t>(0);
-        return URLDecodeComponent(component, decoded, offset);
+        return URIDecodeComponent(component, decoded, offset);
     }
 
-    inline bool URLDecodeComponent(const std::string_view component, std::string &decoded,
+    inline bool URIDecodeComponent(const std::string_view component, std::string &decoded,
                                    std::size_t &offset) noexcept {
-        const std::size_t decodedLength = URLCalculateDecodedComponentLength(component);
+        const std::size_t decodedLength = URICalculateDecodedComponentLength(component);
         if (const std::size_t length = (decodedLength + offset);
             decoded.size() < length) {
             try {
@@ -71,8 +71,8 @@ CRONZ_BEGIN_URI_NAMESPACE
         return true;
     }
 
-    inline bool URLDecodeComponentInPlace(std::string &component) noexcept {
-        const std::size_t decodedLength = URLCalculateDecodedComponentLength(component);
+    inline bool URIDecodeComponentInPlace(std::string &component) noexcept {
+        const std::size_t decodedLength = URICalculateDecodedComponentLength(component);
         const std::size_t encodedLength = component.length();
 
         if (std::numeric_limits<std::size_t>::max() == decodedLength)
