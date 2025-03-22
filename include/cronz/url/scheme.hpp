@@ -14,7 +14,12 @@
 #include "cronz/url/types.hpp"
 
 CRONZ_BEGIN_URL_NAMESPACE
-    class URLScheme {
+    /**
+     * @ingroup cronz_url
+     * @brief URL scheme.
+     * @class Scheme
+     */
+    class Scheme {
         // Properties.
         std::string _value{};
 
@@ -64,13 +69,13 @@ CRONZ_BEGIN_URL_NAMESPACE
         /**
          * @brief Default constructor.
          */
-        URLScheme() noexcept = default;
+        Scheme() noexcept = default;
 
         /**
          * @brief Constructor with a scheme.
          * @param[in] scheme Scheme.
          */
-        explicit(false) URLScheme(std::string_view scheme) noexcept;
+        explicit(false) Scheme(std::string_view scheme) noexcept;
 
         /** @} */
 
@@ -144,6 +149,28 @@ CRONZ_BEGIN_URL_NAMESPACE
         /** @} */
 
         /**
+         * @name Instance-based utility functions.
+         */
+        /** @{ */
+        /**
+         * @brief Compare the scheme with another scheme.
+         * @param[in] scheme Scheme.
+         * @return `true` if the schemes are equal.
+         * @return `false` if the schemes are not equal.
+         */
+        CRONZ_NODISCARD_L1 bool compare(std::string_view scheme) const noexcept;
+
+        /**
+         * @brief Compare the scheme with another scheme.
+         * @param[in] scheme Scheme.
+         * @return `true` if the schemes are equal.
+         * @return `false` if the schemes are not equal.
+         */
+        CRONZ_NODISCARD_L1 bool compare(const Scheme &scheme) const noexcept;
+
+        /** @} */
+
+        /**
          * @name Operators.
          */
         /** @{ */
@@ -165,7 +192,7 @@ CRONZ_BEGIN_URL_NAMESPACE
          * @param[in] scheme Scheme.
          * @return Reference to the scheme.
          */
-        URLScheme &operator=(std::string_view scheme) noexcept;
+        Scheme &operator=(std::string_view scheme) noexcept;
 
         /**
          * @brief Equality operator.
@@ -181,7 +208,7 @@ CRONZ_BEGIN_URL_NAMESPACE
          * @return `true` if the schemes are equal.
          * @return `false` if the schemes are not equal.
          */
-        CRONZ_NODISCARD_L1 bool operator==(const URLScheme &scheme) const noexcept;
+        CRONZ_NODISCARD_L1 bool operator==(const Scheme &scheme) const noexcept;
 
         /**
          * @brief Inequality operator.
@@ -197,7 +224,7 @@ CRONZ_BEGIN_URL_NAMESPACE
          * @return `true` if the schemes are not equal.
          * @return `false` if the schemes are equal.
          */
-        CRONZ_NODISCARD_L1 bool operator!=(const URLScheme &scheme) const noexcept;
+        CRONZ_NODISCARD_L1 bool operator!=(const Scheme &scheme) const noexcept;
 
         /** @} */
 
@@ -208,7 +235,7 @@ CRONZ_BEGIN_URL_NAMESPACE
         /**
          * @brief Destructor.
          */
-        ~URLScheme() noexcept = default;
+        ~Scheme() noexcept = default;
 
         /** @} */
 
@@ -223,7 +250,7 @@ CRONZ_BEGIN_URL_NAMESPACE
          * @return `true` if the schemes are equal.
          * @return `false` if the schemes are not equal.
          */
-        friend bool operator==(std::string_view scheme, const URLScheme &instance) noexcept;
+        friend bool operator==(std::string_view scheme, const Scheme &instance) noexcept;
 
         /**
          * @brief Inequality operator.
@@ -232,7 +259,7 @@ CRONZ_BEGIN_URL_NAMESPACE
          * @return `true` if the schemes are not equal.
          * @return `false` if the schemes are equal.
          */
-        friend bool operator!=(std::string_view scheme, const URLScheme &instance) noexcept;
+        friend bool operator!=(std::string_view scheme, const Scheme &instance) noexcept;
 
         /** @} */
     };

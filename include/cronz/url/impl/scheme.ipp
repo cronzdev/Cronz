@@ -17,16 +17,16 @@
 
 CRONZ_BEGIN_URL_NAMESPACE
     // Constructors.
-    inline URLScheme::URLScheme(const std::string_view scheme) noexcept {
+    inline Scheme::Scheme(const std::string_view scheme) noexcept {
         [[maybe_unused]] const bool _ = set(scheme);
     }
 
     // Properties.
-    inline std::string_view URLScheme::get() const noexcept {
+    inline std::string_view Scheme::get() const noexcept {
         return _value;
     }
 
-    inline bool URLScheme::set(const std::string_view scheme) noexcept {
+    inline bool Scheme::set(const std::string_view scheme) noexcept {
         if (!RFC::IsScheme(scheme))
             return false;
 
@@ -44,20 +44,20 @@ CRONZ_BEGIN_URL_NAMESPACE
         return true;
     }
 
-    inline std::size_t URLScheme::length() const noexcept {
+    inline std::size_t Scheme::length() const noexcept {
         return _value.length();
     }
 
-    inline bool URLScheme::empty() const noexcept {
+    inline bool Scheme::empty() const noexcept {
         return _value.empty();
     }
 
-    inline void URLScheme::clear() noexcept {
+    inline void Scheme::clear() noexcept {
         _value.clear();
     }
 
     // Stringification.
-    inline std::string URLScheme::stringify() const noexcept {
+    inline std::string Scheme::stringify() const noexcept {
         std::string scheme;
         if (!stringify(scheme))
             scheme.clear();
@@ -65,12 +65,12 @@ CRONZ_BEGIN_URL_NAMESPACE
         return scheme;
     }
 
-    inline bool URLScheme::stringify(std::string &scheme) const noexcept {
+    inline bool Scheme::stringify(std::string &scheme) const noexcept {
         auto offset = static_cast<std::size_t>(0);
         return stringify(scheme, offset);
     }
 
-    inline bool URLScheme::stringify(std::string &scheme, std::size_t &offset) const noexcept {
+    inline bool Scheme::stringify(std::string &scheme, std::size_t &offset) const noexcept {
         if (const std::size_t length = _value.length() + offset;
             length > scheme.size()) {
             try {
@@ -86,38 +86,47 @@ CRONZ_BEGIN_URL_NAMESPACE
         return true;
     }
 
+    // Instance-based utility functions.
+    inline bool Scheme::compare(const std::string_view scheme) const noexcept {
+        return _compare(scheme);
+    }
+
+    inline bool Scheme::compare(const Scheme &scheme) const noexcept {
+        return compare(scheme._value);
+    }
+
     // Operators.
-    inline URLScheme::operator bool() const noexcept {
+    inline Scheme::operator bool() const noexcept {
         return !empty();
     }
 
-    inline URLScheme::operator std::string_view() const noexcept {
+    inline Scheme::operator std::string_view() const noexcept {
         return get();
     }
 
-    inline URLScheme &URLScheme::operator=(const std::string_view scheme) noexcept {
+    inline Scheme &Scheme::operator=(const std::string_view scheme) noexcept {
         [[maybe_unused]] const bool _ = set(scheme);
         return *this;
     }
 
-    inline bool URLScheme::operator==(const std::string_view scheme) const noexcept {
+    inline bool Scheme::operator==(const std::string_view scheme) const noexcept {
         return _compare(scheme);
     }
 
-    inline bool URLScheme::operator==(const URLScheme &scheme) const noexcept {
+    inline bool Scheme::operator==(const Scheme &scheme) const noexcept {
         return _compare(scheme._value);
     }
 
-    inline bool URLScheme::operator!=(const std::string_view scheme) const noexcept {
+    inline bool Scheme::operator!=(const std::string_view scheme) const noexcept {
         return !_compare(scheme);
     }
 
-    inline bool URLScheme::operator!=(const URLScheme &scheme) const noexcept {
+    inline bool Scheme::operator!=(const Scheme &scheme) const noexcept {
         return !_compare(scheme._value);
     }
 
     // Static utility functions.
-    inline bool URLScheme::_compare(const std::string_view scheme) const noexcept {
+    inline bool Scheme::_compare(const std::string_view scheme) const noexcept {
         if (_value.length() != scheme.length())
             return false;
 
@@ -127,11 +136,11 @@ CRONZ_BEGIN_URL_NAMESPACE
     }
 
     // Friends.
-    inline bool operator==(const std::string_view scheme, const URLScheme &instance) noexcept {
+    inline bool operator==(const std::string_view scheme, const Scheme &instance) noexcept {
         return instance._compare(scheme);
     }
 
-    inline bool operator!=(const std::string_view scheme, const URLScheme &instance) noexcept {
+    inline bool operator!=(const std::string_view scheme, const Scheme &instance) noexcept {
         return !instance._compare(scheme);
     }
 
