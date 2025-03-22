@@ -13,7 +13,7 @@
 
 #include "cronz/uri/types.hpp"
 
-CRONZ_BEGIN_URL_NAMESPACE
+CRONZ_BEGIN_URI_NAMESPACE
     /**
      * @ingroup cronz_uri
      * @brief URL scheme.
@@ -264,7 +264,7 @@ CRONZ_BEGIN_URL_NAMESPACE
         /** @} */
     };
 
-CRONZ_END_URL_NAMESPACE
+CRONZ_END_URI_NAMESPACE
 
 #include "cronz/uri/impl/scheme.ipp"
 

@@ -13,7 +13,7 @@
 
 #include "cronz/uri/url.hpp"
 
-CRONZ_BEGIN_URL_NAMESPACE
+CRONZ_BEGIN_URI_NAMESPACE
     // Parsing & Stringification.
     inline bool URL::_schema(const char *&pos, const char *const end) noexcept {
         if (const std::ranges::subrange<const char *> range = std::ranges::search(
@@ -54,6 +54,6 @@ CRONZ_BEGIN_URL_NAMESPACE
         scheme.clear();
     }
 
-CRONZ_END_URL_NAMESPACE
+CRONZ_END_URI_NAMESPACE
 
 #endif // CRONZ_URI_IMPL_URL_IPP

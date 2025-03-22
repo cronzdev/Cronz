@@ -13,7 +13,7 @@
 
 #include "cronz/uri/types.hpp"
 
-CRONZ_BEGIN_URL_NAMESPACE
+CRONZ_BEGIN_URI_NAMESPACE
     /**
      * @ingroup cronz_uri
      * @brief Calculate the size of the decoded string.
@@ -57,7 +57,7 @@ CRONZ_BEGIN_URL_NAMESPACE
      */
     CRONZ_NODISCARD_L2 bool URLDecodeComponentInPlace(std::string &component) noexcept;
 
-CRONZ_END_URL_NAMESPACE
+CRONZ_END_URI_NAMESPACE
 
 #include "cronz/uri/impl/decode.ipp"
 

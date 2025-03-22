@@ -15,7 +15,7 @@
 
 #include "cronz/cryptography/hex.hpp"
 
-CRONZ_BEGIN_URL_NAMESPACE
+CRONZ_BEGIN_URI_NAMESPACE
     inline bool URLShouldEncode(const char character) noexcept {
         return !(('a' <= character && character <= 'z') || ('A' <= character && character <= 'Z') ||
                  ('0' <= character && character <= '9') || '-' == character || '_' == character ||
@@ -102,6 +102,6 @@ CRONZ_BEGIN_URL_NAMESPACE
         return true;
     }
 
-CRONZ_END_URL_NAMESPACE
+CRONZ_END_URI_NAMESPACE
 
 #endif // CRONZ_URI_IMPL_ENCODE_IPP

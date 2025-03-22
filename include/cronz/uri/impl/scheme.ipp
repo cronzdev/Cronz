@@ -15,7 +15,7 @@
 
 #include "cronz/rfc/rule/scheme.hpp"
 
-CRONZ_BEGIN_URL_NAMESPACE
+CRONZ_BEGIN_URI_NAMESPACE
     // Constructors.
     inline Scheme::Scheme(const std::string_view scheme) noexcept {
         [[maybe_unused]] const bool _ = set(scheme);
@@ -144,6 +144,6 @@ CRONZ_BEGIN_URL_NAMESPACE
         return !instance._compare(scheme);
     }
 
-CRONZ_END_URL_NAMESPACE
+CRONZ_END_URI_NAMESPACE
 
 #endif // CRONZ_URI_IMPL_SCHEME_IPP

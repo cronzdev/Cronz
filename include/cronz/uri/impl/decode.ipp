@@ -16,7 +16,7 @@
 
 #include "cronz/rfc/rule/hexdig.hpp"
 
-CRONZ_BEGIN_URL_NAMESPACE
+CRONZ_BEGIN_URI_NAMESPACE
     inline std::size_t URLCalculateDecodedComponentLength(const std::string_view component) noexcept {
         std::size_t len = component.length();
 
@@ -101,6 +101,6 @@ CRONZ_BEGIN_URL_NAMESPACE
         return true;
     }
 
-CRONZ_END_URL_NAMESPACE
+CRONZ_END_URI_NAMESPACE
 
 #endif // CRONZ_URI_IMPL_DECODE_IPP

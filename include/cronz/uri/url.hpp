@@ -13,7 +13,7 @@
 
 #include "cronz/uri/scheme.hpp"
 
-CRONZ_BEGIN_URL_NAMESPACE
+CRONZ_BEGIN_URI_NAMESPACE
     class URL {
         // Static constants.
         inline static constexpr std::string_view SchemeSeparator = "://";
@@ -88,7 +88,7 @@ CRONZ_BEGIN_URL_NAMESPACE
         /** @} */
     };
 
-CRONZ_END_URL_NAMESPACE
+CRONZ_END_URI_NAMESPACE
 
 #include "cronz/uri/impl/url.ipp"
 
