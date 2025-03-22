@@ -8,10 +8,10 @@
  * https://opensource.org/license/mit/
  */
 
-#ifndef CRONZ_URL_IMPL_SCHEME_IPP
-#define CRONZ_URL_IMPL_SCHEME_IPP 1
+#ifndef CRONZ_URI_IMPL_SCHEME_IPP
+#define CRONZ_URI_IMPL_SCHEME_IPP 1
 
-#include "cronz/url/scheme.hpp"
+#include "cronz/uri/scheme.hpp"
 
 #include "cronz/rfc/rule/scheme.hpp"
 
@@ -146,4 +146,4 @@ CRONZ_BEGIN_URL_NAMESPACE
 
 CRONZ_END_URL_NAMESPACE
 
-#endif // CRONZ_URL_IMPL_SCHEME_IPP
+#endif // CRONZ_URI_IMPL_SCHEME_IPP

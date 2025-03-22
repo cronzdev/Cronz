@@ -8,14 +8,14 @@
  * https://opensource.org/license/mit/
  */
 
-#ifndef CRONZ_URL_DECODE_HPP
-#define CRONZ_URL_DECODE_HPP 1
+#ifndef CRONZ_URI_DECODE_HPP
+#define CRONZ_URI_DECODE_HPP 1
 
-#include "cronz/url/types.hpp"
+#include "cronz/uri/types.hpp"
 
 CRONZ_BEGIN_URL_NAMESPACE
     /**
-     * @ingroup cronz_url
+     * @ingroup cronz_uri
      * @brief Calculate the size of the decoded string.
      * @param[in] component The component to calculate the size.
      * @return The size of the decoded string.
@@ -24,7 +24,7 @@ CRONZ_BEGIN_URL_NAMESPACE
     CRONZ_NODISCARD_L1 std::size_t URLCalculateDecodedComponentLength(std::string_view component) noexcept;
 
     /**
-     * @ingroup cronz_url
+     * @ingroup cronz_uri
      * @brief Decode the given component.
      * @param[in] component The component to decode.
      * @param[out] decoded The decoded component.
@@ -35,7 +35,7 @@ CRONZ_BEGIN_URL_NAMESPACE
     CRONZ_NODISCARD_L2 bool URLDecodeComponent(std::string_view component, std::string &decoded) noexcept;
 
     /**
-     * @ingroup cronz_url
+     * @ingroup cronz_uri
      * @brief Decode the given component.
      * @param[in] component The component to decode.
      * @param[out] decoded The decoded component.
@@ -48,7 +48,7 @@ CRONZ_BEGIN_URL_NAMESPACE
                                                std::size_t &offset) noexcept;
 
     /**
-     * @ingroup cronz_url
+     * @ingroup cronz_uri
      * @brief Decode the given component in place.
      * @param[inout] component The component to decode.
      * @return `true` if the decoding is successful.
@@ -59,6 +59,6 @@ CRONZ_BEGIN_URL_NAMESPACE
 
 CRONZ_END_URL_NAMESPACE
 
-#include "cronz/url/impl/decode.ipp"
+#include "cronz/uri/impl/decode.ipp"
 
-#endif // CRONZ_URL_DECODE_HPP
+#endif // CRONZ_URI_DECODE_HPP

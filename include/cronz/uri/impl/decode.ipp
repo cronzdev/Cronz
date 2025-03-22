@@ -8,10 +8,10 @@
  * https://opensource.org/license/mit/
  */
 
-#ifndef CRONZ_URL_IMPL_DECODE_IPP
-#define CRONZ_URL_IMPL_DECODE_IPP 1
+#ifndef CRONZ_URI_IMPL_DECODE_IPP
+#define CRONZ_URI_IMPL_DECODE_IPP 1
 
-#include "cronz/url/decode.hpp"
+#include "cronz/uri/decode.hpp"
 #include <limits>
 
 #include "cronz/rfc/rule/hexdig.hpp"
@@ -103,4 +103,4 @@ CRONZ_BEGIN_URL_NAMESPACE
 
 CRONZ_END_URL_NAMESPACE
 
-#endif // CRONZ_URL_IMPL_DECODE_IPP
+#endif // CRONZ_URI_IMPL_DECODE_IPP

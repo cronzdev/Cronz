@@ -8,8 +8,8 @@
  * https://opensource.org/license/mit/
  */
 
-#ifndef CRONZ_URL_TYPES_HPP
-#define CRONZ_URL_TYPES_HPP 1
+#ifndef CRONZ_URI_TYPES_HPP
+#define CRONZ_URI_TYPES_HPP 1
 
 #include "cronz/internal/namespace.hpp"
 
@@ -22,4 +22,4 @@
 #define CRONZ_BEGIN_URL_NAMESPACE   CRONZ_BEGIN_MAIN_NAMESPACE
 #define CRONZ_END_URL_NAMESPACE     CRONZ_END_MAIN_NAMESPACE
 
-#endif // CRONZ_URL_TYPES_HPP
+#endif // CRONZ_URI_TYPES_HPP

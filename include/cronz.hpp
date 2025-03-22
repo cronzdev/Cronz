@@ -20,6 +20,6 @@
 #include "cronz/cryptography.hpp"
 #include "cronz/http.hpp"
 #include "cronz/ip.hpp"
-#include "cronz/url.hpp"
+#include "cronz/uri.hpp"
 
 #endif // CRONZ_HPP

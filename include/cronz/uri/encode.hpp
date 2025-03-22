@@ -8,14 +8,14 @@
  * https://opensource.org/license/mit/
  */
 
-#ifndef CRONZ_URL_ENCODE_HPP
-#define CRONZ_URL_ENCODE_HPP 1
+#ifndef CRONZ_URI_ENCODE_HPP
+#define CRONZ_URI_ENCODE_HPP 1
 
-#include "cronz/url/types.hpp"
+#include "cronz/uri/types.hpp"
 
 CRONZ_BEGIN_URL_NAMESPACE
     /**
-     * @ingroup cronz_url
+     * @ingroup cronz_uri
      * @brief Check if the character should be encoded.
      * @param[in] character The character to check.
      * @return `true` if the character should be encoded.
@@ -24,7 +24,7 @@ CRONZ_BEGIN_URL_NAMESPACE
     CRONZ_NODISCARD_L1 bool URLShouldEncode(char character) noexcept;
 
     /**
-     * @ingroup cronz_url
+     * @ingroup cronz_uri
      * @brief Check if the component should be encoded.
      * @param[in] component The component to check.
      * @return `true` if the component should be encoded.
@@ -36,7 +36,7 @@ CRONZ_BEGIN_URL_NAMESPACE
     CRONZ_NODISCARD_L1 bool URLShouldEncodeComponent(std::string_view component) noexcept;
 
     /**
-     * @ingroup cronz_url
+     * @ingroup cronz_uri
      * @brief Calculate the size of the encoded string.
      * @param[in] component The component to calculate the size.
      * @return The size of the encoded string.
@@ -44,7 +44,7 @@ CRONZ_BEGIN_URL_NAMESPACE
     CRONZ_NODISCARD_L1 std::size_t URLCalculateEncodedComponentLength(std::string_view component) noexcept;
 
     /**
-     * @ingroup cronz_url
+     * @ingroup cronz_uri
      * @brief Encode the given component.
      * @param[in] component The component to encode.
      * @param[out] encoded The encoded component.
@@ -55,7 +55,7 @@ CRONZ_BEGIN_URL_NAMESPACE
     CRONZ_NODISCARD_L2 bool URLEncodeComponent(std::string_view component, std::string &encoded) noexcept;
 
     /**
-     * @ingroup cronz_url
+     * @ingroup cronz_uri
      * @brief Encode the given component.
      * @param[in] component The component to encode.
      * @param[out] encoded The encoded component.
@@ -68,7 +68,7 @@ CRONZ_BEGIN_URL_NAMESPACE
                                                std::size_t &offset) noexcept;
 
     /**
-     * @ingroup cronz_url
+     * @ingroup cronz_uri
      * @brief Encode the given component in place.
      * @param[inout] component The component to encode.
      * @return `true` if the encoding is successful.
@@ -79,6 +79,6 @@ CRONZ_BEGIN_URL_NAMESPACE
 
 CRONZ_END_URL_NAMESPACE
 
-#include "cronz/url/impl/encode.ipp"
+#include "cronz/uri/impl/encode.ipp"
 
-#endif // CRONZ_URL_ENCODE_HPP
+#endif // CRONZ_URI_ENCODE_HPP
