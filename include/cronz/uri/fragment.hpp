@@ -14,6 +14,11 @@
 #include "cronz/uri/types.hpp"
 
 CRONZ_BEGIN_URI_NAMESPACE
+    /**
+     * @ingroup cronz_uri
+     * @brief URL fragment.
+     * @class Fragment
+     */
     class Fragment {
         // Properties.
         std::string _value;
