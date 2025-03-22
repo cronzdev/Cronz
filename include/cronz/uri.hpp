@@ -17,6 +17,7 @@
  * @sa [RFC3986](https://datatracker.ietf.org/doc/html/rfc3986)
  */
 
+#include "cronz/uri/authority.hpp"
 #include "cronz/uri/decode.hpp"
 #include "cronz/uri/encode.hpp"
 #include "cronz/uri/fragment.hpp"
