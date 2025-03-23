@@ -95,6 +95,25 @@ CRONZ_BEGIN_URI_NAMESPACE
         return compare(scheme._value);
     }
 
+    inline Port Scheme::defaultPort() const noexcept {
+        if (_compare(Scheme::FTP))
+            return static_cast<Port>(21);
+
+        if (_compare(Scheme::SFTP))
+            return static_cast<Port>(22);
+
+        if (_compare(Scheme::SMTP))
+            return static_cast<Port>(25);
+
+        if (_compare(Scheme::HTTP))
+            return static_cast<Port>(80);
+
+        if (_compare(Scheme::HTTPS))
+            return static_cast<Port>(443);
+
+        return static_cast<Port>(0);
+    }
+
     // Operators.
     inline Scheme::operator bool() const noexcept {
         return !empty();

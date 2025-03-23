@@ -11,7 +11,7 @@
 #ifndef CRONZ_URI_SCHEME_HPP
 #define CRONZ_URI_SCHEME_HPP 1
 
-#include "cronz/uri/types.hpp"
+#include "cronz/uri/authority/port.hpp"
 
 CRONZ_BEGIN_URI_NAMESPACE
     /**
@@ -35,26 +35,37 @@ CRONZ_BEGIN_URI_NAMESPACE
          * @brief `file`.
          */
         inline static constexpr std::string_view FILE = "file";
+
         /**
          * @brief `ftp`.
          */
         inline static constexpr std::string_view FTP = "ftp";
+
         /**
          * @brief `sftp`.
          */
         inline static constexpr std::string_view SFTP = "sftp";
+
         /**
          * @brief `http`.
          */
         inline static constexpr std::string_view HTTP = "http";
+
         /**
          * @brief `https`.
          */
         inline static constexpr std::string_view HTTPS = "https";
+
         /**
          * @brief `mailto`.
          */
         inline static constexpr std::string_view MAILTO = "mailto";
+
+        /**
+         * @brief `tel`.
+         */
+        inline static constexpr std::string_view SMTP = "smtp";
+
         /**
          * @brief `tel`.
          */
@@ -167,6 +178,19 @@ CRONZ_BEGIN_URI_NAMESPACE
          * @return `false` if the schemes are not equal.
          */
         CRONZ_NODISCARD_L1 bool compare(const Scheme &scheme) const noexcept;
+
+        /**
+         * @brief Get the default port number for the scheme.
+         * @return Default port number.
+         * @return `0` if the default port number is not known.
+         * @remark The default port number is returned for the following schemes:
+         * - `ftp`: 21
+         * - `sftp`: 22
+         * - `smtp`: 25
+         * - `http`: 80
+         * - `https`: 443
+         */
+        CRONZ_NODISCARD_L1 Port defaultPort() const noexcept;
 
         /** @} */
 
