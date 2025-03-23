@@ -30,6 +30,8 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
     inline static constexpr auto CRONZ_LISTEN_SOCKET = ::listen;
     inline static constexpr auto CRONZ_READ_SOCKET = ::recv;
     inline static constexpr auto CRONZ_WRITE_SOCKET = ::send;
+    inline static constexpr auto CRONZ_ACCEPT_SOCKET = ::accept;
+    inline static constexpr auto CRONZ_SHUTDOWN_SOCKET = ::shutdown;
 
     inline static constexpr auto CRONZ_POLL = WSAPoll;
     inline static constexpr auto CRONZ_POLL_M = 1;

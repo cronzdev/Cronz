@@ -16,7 +16,10 @@
  * @ingroup cronz
  */
 
+#include "cronz/http/connection.hpp"
 #include "cronz/http/method.hpp"
+#include "cronz/http/request.hpp"
+#include "cronz/http/response.hpp"
 #include "cronz/http/status_code.hpp"
 #include "cronz/http/server.hpp"
 #include "cronz/http/types.hpp"

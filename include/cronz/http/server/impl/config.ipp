@@ -15,9 +15,17 @@
 
 CRONZ_BEGIN_HTTP_NAMESPACE
     // Properties.
+    template<typename T>
+    inline void ServerConfiguration::_assign(T &config, T value) noexcept {
+        if (_configurationLocked)
+            return;
+
+        config = value;
+    }
+
     template<typename T, T Min, T Max>
     inline void ServerConfiguration::_assign(T &config, T value) noexcept {
-        config = (value < Min) ? Min : (value > Max) ? Max : value;
+        _assign<T>(config, (value < Min) ? Min : (value > Max) ? Max : value);
     }
 
     inline ServerConfiguration::ServerConfigurationValueType ServerConfiguration::numWorkers() const noexcept {
@@ -39,6 +47,38 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         _assign<ServerConfigurationValueType,
             static_cast<ServerConfigurationValueType>(1),
             static_cast<ServerConfigurationValueType>(100000)>(_maxConnectionsPerWorker, value);
+    }
+
+    inline Port ServerConfiguration::port() const noexcept {
+        return _port;
+    }
+
+    inline void ServerConfiguration::port(const Port port) noexcept {
+        _assign<Port>(_port, port);
+    }
+
+    inline bool ServerConfiguration::isIPv4Enabled() const noexcept {
+        return _ipv4;
+    }
+
+    inline void ServerConfiguration::enableIPv4() noexcept {
+        _assign<bool>(_ipv4, true);
+    }
+
+    inline void ServerConfiguration::disableIPv4() noexcept {
+        _assign<bool>(_ipv4, false);
+    }
+
+    inline bool ServerConfiguration::isIPv6Enabled() const noexcept {
+        return _ipv6;
+    }
+
+    inline void ServerConfiguration::enableIPv6() noexcept {
+        _assign<bool>(_ipv6, true);
+    }
+
+    inline void ServerConfiguration::disableIPv6() noexcept {
+        _assign<bool>(_ipv6, false);
     }
 
     inline bool ServerConfiguration::isConfigurationLocked() const noexcept {

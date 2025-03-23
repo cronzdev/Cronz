@@ -13,7 +13,14 @@
 
 #include "cronz/http/server/types.hpp"
 
+#include "cronz/uri/authority/port.hpp"
+
 CRONZ_BEGIN_HTTP_NAMESPACE
+    /**
+     * @ingroup cronz_http
+     * @brief Server configuration.
+     * @class ServerConfiguration
+     */
     class ServerConfiguration {
     public:
         /**
@@ -31,8 +38,16 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         ServerConfigurationValueType _numWorkers = static_cast<ServerConfigurationValueType>(1);
         ServerConfigurationValueType _maxConnectionsPerWorker = static_cast<ServerConfigurationValueType>(32);
 
+        Port _port = InvalidPort;
+
+        bool _ipv4 = true;
+        bool _ipv6 = false;
+
+        template<typename T>
+        void _assign(T &config, T value) noexcept;
+
         template<typename T, T Min, T Max>
-        static void _assign(T &config, T value) noexcept;
+        void _assign(T &config, T value) noexcept;
 
     protected:
         bool _configurationLocked = false;
@@ -79,23 +94,58 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         void maxConnectionsPerWorker(ServerConfigurationValueType value) noexcept;
 
         /**
-         * @brief Tests if the server configuration is locked.
+         * @brief Gets the port.
+         * @return The port.
+         */
+        CRONZ_NODISCARD_L1 Port port() const noexcept;
+
+        /**
+         * @brief Sets the port.
+         * @param[in] port The port.
+         */
+        void port(Port port) noexcept;
+
+        /**
+         * @brief Tells if IPv4 is enabled.
+         * @return `true` if IPv4 is enabled.
+         * @return `false` if IPv4 is not enabled.
+         */
+        CRONZ_NODISCARD_L1 bool isIPv4Enabled() const noexcept;
+
+        /**
+         * @brief Enables IPv4.
+         */
+        void enableIPv4() noexcept;
+
+        /**
+         * @brief Disables IPv4.
+         */
+        void disableIPv4() noexcept;
+
+        /**
+         * @brief Tells if IPv6 is enabled.
+         * @return `true` if IPv6 is enabled.
+         * @return `false` if IPv6 is not enabled.
+         */
+        CRONZ_NODISCARD_L1 bool isIPv6Enabled() const noexcept;
+
+        /**
+         * @brief Enables IPv6.
+         */
+        void enableIPv6() noexcept;
+
+        /**
+         * @brief Disables IPv6.
+         */
+        void disableIPv6() noexcept;
+
+        /**
+         * @brief Tells if the server configuration is locked.
          * @return `true` if the server configuration is locked.
          * @return `false` if the server configuration is not locked.
          * @remark The server configuration is locked after the server is initialized.
          */
         CRONZ_NODISCARD_L1 bool isConfigurationLocked() const noexcept;
-
-        /** @} */
-
-        /**
-         * @name Destructor.
-         */
-        /** @{ */
-        /**
-         * @brief Default destructor.
-         */
-        ~ServerConfiguration() noexcept = default;
 
         /** @} */
     };

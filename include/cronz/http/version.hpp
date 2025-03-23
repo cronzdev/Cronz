@@ -17,9 +17,9 @@ CRONZ_BEGIN_HTTP_NAMESPACE
     /**
      * @ingroup cronz_http
      * @brief Represents the HTTP version.
-     * @class HTTPVersion
+     * @class Version
      */
-    class HTTPVersion {
+    class Version {
     public:
         /**
          * @name Static types.
@@ -94,14 +94,14 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @brief Default constructor.
          * @details Initializes the version to `Invalid`.
          */
-        HTTPVersion() noexcept;
+        Version() noexcept;
 
         /**
          * @brief Constructor with a version value.
          * @param[in] version Version value.
          * @details Initializes the version to the given value.
          */
-        explicit(false) HTTPVersion(Enum version) noexcept;
+        explicit(false) Version(Enum version) noexcept;
 
         /** @} */
 
@@ -163,7 +163,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @param[in] version Version value.
          * @return Reference to the instance.
          */
-        HTTPVersion &operator=(Enum version) noexcept;
+        Version &operator=(Enum version) noexcept;
 
         /**
          * @brief Equality operator.
@@ -179,7 +179,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @return `true` if the versions are equal.
          * @return `false` if the versions are not equal.
          */
-        CRONZ_NODISCARD_L1 bool operator==(HTTPVersion version) const noexcept;
+        CRONZ_NODISCARD_L1 bool operator==(Version version) const noexcept;
 
         /**
          * @brief Inequality operator.
@@ -195,7 +195,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @return `true` if the versions are not equal.
          * @return `false` if the versions are equal.
          */
-        CRONZ_NODISCARD_L1 bool operator!=(HTTPVersion version) const noexcept;
+        CRONZ_NODISCARD_L1 bool operator!=(Version version) const noexcept;
 
         /** @} */
 
@@ -206,7 +206,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         /**
          * @brief Destructor.
          */
-        ~HTTPVersion() noexcept = default;
+        ~Version() noexcept = default;
 
         /** @} */
 
@@ -218,7 +218,13 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @brief Version values.
          * @details Contains all the version values.
          */
-        static const std::array<HTTPVersion, static_cast<std::size_t>(5)> Versions;
+        static const std::array<Version, static_cast<std::size_t>(5)> Versions;
+
+        /**
+         * @brief Highest supported version.
+         * @details The highest supported version.
+         */
+        static const Version::Enum HighestSupportedVersion;
 
         /** @} */
 
@@ -226,9 +232,9 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @name Friends.
          */
         /** @{ */
-        friend bool operator==(Enum version, HTTPVersion instance) noexcept;
+        friend bool operator==(Enum version, Version instance) noexcept;
 
-        friend bool operator!=(Enum version, HTTPVersion instance) noexcept;
+        friend bool operator!=(Enum version, Version instance) noexcept;
 
         /** @} */
     };

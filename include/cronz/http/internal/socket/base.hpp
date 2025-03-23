@@ -16,6 +16,7 @@
 CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
     template<int AddressFamily, int Type, int Protocol>
     class SocketBase {
+    public:
         inline static constexpr std::size_t AddressLength = static_cast<std::size_t>(AF_INET == AddressFamily
                 ? INET_ADDRSTRLEN
                 : INET6_ADDRSTRLEN);
@@ -32,6 +33,10 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
     public:
         SocketBase() noexcept = default;
 
+        CRONZ_NODISCARD_L1 CRONZ_SOCKET handle() const noexcept;
+
+        void handle(CRONZ_SOCKET handle) noexcept;
+
         CRONZ_NODISCARD_L1 virtual bool create() noexcept = 0;
 
         CRONZ_NODISCARD_L1 virtual bool close() noexcept = 0;
@@ -45,6 +50,8 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
 
         template<typename T>
         CRONZ_NODISCARD_L1 bool setOption(int level, int name, const T &value) const noexcept;
+
+        CRONZ_NODISCARD_L1 bool setNonBlocking(bool enabled) const noexcept;
 
         virtual ~SocketBase() = default;
     };
