@@ -13,6 +13,8 @@
 
 #include "cronz/rfc/rule/delims.hpp"
 
+#include <algorithm>
+
 CRONZ_BEGIN_RFC_NAMESPACE
     inline const std::array<char, static_cast<std::size_t>(7)> GeneralDelimiters = {
         ':', '/', '?', '#', '[', ']', '@'

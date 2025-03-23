@@ -53,6 +53,8 @@ CRONZ_BEGIN_URI_NAMESPACE
     }
 
     inline bool StringifyPort(const Port port, std::string &str) noexcept {
+        str.clear();
+
         auto offset = static_cast<std::size_t>(0);
         return StringifyPort(port, str, offset);
     }

@@ -20,6 +20,10 @@ CRONZ_BEGIN_RFC_NAMESPACE
         return IsDigit(c) || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F');
     }
 
+    inline bool IsPctEncoded(const char c1, const char c2) noexcept {
+        return IsHexDig(c1) && IsHexDig(c2);
+    }
+
 CRONZ_END_RFC_NAMESPACE
 
 #endif // CRONZ_RFC_RULE_IMPL_HEXDIG_IPP

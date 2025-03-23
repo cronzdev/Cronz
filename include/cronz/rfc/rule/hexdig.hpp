@@ -15,6 +15,9 @@
 
 CRONZ_BEGIN_RFC_NAMESPACE
     CRONZ_NODISCARD_L1 bool IsHexDig(char c) noexcept;
+
+    CRONZ_NODISCARD_L1 bool IsPctEncoded(char c1, char c2) noexcept;
+
 CRONZ_END_RFC_NAMESPACE
 
 #include "cronz/rfc/rule/impl/hexdig.ipp"

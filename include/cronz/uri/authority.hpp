@@ -12,6 +12,8 @@
 #define CRONZ_URI_AUTHORITY_HPP 1
 
 #include "cronz/uri/authority/authority.hpp"
+#include "cronz/uri/authority/host.hpp"
 #include "cronz/uri/authority/port.hpp"
+#include "cronz/uri/authority/user.hpp"
 
 #endif // CRONZ_URI_AUTHORITY_HPP
