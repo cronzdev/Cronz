@@ -27,18 +27,16 @@ CRONZ_BEGIN_URI_NAMESPACE
     }
 
     inline bool Fragment::set(const std::string_view fragment) noexcept {
-        if (std::ranges::all_of(fragment, [](const char c) -> bool {
-            return RFC::IsPChar(c) || '/' == c || '?' == c;
-        })) {
-            try {
-                _value.assign(fragment);
-                return true;
-            } catch (...) {
-                return false;
-            }
+        try {
+            _value.assign(fragment);
+            return true;
+        } catch (...) {
+            return false;
         }
+    }
 
-        return false;
+    inline std::size_t Fragment::length() const noexcept {
+        return URICalculateEncodedComponentLength(_value);
     }
 
     inline bool Fragment::empty() const noexcept {
@@ -49,9 +47,75 @@ CRONZ_BEGIN_URI_NAMESPACE
         _value.clear();
     }
 
+    // Parsing & Stringification.
+    inline bool Fragment::parse(std::string_view fragment) noexcept {
+        auto i = static_cast<std::size_t>(0);
+        while (i < fragment.size()) {
+            const char c = fragment[i];
+
+            if (!RFC::IsPChar(c) && '/' != c && '?' != c)
+                return false;
+
+            ++i;
+
+            if ('%' != c)
+                continue;
+
+            if ((static_cast<std::size_t>(2) + i) >= fragment.size())
+                return false;
+
+            if (!RFC::IsHexDig(fragment[i]) ||
+                !RFC::IsHexDig(fragment[i + static_cast<std::size_t>(1)]))
+                return false;
+
+            i += static_cast<std::size_t>(2);
+        }
+
+        if (i != fragment.size())
+            return false;
+
+        if (URIDecodeComponent(fragment, _value))
+            return true;
+
+        _value.clear();
+        return false;
+    }
+
+    inline std::string Fragment::stringify() const noexcept {
+        std::string str;
+        if (!stringify(str))
+            return {};
+
+        return str;
+    }
+
+    inline bool Fragment::stringify(std::string &str) const noexcept {
+        str.clear();
+
+        if (auto offset = static_cast<std::size_t>(0);
+            stringify(str, offset))
+            return true;
+
+        str.clear();
+        return false;
+    }
+
+    inline bool Fragment::stringify(std::string &str, std::size_t &offset) const noexcept {
+        if (const std::size_t len = (length() + offset);
+            len > str.size()) {
+            try {
+                str.resize(len);
+            } catch (...) {
+                return false;
+            }
+        }
+
+        return URIEncodeComponent(_value, str, offset);
+    }
+
     // Operators.
     inline Fragment::operator bool() const noexcept {
-        return _value.empty();
+        return !_value.empty();
     }
 
     inline Fragment::operator std::string_view() const noexcept {

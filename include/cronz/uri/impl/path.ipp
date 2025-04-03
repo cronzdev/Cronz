@@ -281,8 +281,6 @@ CRONZ_BEGIN_URI_NAMESPACE
             if (!segment.empty() && !URIEncodeComponentInPlace(segment))
                 return false;
 
-            printf("segment: <%s>\n", segment.c_str());
-
             segments.emplace_back(std::move(segment));
 
             pos = slash + static_cast<std::ptrdiff_t>(1);

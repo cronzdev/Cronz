@@ -25,6 +25,6 @@
 #include "cronz/uri/query.hpp"
 #include "cronz/uri/scheme.hpp"
 #include "cronz/uri/types.hpp"
-#include "cronz/uri/url.hpp"
+#include "cronz/uri/uri.hpp"
 
 #endif // CRONZ_URI_HPP

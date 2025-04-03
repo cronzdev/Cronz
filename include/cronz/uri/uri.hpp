@@ -11,15 +11,24 @@
 #ifndef CRONZ_URI_URL_HPP
 #define CRONZ_URI_URL_HPP 1
 
+#include "cronz/uri/authority.hpp"
+#include "cronz/uri/fragment.hpp"
+#include "cronz/uri/path.hpp"
+#include "cronz/uri/query.hpp"
 #include "cronz/uri/scheme.hpp"
 
 CRONZ_BEGIN_URI_NAMESPACE
-    class URL {
-        // Static constants.
-        inline static constexpr std::string_view SchemeSeparator = "://";
-
+    class URI {
         // Parsing & Stringification.
-        CRONZ_NODISCARD_L1 bool _schema(const char *&pos, const char * end) noexcept;
+        CRONZ_NODISCARD_L1 bool _scheme(const char *&pos, const char *end) noexcept;
+
+        CRONZ_NODISCARD_L1 bool _authority(const char *&pos, const char *end) noexcept;
+
+        CRONZ_NODISCARD_L1 bool _path(const char *&pos, const char *end) noexcept;
+
+        CRONZ_NODISCARD_L1 bool _query(const char *&pos, const char *end) noexcept;
+
+        CRONZ_NODISCARD_L1 bool _fragment(const char *&pos, const char *end) noexcept;
 
     public:
         /**
@@ -27,9 +36,29 @@ CRONZ_BEGIN_URI_NAMESPACE
          */
         /** @{ */
         /**
-         * @brief URL scheme.
+         * @brief URI scheme component.
          */
         Scheme scheme;
+
+        /**
+         * @brief URI authority component.
+         */
+        Authority authority;
+
+        /**
+         * @brief URI path component.
+         */
+        Path path;
+
+        /**
+         * @brief URI query component.
+         */
+        QueryManager query;
+
+        /**
+         * @brief URI fragment component.
+         */
+        Fragment fragment;
 
         /** @} */
 
@@ -40,9 +69,17 @@ CRONZ_BEGIN_URI_NAMESPACE
         /**
          * @brief Default constructor.
          */
-        URL() noexcept = default;
+        URI() noexcept = default;
 
         /** @{ */
+
+        /**
+         * @name Properties.
+         */
+        /** @{ */
+        CRONZ_NODISCARD_L1 std::size_t length() const noexcept;
+
+        /** @} */
 
         /**
          * @name Parsing & Stringification.
@@ -55,6 +92,12 @@ CRONZ_BEGIN_URI_NAMESPACE
          * @return `false` if the URL is not successfully parsed.
          */
         CRONZ_NODISCARD_L2 bool parse(std::string_view str) noexcept;
+
+        CRONZ_NODISCARD_L1 std::string stringify() const noexcept;
+
+        CRONZ_NODISCARD_L2 bool stringify(std::string &str) const noexcept;
+
+        CRONZ_NODISCARD_L2 bool stringify(std::string &str, std::size_t &offset) const noexcept;
 
         /** @} */
 
@@ -83,13 +126,13 @@ CRONZ_BEGIN_URI_NAMESPACE
         /**
          * @brief Destructor.
          */
-        ~URL() noexcept = default;
+        ~URI() noexcept = default;
 
         /** @} */
     };
 
 CRONZ_END_URI_NAMESPACE
 
-#include "cronz/uri/impl/url.ipp"
+#include "cronz/uri/impl/uri.ipp"
 
 #endif // CRONZ_URI_URL_HPP

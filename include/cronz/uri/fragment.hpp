@@ -60,6 +60,12 @@ CRONZ_BEGIN_URI_NAMESPACE
         CRONZ_NODISCARD_L2 bool set(std::string_view fragment) noexcept;
 
         /**
+         * @brief Returns the length of the encoded fragment.
+         * @return Length of the encoded fragment.
+         */
+        CRONZ_NODISCARD_L1 std::size_t length() const noexcept;
+
+        /**
          * @brief Tells whether the fragment is empty.
          * @return `true` if the fragment is empty.
          * @return `false` if the fragment is not empty.
@@ -70,6 +76,43 @@ CRONZ_BEGIN_URI_NAMESPACE
          * @brief Clears the fragment.
          */
         void clear() noexcept;
+
+        /** @} */
+
+        /**
+         * @name Parsing & Stringification.
+         */
+        /** @{ */
+        /**
+         * @brief Parses a fragment from a string.
+         * @param[in] fragment String to parse.
+         * @return `true` if the fragment is successfully parsed.
+         * @return `false` if the fragment is not successfully parsed.
+         */
+        CRONZ_NODISCARD_L2 bool parse(std::string_view fragment) noexcept;
+
+        /**
+         * @brief Stringifies the fragment.
+         * @return Fragment value.
+         */
+        CRONZ_NODISCARD_L1 std::string stringify() const noexcept;
+
+        /**
+         * @brief Stringifies the fragment.
+         * @param[in] str String to append the fragment to.
+         * @return `true` if the fragment is successfully stringified.
+         * @return `false` if the fragment is not successfully stringified.
+         */
+        CRONZ_NODISCARD_L2 bool stringify(std::string &str) const noexcept;
+
+        /**
+         * @brief Stringifies the fragment.
+         * @param[in] str String to append the fragment to.
+         * @param[in] offset Offset to start appending the fragment to.
+         * @return `true` if the fragment is successfully stringified.
+         * @return `false` if the fragment is not successfully stringified.
+         */
+        CRONZ_NODISCARD_L2 bool stringify(std::string &str, std::size_t &offset) const noexcept;
 
         /** @} */
 
