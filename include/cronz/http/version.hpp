@@ -19,7 +19,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
      * @brief Represents the HTTP version.
      * @class Version
      */
-    class Version {
+    class Version final {
     public:
         /**
          * @name Static types.
