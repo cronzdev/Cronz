@@ -17,8 +17,34 @@
 #include "cronz/rfc/rule/unreserved.hpp"
 
 CRONZ_BEGIN_RFC_NAMESPACE
-    CRONZ_NODISCARD_L1 bool IsPChar(const char c) noexcept {
+    inline bool IsPChar(const char c) noexcept {
         return IsUnreserved(c) || '%' == c || IsHexDig(c) || IsSubDelim(c) || ':' == c || '@' == c;
+    }
+
+    inline bool IsPChar(const std::string_view str) noexcept {
+        for (auto i = static_cast<std::size_t>(0); i < str.size(); ++i) {
+            if (const char c = str[i];
+                IsUnreserved(c) || IsHexDig(c) || IsSubDelim(c) || ':' == c || '@' == c)
+                continue;
+
+            if (IsPctEncoded(str, i)) {
+                i += static_cast<std::size_t>(2);
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    inline bool IsPctEncoded(const std::string_view str, const std::size_t offset) noexcept {
+        if ((static_cast<std::size_t>(2) + offset) >= str.size())
+            return false;
+
+        return '%' == str[offset] &&
+               IsHexDig(str[offset + static_cast<std::size_t>(1)]) &&
+               IsHexDig(str[offset + static_cast<std::size_t>(2)]);
     }
 
 CRONZ_END_RFC_NAMESPACE

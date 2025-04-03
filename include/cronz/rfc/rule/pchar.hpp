@@ -13,8 +13,14 @@
 
 #include "cronz/rfc/types.hpp"
 
+#include <string_view>
+
 CRONZ_BEGIN_RFC_NAMESPACE
     CRONZ_NODISCARD_L1 bool IsPChar(char c) noexcept;
+
+    CRONZ_NODISCARD_L1 bool IsPChar(std::string_view str) noexcept;
+
+    CRONZ_NODISCARD_L1 bool IsPctEncoded(std::string_view str, std::size_t offset) noexcept;
 
 CRONZ_END_RFC_NAMESPACE
 

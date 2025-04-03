@@ -21,6 +21,7 @@
 #include "cronz/uri/decode.hpp"
 #include "cronz/uri/encode.hpp"
 #include "cronz/uri/fragment.hpp"
+#include "cronz/uri/path.hpp"
 #include "cronz/uri/query.hpp"
 #include "cronz/uri/scheme.hpp"
 #include "cronz/uri/types.hpp"
