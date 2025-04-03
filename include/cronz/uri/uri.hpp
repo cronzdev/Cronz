@@ -8,8 +8,8 @@
  * https://opensource.org/license/mit/
  */
 
-#ifndef CRONZ_URI_URL_HPP
-#define CRONZ_URI_URL_HPP 1
+#ifndef CRONZ_URI_URI_HPP
+#define CRONZ_URI_URI_HPP 1
 
 #include "cronz/uri/authority.hpp"
 #include "cronz/uri/fragment.hpp"
@@ -18,7 +18,12 @@
 #include "cronz/uri/scheme.hpp"
 
 CRONZ_BEGIN_URI_NAMESPACE
-    class URI {
+    /**
+     * @ingroup cronz_uri
+     * @brief URI parsing and stringification class.
+     * @class URI
+     */
+    class URI final {
         // Parsing & Stringification.
         CRONZ_NODISCARD_L1 bool _scheme(const char *&pos, const char *end) noexcept;
 
@@ -86,10 +91,10 @@ CRONZ_BEGIN_URI_NAMESPACE
          */
         /** @{ */
         /**
-         * @brief Parses a URL from a string.
+         * @brief Parses a URI from a string.
          * @param[in] str String to parse.
-         * @return `true` if the URL is successfully parsed.
-         * @return `false` if the URL is not successfully parsed.
+         * @return `true` if the URI is successfully parsed.
+         * @return `false` if the URI is not successfully parsed.
          */
         CRONZ_NODISCARD_L2 bool parse(std::string_view str) noexcept;
 
@@ -106,14 +111,14 @@ CRONZ_BEGIN_URI_NAMESPACE
          */
         /** @{ */
         /**
-         * @brief Tells whether all the components of the URL are empty.
-         * @return `true` if all the components of the URL are empty.
-         * @return `false` if any of the components of the URL are not empty.
+         * @brief Tells whether all the components of the URI are empty.
+         * @return `true` if all the components of the URI are empty.
+         * @return `false` if any of the components of the URI are not empty.
          */
         CRONZ_NODISCARD_L1 bool empty() const noexcept;
 
         /**
-         * @brief Clears all the components of the URL.
+         * @brief Clears all the components of the URI.
          */
         void clear() noexcept;
 
@@ -135,4 +140,4 @@ CRONZ_END_URI_NAMESPACE
 
 #include "cronz/uri/impl/uri.ipp"
 
-#endif // CRONZ_URI_URL_HPP
+#endif // CRONZ_URI_URI_HPP

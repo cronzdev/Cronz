@@ -19,6 +19,11 @@
 #include <functional>
 
 CRONZ_BEGIN_URI_NAMESPACE
+    /**
+     * @ingroup cronz_uri
+     * @brief URI host.
+     * @class Host
+     */
     class Host final {
         // Internal constants.
         inline static constexpr char None = '\0';

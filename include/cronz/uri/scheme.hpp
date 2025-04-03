@@ -16,10 +16,10 @@
 CRONZ_BEGIN_URI_NAMESPACE
     /**
      * @ingroup cronz_uri
-     * @brief URL scheme.
+     * @brief URI scheme.
      * @class Scheme
      */
-    class Scheme {
+    class Scheme final {
         // Properties.
         std::string _value{};
 

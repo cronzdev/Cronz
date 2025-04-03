@@ -14,6 +14,11 @@
 #include "cronz/uri/query/field.hpp"
 
 CRONZ_BEGIN_URI_NAMESPACE
+    /**
+     * @ingroup cronz_uri
+     * @brief URI query manager class.
+     * @class QueryManager
+     */
     class QueryManager final {
     public:
         /**

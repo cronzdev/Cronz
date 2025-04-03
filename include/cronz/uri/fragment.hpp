@@ -8,18 +8,18 @@
  * https://opensource.org/license/mit/
  */
 
-#ifndef CRONZ_URL_FRAGMENT_HPP
-#define CRONZ_URL_FRAGMENT_HPP 1
+#ifndef CRONZ_URI_FRAGMENT_HPP
+#define CRONZ_URI_FRAGMENT_HPP 1
 
 #include "cronz/uri/types.hpp"
 
 CRONZ_BEGIN_URI_NAMESPACE
     /**
      * @ingroup cronz_uri
-     * @brief URL fragment.
+     * @brief URI fragment.
      * @class Fragment
      */
-    class Fragment {
+    class Fragment final {
         // Properties.
         std::string _value;
 
@@ -214,4 +214,4 @@ CRONZ_END_URI_NAMESPACE
 
 #include "cronz/uri/impl/fragment.ipp"
 
-#endif // CRONZ_URL_FRAGMENT_HPP
+#endif // CRONZ_URI_FRAGMENT_HPP
