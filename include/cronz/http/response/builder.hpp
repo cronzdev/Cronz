@@ -13,6 +13,8 @@
 
 #include "cronz/http/response/response.hpp"
 
+#include <archive.h>
+
 CRONZ_BEGIN_HTTP_NAMESPACE
     class ResponseBuilder final {
         enum class State : std::int_fast32_t {
@@ -32,6 +34,8 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         std::string _block{};
         std::size_t _size = static_cast<std::size_t>(0);
         std::size_t _offset = static_cast<std::size_t>(0);
+
+        struct archive *_archive = nullptr;
 
         State _state = State::NONE;
         Version _version = Version::Invalid;
