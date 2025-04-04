@@ -29,9 +29,9 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         };
 
         // Properties.
-        std::size_t _size;
-        std::string _block;
-        std::size_t _offset;
+        std::string _block{};
+        std::size_t _size = static_cast<std::size_t>(0);
+        std::size_t _offset = static_cast<std::size_t>(0);
 
         State _state = State::NONE;
         Version _version = Version::Invalid;
