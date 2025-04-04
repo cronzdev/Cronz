@@ -40,6 +40,10 @@ CRONZ_BEGIN_HTTP_NAMESPACE
     inline void ServerConnection<Version, ConfigurationFlags>::_terminate() noexcept {
         [[maybe_unused]] const bool _ = _socket.close();
         _address.address.clear();
+
+        _fd.fd = CRONZ_HTTP_NAMESPACE_INTERNAL::CRONZ_INVALID_SOCKET;
+
+        _requests.clear();
     }
 
     // Events.
@@ -70,14 +74,63 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 
         _metrics.totalBytesIn += _bufferLength;
 
+        if (_requests.empty()) {
+            try {
+                _requests.push_back({});
+            } catch (...) {
+                return false;
+            }
+        }
 
+        auto &rr = _requests[0];
+        if (!rr.requestParser.feed(_buffer.data(), _bufferLength) ||
+            rr.requestParser.isInvalid()) {
+            return false;
+        }
 
-        return false;
+        if (rr.requestParser.isComplete()) {
+            auto self = _worker->_connections[_index];
+            _worker->_server->onRequest(self, rr.requestParser.request(), rr.response);
+
+            if (!rr.responseBuilder.prepare(Version::HTTP_1_1, rr.response))
+                return false;
+
+            _fd.events = POLLOUT;
+        }
+
+        return true;
     }
 
     template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
     inline bool ServerConnection<Version, ConfigurationFlags>::_out() noexcept {
-        //
+        auto &rr = _requests[0];
+
+        if (rr.responseBuilder.isComplete()) {
+            _fd.events = POLLHUP;
+            return false;
+        }
+
+        if (!rr.responseBuilder.buildNextBlock(rr.response))
+            return false;
+
+        const std::string_view block = rr.responseBuilder.getBlockData();
+        if (block.empty())
+            return false;
+
+        std::size_t len = block.length();
+        if (!_socket.write(block.data(), len)) {
+            if (const int err = CRONZ_HTTP_NAMESPACE_INTERNAL::CRONZ_SOCKET_GET_ERROR();
+                err == EWOULDBLOCK || err == WSAEWOULDBLOCK)
+                return true;
+
+            return false;
+        }
+
+        rr.responseBuilder.advance(len);
+
+        _metrics.totalBytesOut += len;
+
+        return true;
     }
 
     // Properties.

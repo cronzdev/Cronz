@@ -11,16 +11,7 @@
 #ifndef CRONZ_HTTP_REQUEST_HPP
 #define CRONZ_HTTP_REQUEST_HPP 1
 
-#include "cronz/http/method/method.hpp"
-
-CRONZ_BEGIN_HTTP_NAMESPACE
-    class Request {
-    public:
-        Method method;
-    };
-
-CRONZ_END_HTTP_NAMESPACE
-
-#include "cronz/http/impl/request.ipp"
+#include "cronz/http/request/parser.hpp"
+#include "cronz/http/request/request.hpp"
 
 #endif // CRONZ_HTTP_REQUEST_HPP

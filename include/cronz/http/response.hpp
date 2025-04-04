@@ -11,16 +11,7 @@
 #ifndef CRONZ_HTTP_RESPONSE_HPP
 #define CRONZ_HTTP_RESPONSE_HPP 1
 
-#include "cronz/http/status_code.hpp"
-
-CRONZ_BEGIN_HTTP_NAMESPACE
-    class Response {
-    public:
-        StatusCode status;
-    };
-
-CRONZ_END_HTTP_NAMESPACE
-
-#include "cronz/http/impl/response.ipp"
+#include "cronz/http/response/builder.hpp"
+#include "cronz/http/response/response.hpp"
 
 #endif // CRONZ_HTTP_RESPONSE_HPP

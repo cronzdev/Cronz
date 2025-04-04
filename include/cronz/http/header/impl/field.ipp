@@ -144,6 +144,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         offset += _name.length();
 
         str[offset++] = ':';
+        str[offset++] = ' ';
 
         memcpy(&str[offset], _value.data(), _value.length());
         offset += _value.length();
@@ -154,6 +155,54 @@ CRONZ_BEGIN_HTTP_NAMESPACE
     // Instance-based utility functions.
     inline bool HeaderField::_cn(const std::string_view name) const noexcept {
         return RFC::CompareAlphaCaseInsensitive(name, _name);
+    }
+
+    template<typename ConvertibleType>
+        requires (std::is_integral_v<ConvertibleType> || std::is_floating_point_v<ConvertibleType> ||
+                  std::is_same_v<ConvertibleType, std::string> || std::is_same_v<ConvertibleType, std::vector<char> >)
+    inline bool HeaderField::as(ConvertibleType &val) const noexcept {
+        if constexpr (std::is_integral_v<ConvertibleType>) {
+            char *err = nullptr;
+            const long long num = std::strtoll(_value.c_str(), &err, 10);
+            if (err == _value.c_str() || *err != '\0')
+                return false;
+
+            if (num < std::numeric_limits<ConvertibleType>::min() ||
+                num > std::numeric_limits<ConvertibleType>::max())
+                return false;
+
+            val = static_cast<ConvertibleType>(num);
+            return true;
+        }
+
+        if constexpr (std::is_floating_point_v<ConvertibleType>) {
+            char *err = nullptr;
+            val = std::strtod(_value.c_str(), &err);
+            if (err == _value.c_str() || *err != '\0')
+                return false;
+
+            return true;
+        }
+
+        if constexpr (std::is_same_v<ConvertibleType, std::string>) {
+            try {
+                val.assign(_value);
+                return true;
+            } catch (...) {
+                return false;
+            }
+        }
+
+        if constexpr (std::is_same_v<ConvertibleType, std::vector<char> >) {
+            try {
+                val.assign(_value.begin(), _value.end());
+                return true;
+            } catch (...) {
+                return false;
+            }
+        }
+
+        return false;
     }
 
     // Static utility functions.

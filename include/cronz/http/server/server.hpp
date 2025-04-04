@@ -43,7 +43,8 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         /** @} */
     private:
         // Static assertions.
-        static_assert(Version::HTTP_0_9 != Version, "HTTP/0.9 is not supported.");
+        static_assert(Version::HTTP_0_9 != Version, "HTTP/0.9 is deprecated.");
+        static_assert(Version::HTTP_1_0 != Version, "HTTP/1.0 is deprecated.");
         static_assert(Version::HTTP_2 != Version, "HTTP/2 is not supported.");
         static_assert(Version::HTTP_3 != Version, "HTTP/3 is not supported.");
         static_assert(Version::Invalid != Version, "Invalid HTTP version.");
@@ -196,6 +197,9 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @TODO Make this function asynchronous.
          */
         virtual bool onAccept(const ConnectionAddress &address) noexcept = 0;
+
+        virtual void onRequest(const ServerConnectionRefType &connection, const Request &request,
+                               Response &response) noexcept = 0;
 
         virtual void onConnectionClosed(const ServerConnectionRefType &connection) noexcept = 0;
 

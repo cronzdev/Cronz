@@ -134,6 +134,25 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         /** @} */
 
         /**
+         * @name Instance-based utility functions.
+         */
+        /** @{ */
+        /**
+         * @brief Converts the field to the specified type.
+         * @tparam ConvertibleType The type to convert to.
+         * @param[out] val The value to assign the converted value.
+         * @return `true` if the conversion is valid.
+         * @return `false` if the conversion is invalid.
+         */
+        template<typename ConvertibleType>
+            requires (std::is_integral_v<ConvertibleType> || std::is_floating_point_v<ConvertibleType> ||
+                      std::is_same_v<ConvertibleType, std::string> ||
+                      std::is_same_v<ConvertibleType, std::vector<char> >)
+        CRONZ_NODISCARD_L2 bool as(ConvertibleType &val) const noexcept;
+
+        /** @} */
+
+        /**
          * @name Destructor.
          */
         /** @{ */
