@@ -13,6 +13,7 @@
 
 #include "cronz/http/internal/socket/base.hpp"
 #include "cronz/http/internal/socket/tcp.hpp"
+#include "cronz/http/internal/socket/stcp.hpp"
 #include "cronz/http/internal/socket/types.hpp"
 
 #endif // CRONZ_HTTP_INTERNAL_SOCKET_HPP
