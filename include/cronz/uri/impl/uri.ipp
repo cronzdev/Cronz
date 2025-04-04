@@ -13,6 +13,8 @@
 
 #include "cronz/uri/uri.hpp"
 
+#include <typeinfo>
+
 CRONZ_BEGIN_URI_NAMESPACE
     // Properties.
     inline std::size_t URI::length() const noexcept {
@@ -131,25 +133,49 @@ CRONZ_BEGIN_URI_NAMESPACE
     }
 
     inline bool URI::parse(const std::string_view str) noexcept {
+        return parse<Scheme>(str);
+    }
+
+    template<class OffsetType>
+        requires (std::is_same_v<OffsetType, Scheme> || std::is_same_v<OffsetType, Authority> ||
+                  std::is_same_v<OffsetType, Path> || std::is_same_v<OffsetType, QueryManager> ||
+                  std::is_same_v<OffsetType, Fragment>)
+    inline bool URI::parse(const std::string_view str) noexcept {
+        constexpr bool s = std::is_same_v<OffsetType, Scheme>;
+        constexpr bool a = s || std::is_same_v<OffsetType, Authority>;
+        constexpr bool p = a || std::is_same_v<OffsetType, Path>;
+        constexpr bool q = p || std::is_same_v<OffsetType, QueryManager>;
+        constexpr bool f = q || std::is_same_v<OffsetType, Fragment>;
+
         clear();
 
         const char *pos = str.cbegin();
         const char *const end = str.cend();
 
-        if (!_scheme(pos, end))
-            goto parse_bad;
+        if constexpr (s) {
+            if (!_scheme(pos, end))
+                goto parse_bad;
+        }
 
-        if (!_authority(pos, end))
-            goto parse_bad;
+        if constexpr (a) {
+            if (!_authority(pos, end))
+                goto parse_bad;
+        }
 
-        if (!_path(pos, end))
-            goto parse_bad;
+        if constexpr (p) {
+            if (!_path(pos, end))
+                goto parse_bad;
+        }
 
-        if (!_query(pos, end))
-            goto parse_bad;
+        if constexpr (q) {
+            if (!_query(pos, end))
+                goto parse_bad;
+        }
 
-        if (!_fragment(pos, end))
-            goto parse_bad;
+        if constexpr (f) {
+            if (!_fragment(pos, end))
+                goto parse_bad;
+        }
 
         if (pos >= end)
             return true;

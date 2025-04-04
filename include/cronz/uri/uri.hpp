@@ -98,6 +98,12 @@ CRONZ_BEGIN_URI_NAMESPACE
          */
         CRONZ_NODISCARD_L2 bool parse(std::string_view str) noexcept;
 
+        template<class OffsetType = Scheme>
+            requires (std::is_same_v<OffsetType, Scheme> || std::is_same_v<OffsetType, Authority> ||
+                      std::is_same_v<OffsetType, Path> || std::is_same_v<OffsetType, QueryManager> ||
+                      std::is_same_v<OffsetType, Fragment>)
+        CRONZ_NODISCARD_L2 bool parse(std::string_view str) noexcept;
+
         CRONZ_NODISCARD_L1 std::string stringify() const noexcept;
 
         CRONZ_NODISCARD_L2 bool stringify(std::string &str) const noexcept;
