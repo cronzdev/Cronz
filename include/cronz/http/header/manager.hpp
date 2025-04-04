@@ -141,26 +141,51 @@ CRONZ_BEGIN_HTTP_NAMESPACE
                                                   const HeaderField *after = nullptr) const noexcept;
 
         /**
-         * @brief Returns the field with the given name.
+         * @brief Adds a field with the given name.
          * @param[in] name The name of the field.
          * @return The field with the given name.
          */
-        CRONZ_NODISCARD_L2 HeaderField *create(std::string_view name) noexcept;
+        CRONZ_NODISCARD_L2 HeaderField *add(std::string_view name) noexcept;
 
         /**
-         * @brief Returns the field with the given name and value.
+         * @brief Adds a field with the given name and value.
          * @param[in] name The name of the field.
          * @param[in] value The value of the field.
          * @return The field with the given name and value.
          */
-        CRONZ_NODISCARD_L2 HeaderField *create(std::string_view name, std::string_view value) noexcept;
+        CRONZ_NODISCARD_L2 HeaderField *add(std::string_view name, std::string_view value) noexcept;
 
         /**
-         * @brief Returns the field with the given name and value.
-         * @param[in] field The field to copy.
+         * @brief Adds a field with the given field.
+         * @param[in] field The field to add.
          * @return The field with the given name and value.
          */
-        CRONZ_NODISCARD_L2 HeaderField *create(const HeaderField &field) noexcept;
+        CRONZ_NODISCARD_L2 HeaderField *add(const HeaderField &field) noexcept;
+
+        /**
+         * @brief Sets the field with the given name.
+         * @param[in] name The name of the field.
+         * @return The field with the given name.
+         * @remark This will remove all the other fields with the same name.
+         */
+        CRONZ_NODISCARD_L2 HeaderField *set(std::string_view name) noexcept;
+
+        /**
+         * @brief Sets the field with the given name and value.
+         * @param[in] name The name of the field.
+         * @param[in] value The value of the field.
+         * @return The field with the given name and value.
+         * @remark This will remove all the other fields with the same name.
+         */
+        CRONZ_NODISCARD_L2 HeaderField *set(std::string_view name, std::string_view value) noexcept;
+
+        /**
+         * @brief Sets the field with the given field.
+         * @param[in] field The field to set.
+         * @return The field with the given name and value.
+         * @remark This will remove all the other fields with the same name.
+         */
+        CRONZ_NODISCARD_L2 HeaderField *set(const HeaderField &field) noexcept;
 
         /**
          * @brief Removes the field with the given name.

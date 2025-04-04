@@ -73,11 +73,11 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         return _get(name, after);
     }
 
-    inline HeaderField *HeaderManager::create(const std::string_view name) noexcept {
-        return create(name, std::string_view());
+    inline HeaderField *HeaderManager::add(const std::string_view name) noexcept {
+        return add(name, std::string_view());
     }
 
-    inline HeaderField *HeaderManager::create(const std::string_view name, const std::string_view value) noexcept {
+    inline HeaderField *HeaderManager::add(const std::string_view name, const std::string_view value) noexcept {
         if (!RFC::IsHeaderFieldName(name) || !RFC::IsHeaderFieldValue(value))
             return nullptr;
 
@@ -98,8 +98,27 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         }
     }
 
-    inline HeaderField *HeaderManager::create(const HeaderField &field) noexcept {
-        return create(field._name, field._value);
+    inline HeaderField *HeaderManager::add(const HeaderField &field) noexcept {
+        return add(field._name, field._value);
+    }
+
+    inline HeaderField *HeaderManager::set(const std::string_view name) noexcept {
+        return set(name, std::string_view());
+    }
+
+    inline HeaderField *HeaderManager::set(const std::string_view name, const std::string_view value) noexcept {
+        HeaderField *field = add(name, value);
+        if (nullptr != field) {
+            remove([&](const HeaderField *f) noexcept -> bool {
+                return f->_cn(name) && (f != field);
+            });
+        }
+
+        return field;
+    }
+
+    inline HeaderField *HeaderManager::set(const HeaderField &field) noexcept {
+        return set(field._name, field._value);
     }
 
     inline bool HeaderManager::remove(const std::string_view name) noexcept {
