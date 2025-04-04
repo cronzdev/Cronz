@@ -24,6 +24,8 @@ CRONZ_BEGIN_RFC_NAMESPACE
 
     CRONZ_NODISCARD_L1 char ToAlphaUpper(char c) noexcept;
 
+    CRONZ_NODISCARD_L1 bool CompareAlphaCaseInsensitive(std::string_view s1, std::string_view s2) noexcept;
+
     CRONZ_NODISCARD_L1 bool CompareAlphaCaseInsensitive(char c1, char c2) noexcept;
 
 CRONZ_END_RFC_NAMESPACE

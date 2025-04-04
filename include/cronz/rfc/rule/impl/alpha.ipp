@@ -34,6 +34,13 @@ CRONZ_BEGIN_RFC_NAMESPACE
         return IsAlphaLower(c) ? c - 32 : c;
     }
 
+    inline bool CompareAlphaCaseInsensitive(const std::string_view s1, const std::string_view s2) noexcept {
+        return (s1.length() == s2.length()) &&
+               std::ranges::equal(s1, s2, [](const char c1, const char c2) noexcept -> bool {
+                   return CompareAlphaCaseInsensitive(c1, c2);
+               });
+    }
+
     inline bool CompareAlphaCaseInsensitive(const char c1, const char c2) noexcept {
         return ToAlphaLower(c1) == ToAlphaLower(c2);
     }

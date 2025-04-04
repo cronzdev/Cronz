@@ -144,6 +144,13 @@ CRONZ_BEGIN_URI_NAMESPACE
         return _fields.erase(position);
     }
 
+    inline void QueryManager::clear() noexcept {
+        for (const ImmutableQueryField *field: _fields)
+            delete field;
+
+        _fields.clear();
+    }
+
     // Parsing & Stringification.
     inline bool QueryManager::parse(const std::string_view str) noexcept {
         std::unordered_map<std::string, ImmutableQueryField *> fields;
@@ -331,6 +338,11 @@ CRONZ_BEGIN_URI_NAMESPACE
         }
 
         return URIDecodeComponentInPlace(name) && URIDecodeComponentInPlace(value);
+    }
+
+    // Destructor.
+    inline QueryManager::~QueryManager() noexcept {
+        clear();
     }
 
 CRONZ_END_URI_NAMESPACE

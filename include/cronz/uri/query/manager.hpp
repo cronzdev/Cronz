@@ -177,6 +177,11 @@ CRONZ_BEGIN_URI_NAMESPACE
                       std::is_same_v<IteratorType, ConstIterator>)
         CRONZ_NODISCARD_L1 constexpr IteratorType remove(IteratorType position) noexcept;
 
+        /**
+         * @brief Removes all fields in the current manager.
+         */
+        void clear() noexcept;
+
         /** @} */
 
         /**
@@ -314,7 +319,7 @@ CRONZ_BEGIN_URI_NAMESPACE
         /**
          * @brief Destructor.
          */
-        ~QueryManager() noexcept = default;
+        ~QueryManager() noexcept;
 
         /** @} */
     };
