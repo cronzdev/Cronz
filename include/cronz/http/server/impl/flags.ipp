@@ -20,6 +20,14 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
     }
 
     template<ServerConfigurationFlags ConfigurationFlags>
+    inline constexpr bool IsMultiSSLContextEnabled() noexcept {
+        if (!IsHTTPSEnabled<ConfigurationFlags>())
+            return false;
+
+        return static_cast<bool>(ConfigurationFlags & ServerConfigurationFlagBits::SERVER_ENABLE_MULTI_SSL);
+    }
+
+    template<ServerConfigurationFlags ConfigurationFlags>
     inline constexpr bool IsServerIPv4() noexcept {
         return static_cast<bool>(ConfigurationFlags & SERVER_USE_IPv4);
     }

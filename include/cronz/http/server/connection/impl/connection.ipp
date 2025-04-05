@@ -115,7 +115,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 
         const std::string_view block = rr.responseBuilder.getBlockData();
         if (block.empty())
-            return false;
+            return true;
 
         std::size_t len = block.length();
         if (!_socket.write(block.data(), len)) {

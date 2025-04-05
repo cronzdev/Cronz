@@ -27,16 +27,23 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         SERVER_ENABLE_HTTPS = 0x0000000000000001,
 
         /**
+         * @brief Enables multiple SSL certificates for the server.
+         * @remark If not used, the server will use a single SSL certificate.
+         * @remark This flag is only valid if `SERVER_ENABLE_HTTPS` is set.
+         */
+        SERVER_ENABLE_MULTI_SSL = 0x0000000000000002,
+
+        /**
          * @brief Tells the server to allow IPv4 connections.
          * @remark Can be used together with `SERVER_USE_IPv6` to allow both protocols.
          */
-        SERVER_USE_IPv4 = 0x0000000000000002,
+        SERVER_USE_IPv4 = 0x0000000000000004,
 
         /**
          * @brief Tells the server to allow IPv6 connections.
          * @remark Can be used together with `SERVER_USE_IPv4` to allow both protocols.
          */
-        SERVER_USE_IPv6 = 0x0000000000000004,
+        SERVER_USE_IPv6 = 0x0000000000000008,
     };
 
     /**
@@ -58,6 +65,9 @@ CRONZ_END_HTTP_NAMESPACE
 CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
     template<ServerConfigurationFlags ConfigurationFlags>
     CRONZ_NODISCARD_L1 constexpr bool IsHTTPSEnabled() noexcept;
+
+    template<ServerConfigurationFlags ConfigurationFlags>
+    CRONZ_NODISCARD_L1 constexpr bool IsMultiSSLContextEnabled() noexcept;
 
     template<ServerConfigurationFlags ConfigurationFlags>
     CRONZ_NODISCARD_L1 constexpr bool IsServerIPv4() noexcept;
