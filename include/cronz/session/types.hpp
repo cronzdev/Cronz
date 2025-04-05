@@ -23,6 +23,7 @@
 
 #include <chrono>
 #include <cstdint>
+#include <functional>
 
 CRONZ_BEGIN_SESSION_NAMESPACE
     /**

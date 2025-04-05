@@ -37,15 +37,30 @@ CRONZ_BEGIN_SESSION_NAMESPACE
     }
 
     template<typename SessionDataType>
-    inline bool Session<SessionDataType>::isDeleted() const noexcept {
-        return _deleted;
+    inline bool Session<SessionDataType>::isDestroyed() const noexcept {
+        return _destroyed;
+    }
+
+    template<typename SessionDataType>
+    inline SessionTime Session<SessionDataType>::age() const noexcept {
+        return _now() - _startTime;
+    }
+
+    template<typename SessionDataType>
+    inline SessionTime Session<SessionDataType>::idleTime() const noexcept {
+        return _now() - _lastAccessTime;
     }
 
     // Instance-based utility functions.
     template<typename SessionDataType>
-    inline void Session<SessionDataType>::updateLastAccessTime() noexcept {
-        _lastAccessTime = static_cast<SessionTime>(std::chrono::duration_cast<std::chrono::microseconds>(
+    inline SessionTime Session<SessionDataType>::_now() const noexcept {
+        return static_cast<SessionTime>(std::chrono::duration_cast<std::chrono::microseconds>(
             std::chrono::system_clock::now().time_since_epoch()).count());
+    }
+
+    template<typename SessionDataType>
+    inline void Session<SessionDataType>::updateLastAccessTime() noexcept {
+        _lastAccessTime = _now();
     }
 
 CRONZ_END_SESSION_NAMESPACE

@@ -52,16 +52,16 @@ CRONZ_BEGIN_SESSION_NAMESPACE
         SessionTime _startTime = static_cast<SessionTime>(0);
         SessionTime _lastAccessTime = static_cast<SessionTime>(0);
 
-        std::atomic_bool _deleted = false;
+        std::atomic_bool _destroyed = false;
 
         // Constructors.
         Session(SessionId _sessionId, SessionTime _startTime) noexcept;
 
+        // Instance-based utility functions.
+        CRONZ_NODISCARD_L1 SessionTime _now() const noexcept;
+
         // Friends.
-        template<typename ISessionDataType, SessionManagerConfigurationFlags ConfigurationFlags,
-            SessionIdGeneratorFunctionType SessionIdGeneratorCallback,
-            SessionOnCreateFunctionType<SessionDataType> SessionOnCreateCallback,
-            SessionOnDestroyFunctionType<SessionDataType> SessionOnDestroyCallback>
+        template<typename ISessionDataType, SessionManagerConfigurationFlags ConfigurationFlags>
         friend class SessionManager;
 
     public:
@@ -101,14 +101,27 @@ CRONZ_BEGIN_SESSION_NAMESPACE
         CRONZ_NODISCARD_L1 SessionTime lastAccessTime() const noexcept;
 
         /**
-         * @brief Returns whether the session is deleted.
-         * @return `true` if the session is deleted.
-         * @return `false` if the session is not deleted.
+         * @brief Returns whether the session is destroyed.
+         * @return `true` if the session is destroyed.
+         * @return `false` if the session is not destroyed.
          * @remark The intended way to access a session is through a `std::shared_ptr`. Thus, the session may be
          * invalidated and removed from the manager's registry, but a copy of it may still be alive somewhere else,
          * possibly registered by the user.
          */
-        CRONZ_NODISCARD_L1 bool isDeleted() const noexcept;
+        CRONZ_NODISCARD_L1 bool isDestroyed() const noexcept;
+
+        /**
+         * @brief Returns the age of the session.
+         * @return Age of the session in milliseconds.
+         */
+        CRONZ_NODISCARD_L1 SessionTime age() const noexcept;
+
+        /**
+         * @brief Returns the idle time of the session.
+         * @return Idle time of the session in milliseconds.
+         * @remark This value is automatically updated when the session is retrieved through a session manager.
+         */
+        CRONZ_NODISCARD_L1 SessionTime idleTime() const noexcept;
 
         /** @} */
 

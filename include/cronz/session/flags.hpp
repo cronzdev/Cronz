@@ -13,6 +13,8 @@
 
 #include "cronz/session/types.hpp"
 
+#include <type_traits>
+
 CRONZ_BEGIN_SESSION_NAMESPACE
     /**
      * @ingroup cronz_session
@@ -30,7 +32,13 @@ CRONZ_BEGIN_SESSION_NAMESPACE
          * @brief Tells the session manager to use raw pointers for the session data.
          * @remark If not used, the session manager will use smart pointers for the session data.
          */
-        SESSION_MANAGER_USE_RAW_POINTER = 0x0000000000000002,
+        SESSION_MANAGER_USE_RAW_POINTERS = 0x0000000000000002,
+
+        /**
+         * @brief Enables session callbacks for the session manager.
+         * @remark If not used, the session manager will not use callbacks for the session data.
+         */
+        SESSION_MANAGER_ENABLE_SESSION_CALLBACKS = 0x0000000000000004,
     };
 
     /**
@@ -49,5 +57,37 @@ CRONZ_BEGIN_SESSION_NAMESPACE
             SESSION_MANAGER_ENABLE_MULTITHREADED;
 
 CRONZ_END_SESSION_NAMESPACE
+
+CRONZ_BEGIN_SESSION_INTERNAL_NAMESPACE
+    template<SessionManagerConfigurationFlags ConfigurationFlags>
+    inline constexpr bool IsSessionManagerMultithreaded() noexcept {
+        return static_cast<bool>(ConfigurationFlags & SESSION_MANAGER_ENABLE_MULTITHREADED);
+    }
+
+    template<SessionManagerConfigurationFlags ConfigurationFlags>
+    inline constexpr bool IsSessionManagerUsingRawPointers() noexcept {
+        return static_cast<bool>(ConfigurationFlags & SESSION_MANAGER_USE_RAW_POINTERS);
+    }
+
+
+    template<SessionManagerConfigurationFlags ConfigurationFlags>
+    inline constexpr bool IsSessionManagerUsingSessionCallbacks() noexcept {
+        return static_cast<bool>(ConfigurationFlags & SESSION_MANAGER_ENABLE_SESSION_CALLBACKS);
+    }
+
+    template<typename SessionDataType, SessionManagerConfigurationFlags ConfigurationFlags>
+    using SessionPtrType = std::conditional_t<IsSessionManagerUsingRawPointers<ConfigurationFlags>(),
+        SessionPtr<SessionDataType>, SessionRef<SessionDataType> >;
+
+    template<typename SessionDataType, SessionManagerConfigurationFlags ConfigurationFlags>
+    using SessionConstRefType = std::conditional_t<IsSessionManagerUsingRawPointers<ConfigurationFlags>(),
+        const SessionPtr<SessionDataType>, const SessionRef<SessionDataType> &>;
+
+    template<typename SessionDataType, SessionManagerConfigurationFlags ConfigurationFlags>
+    using SessionManagerCallbackSessionParamType = std::conditional_t<IsSessionManagerUsingRawPointers<
+            ConfigurationFlags>(),
+        const SessionPtr<SessionDataType>, const SessionRef<SessionDataType> &>;
+
+CRONZ_END_SESSION_INTERNAL_NAMESPACE
 
 #endif // CRONZ_SESSION_FLAGS_HPP
