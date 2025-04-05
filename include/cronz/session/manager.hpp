@@ -147,8 +147,6 @@ CRONZ_BEGIN_SESSION_NAMESPACE
 
         std::atomic<std::size_t> _count = static_cast<std::size_t>(0);
 
-        std::atomic<bool> _busy = false;
-
         CRONZ_NODISCARD_L1 constexpr bool _isThreadSafe() const noexcept {
             return CRONZ_SESSION_NAMESPACE_INTERNAL::IsSessionManagerMultithreaded<ConfigurationFlags>();
         }

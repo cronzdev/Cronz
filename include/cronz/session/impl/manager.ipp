@@ -239,9 +239,6 @@ CRONZ_BEGIN_SESSION_NAMESPACE
     template<typename SessionDataType, SessionManagerConfigurationFlags ConfigurationFlags>
     inline typename SessionManager<SessionDataType, ConfigurationFlags>::SessionType SessionManager<SessionDataType,
         ConfigurationFlags>::create() noexcept {
-        if (_busy)
-            return nullptr;
-
         if constexpr (_isThreadSafe()) {
             std::lock_guard _(this->_mutex);
             return _create();
@@ -274,7 +271,7 @@ CRONZ_BEGIN_SESSION_NAMESPACE
 
     template<typename SessionDataType, SessionManagerConfigurationFlags ConfigurationFlags>
     inline bool SessionManager<SessionDataType, ConfigurationFlags>::destroy(const SessionId id) noexcept {
-        if (static_cast<SessionId>(0) == id || _busy)
+        if (static_cast<SessionId>(0) == id)
             return false;
 
         if constexpr (_isThreadSafe()) {
@@ -288,7 +285,7 @@ CRONZ_BEGIN_SESSION_NAMESPACE
     template<typename SessionDataType, SessionManagerConfigurationFlags ConfigurationFlags>
     inline bool SessionManager<SessionDataType, ConfigurationFlags>::destroy(
         const SessionId id, const SessionTime startTime) noexcept {
-        if (static_cast<SessionId>(0) == id || static_cast<SessionTime>(0) >= startTime || _busy)
+        if (static_cast<SessionId>(0) == id || static_cast<SessionTime>(0) >= startTime)
             return false;
 
         if constexpr (_isThreadSafe()) {
@@ -301,7 +298,7 @@ CRONZ_BEGIN_SESSION_NAMESPACE
 
     template<typename SessionDataType, SessionManagerConfigurationFlags ConfigurationFlags>
     inline bool SessionManager<SessionDataType, ConfigurationFlags>::destroy(SessionConstRefType session) noexcept {
-        if (nullptr == session || session->_destroyed || _busy)
+        if (nullptr == session || session->_destroyed)
             return false;
 
         if constexpr (_isThreadSafe()) {
@@ -325,9 +322,6 @@ CRONZ_BEGIN_SESSION_NAMESPACE
 
     template<typename SessionDataType, SessionManagerConfigurationFlags ConfigurationFlags>
     inline void SessionManager<SessionDataType, ConfigurationFlags>::destroyAll() noexcept {
-        if (_busy)
-            return;
-
         if constexpr (_isThreadSafe()) {
             std::lock_guard _(this->_mutex);
             _destroyAll();
