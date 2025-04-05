@@ -13,6 +13,11 @@
 
 #include "cronz/http/types.hpp"
 
+#ifdef DELETE
+#define CRONZ_HTTP_METHOD_DELETE DELETE
+#undef DELETE
+#endif // DELETE
+
 CRONZ_BEGIN_HTTP_NAMESPACE
     /**
      * @ingroup cronz_http
@@ -239,5 +244,10 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 CRONZ_END_HTTP_NAMESPACE
 
 #include "cronz/http/method/impl/method.ipp"
+
+#ifdef CRONZ_HTTP_METHOD_DELETE
+#define DELETE CRONZ_HTTP_METHOD_DELETE
+#undef CRONZ_HTTP_METHOD_DELETE
+#endif // CRONZ_HTTP_METHOD_DELETE
 
 #endif // CRONZ_HTTP_METHOD_METHOD_HPP

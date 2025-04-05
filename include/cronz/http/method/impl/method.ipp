@@ -16,7 +16,7 @@
 #include "cronz/rfc/rule/token.hpp"
 
 CRONZ_BEGIN_HTTP_NAMESPACE
-    const std::array<Method, static_cast<std::size_t>(8)> Method::PredefinedMethods = {
+    inline const std::array<Method, static_cast<std::size_t>(8)> Method::PredefinedMethods = {
         Method(Method::GET), Method(Method::HEAD), Method(Method::POST), Method(Method::PUT),
         Method(Method::DELETE), Method(Method::CONNECT), Method(Method::OPTIONS), Method(Method::TRACE)
     };
