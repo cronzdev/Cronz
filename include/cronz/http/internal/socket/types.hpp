@@ -15,7 +15,6 @@
 
 #if CRONZ_OS_WINDOWS && !CRONZ_OS_WINDOWS_CYGWIN
 
-#include <winsock2.h>
 #include <ws2tcpip.h>
 
 CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
