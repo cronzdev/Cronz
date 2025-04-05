@@ -14,6 +14,8 @@
 #include "cronz/ip/address/v6.hpp"
 #include "cronz/cryptography/hex.hpp"
 
+#include <cstring>
+
 CRONZ_BEGIN_IP_NAMESPACE
     // Constructors.
     inline IPv6Address::IPv6Address() noexcept = default;
@@ -262,13 +264,22 @@ CRONZ_BEGIN_IP_NAMESPACE
 
     inline std::string IPv6Address::stringify(const bool compressed) const noexcept {
         std::string str;
-        if (!stringify(str, compressed, static_cast<std::size_t>(0)))
-            str.clear();
+        if (!stringify(str, compressed))
+            return {};
 
         return str;
     }
 
-    inline bool IPv6Address::stringify(std::string &str, const bool compressed, std::size_t offset) const noexcept {
+    inline bool IPv6Address::stringify(std::string &str, const bool compressed) const noexcept {
+        auto offset = static_cast<std::size_t>(0);
+        if (stringify(str, offset, compressed))
+            return true;
+
+        str.clear();
+        return false;
+    }
+
+    inline bool IPv6Address::stringify(std::string &str, std::size_t &offset, const bool compressed) const noexcept {
         if (const std::size_t len = (length(compressed) + offset);
             str.size() < len) {
             try {
@@ -295,7 +306,8 @@ CRONZ_BEGIN_IP_NAMESPACE
                     continue;
                 }
 
-                if (static_cast<std::size_t>(0) != groupIndex)
+                if (static_cast<std::size_t>(0) != groupIndex &&
+                    end != (groupIndex - static_cast<std::size_t>(1)))
                     str[offset++] = ':';
 
                 const std::uint8_t byte1 = bytes[byteIndex];
@@ -375,7 +387,7 @@ CRONZ_BEGIN_IP_NAMESPACE
             }
 
             for (auto byteIndex = static_cast<std::size_t>(0), groupIndex = static_cast<std::size_t>(0);
-                 byteIndex < groups.size(); ++groupIndex, byteIndex += static_cast<std::size_t>(2)) {
+                 groupIndex < groups.size(); ++groupIndex, byteIndex += static_cast<std::size_t>(2)) {
                 if (start <= groupIndex && groupIndex <= end)
                     continue;
 

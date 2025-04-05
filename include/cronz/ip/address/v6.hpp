@@ -18,7 +18,7 @@ CRONZ_BEGIN_IP_NAMESPACE
      * @ingroup ip_address
      * @brief IPv6 address structure.
      * @struct IPv6Address
-     * @remark IPv6 parsing and stringification process follows the specifications stated by:
+     * @remark IPv6 parsing and stringification processes follow the specifications stated by:
      * - [RFC5952](https://datatracker.ietf.org/doc/html/rfc5952)
      * - [RFC4291](https://datatracker.ietf.org/doc/html/rfc4291)
      * - [RFC8200](https://datatracker.ietf.org/doc/html/rfc8200)
@@ -223,14 +223,40 @@ CRONZ_BEGIN_IP_NAMESPACE
          * @name Instance-based utility functions.
          */
         /** @{ */
-
+        /**
+         * @brief Parse an IPv6 address.
+         * @param[in] address Address string.
+         * @return `true` if the address is valid.
+         * @return `false` if the address is not valid.
+         */
         CRONZ_NODISCARD_L2 bool parse(std::string_view address) noexcept;
 
+        /**
+         * @brief Stringify the address.
+         * @param[in] compressed Compressed representation.
+         * @return String representation of the address.
+         * @remark Upon failure, empty string is returned.
+         */
         CRONZ_NODISCARD_L1 std::string stringify(bool compressed = true) const noexcept;
 
-        CRONZ_NODISCARD_L2 bool stringify(std::string &str, bool compressed = true,
-                                          std::size_t offset = static_cast<std::size_t>(0)) const noexcept;
+        /**
+         * @brief Stringify the address.
+         * @param[out] str String representation of the address.
+         * @param[in] compressed Compressed representation.
+         * @return `true` if the stringification is successful.
+         * @return `false` if the stringification fails.
+         */
+        CRONZ_NODISCARD_L2 bool stringify(std::string &str, bool compressed = true) const noexcept;
 
+        /**
+         * @brief Stringify the address.
+         * @param[out] str String representation of the address.
+         * @param[out] offset Position in the string to start writing.
+         * @param[in] compressed Compressed representation.
+         * @return `true` if the stringification is successful.
+         * @return `false` if the stringification fails.
+         */
+        CRONZ_NODISCARD_L2 bool stringify(std::string &str, std::size_t &offset, bool compressed = true) const noexcept;
 
         /**
          * @brief Get the length of the string representation.
