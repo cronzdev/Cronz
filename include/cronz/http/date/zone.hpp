@@ -201,6 +201,60 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         /** @} */
 
         /**
+         * @name Operators.
+         */
+        /** @{ */
+        /**
+         * @brief Equality operator.
+         * @param[in] zone The `Zone` object to be compared.
+         * @return `true` if the two objects are equal.
+         * @return `false` if the two objects are not equal.
+         */
+        CRONZ_NODISCARD_L1 bool operator==(const Zone &zone) const noexcept;
+
+        /**
+         * @brief Inequality operator.
+         * @param[in] zone The `Zone` object to be compared.
+         * @return `true` if the two objects are not equal.
+         * @return `false` if the two objects are equal.
+         */
+        CRONZ_NODISCARD_L1 bool operator!=(const Zone &zone) const noexcept;
+
+        /**
+         * @brief Less than operator.
+         * @param[in] zone The `Zone` object to be compared.
+         * @return `true` if the current object is less than the `zone` object.
+         * @return `false` if the current object is not less than the `zone` object.
+         */
+        CRONZ_NODISCARD_L1 bool operator<(const Zone &zone) const noexcept;
+
+        /**
+         * @brief Less than or equal to operator.
+         * @param[in] zone The `Zone` object to be compared.
+         * @return `true` if the current object is less than or equal to the `zone` object.
+         * @return `false` if the current object is not less than or equal to the `zone` object.
+         */
+        CRONZ_NODISCARD_L1 bool operator<=(const Zone &zone) const noexcept;
+
+        /**
+         * @brief Greater than operator.
+         * @param[in] zone The `Zone` object to be compared.
+         * @return `true` if the current object is greater than the `zone` object.
+         * @return `false` if the current object is not greater than the `zone` object.
+         */
+        CRONZ_NODISCARD_L1 bool operator>(const Zone &zone) const noexcept;
+
+        /**
+         * @brief Greater than or equal to operator.
+         * @param[in] zone The `Zone` object to be compared.
+         * @return `true` if the current object is greater than or equal to the `zone` object.
+         * @return `false` if the current object is not greater than or equal to the `zone` object.
+         */
+        CRONZ_NODISCARD_L1 bool operator>=(const Zone &zone) const noexcept;
+
+        /** @} */
+
+        /**
          * @name Destructor.
          */
         /** @{ */

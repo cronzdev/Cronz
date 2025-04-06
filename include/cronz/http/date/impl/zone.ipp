@@ -134,6 +134,31 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         return false;
     }
 
+    // Operators.
+    inline bool Zone::operator==(const Zone &zone) const noexcept {
+        return _offset == zone._offset;
+    }
+
+    inline bool Zone::operator!=(const Zone &zone) const noexcept {
+        return _offset != zone._offset;
+    }
+
+    inline bool Zone::operator<(const Zone &zone) const noexcept {
+        return _offset < zone._offset;
+    }
+
+    inline bool Zone::operator<=(const Zone &zone) const noexcept {
+        return _offset <= zone._offset;
+    }
+
+    inline bool Zone::operator>(const Zone &zone) const noexcept {
+        return _offset > zone._offset;
+    }
+
+    inline bool Zone::operator>=(const Zone &zone) const noexcept {
+        return _offset >= zone._offset;
+    }
+
     // Static utility functions.
     inline Zone Zone::CurrentZone() noexcept {
         const std::time_t n = std::time(nullptr);
