@@ -14,6 +14,7 @@
 #include "cronz/http/date.hpp"
 
 CRONZ_BEGIN_HTTP_NAMESPACE
+    class CookieDate {};
 CRONZ_END_HTTP_NAMESPACE
 
 #endif // CRONZ_HTTP_COOKIE_DATE_HPP

@@ -14,6 +14,23 @@
 #include "cronz/http/cookie/cookie.hpp"
 
 CRONZ_BEGIN_HTTP_NAMESPACE
+    class CookieManager final {
+    public:
+        using CookieType = ImmutableCookie;
+
+        using CookieRefType = CookieType *;
+
+        using CookieConstRefType = const CookieType *;
+
+        using ArrayType = std::vector<CookieRefType>;
+
+    private:
+        // Properties.
+        ArrayType _cookies{};
+
+    public:
+    };
+
 CRONZ_END_HTTP_NAMESPACE
 
 #include "cronz/http/cookie/impl/manager.ipp"
