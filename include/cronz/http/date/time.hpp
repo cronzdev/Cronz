@@ -37,15 +37,22 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          */
         Time() noexcept = default;
 
+        /**
+         * @brief Constructor with time of day and zone.
+         * @param[in] timeOfDay The time of day.
+         * @param[in] zone The zone.
+         */
+        explicit(false) Time(const TimeOfDayType &timeOfDay, const ZoneType &zone = ZoneType::CurrentZone()) noexcept;
+
         /** @} */
 
         /**
          * @name Properties.
          */
         /** @{ */
-        CRONZ_NODISCARD_L1 Zone zone() const noexcept;
+        CRONZ_NODISCARD_L1 ZoneType zone() const noexcept;
 
-        CRONZ_NODISCARD_L1 Zone getZone() const noexcept;
+        CRONZ_NODISCARD_L1 ZoneType getZone() const noexcept;
 
         /** @} */
 
