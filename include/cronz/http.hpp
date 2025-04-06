@@ -17,6 +17,7 @@
  */
 
 #include "cronz/http/connection.hpp"
+#include "cronz/http/date.hpp"
 #include "cronz/http/header.hpp"
 #include "cronz/http/method.hpp"
 #include "cronz/http/request.hpp"

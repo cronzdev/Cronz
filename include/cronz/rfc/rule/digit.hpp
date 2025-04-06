@@ -13,8 +13,13 @@
 
 #include "cronz/rfc/types.hpp"
 
+#include <string_view>
+
 CRONZ_BEGIN_RFC_NAMESPACE
     CRONZ_NODISCARD_L1 bool IsDigit(char c) noexcept;
+
+    CRONZ_NODISCARD_L1 bool IsDigit(std::string_view str) noexcept;
+
 CRONZ_END_RFC_NAMESPACE
 
 #include "cronz/rfc/rule/impl/digit.ipp"
