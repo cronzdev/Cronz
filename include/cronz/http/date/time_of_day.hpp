@@ -492,7 +492,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         /**
          * @brief Default destructor.
          */
-        ~TimeOfDay() noexcept = default;
+        virtual ~TimeOfDay() noexcept = default;
 
         /** @} */
 

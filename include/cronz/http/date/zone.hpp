@@ -261,7 +261,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         /**
          * @brief Default destructor.
          */
-        ~Zone() noexcept = default;
+        virtual ~Zone() noexcept = default;
 
         /** @} */
 

@@ -16,16 +16,34 @@
 CRONZ_BEGIN_HTTP_NAMESPACE
     template<DateConfigurationFlags ConfigurationFlags = DefaultDateConfigurationFlags>
     class Time : public TimeOfDay<ConfigurationFlags>, public Zone {
+    public:
         /**
          * @name Static constants and type definitions.
          */
         /** @{ */
+        /**
+         * @brief Time type.
+         */
         using TimeType = Time<ConfigurationFlags>;
 
+        /**
+         * @brief Time of day type.
+         */
         using TimeOfDayType = typename TimeOfDay<ConfigurationFlags>::TimeOfDayType;
 
+        /**
+         * @brief Zone type.
+         */
         using ZoneType = Zone;
+
         /** @} */
+
+    private:
+        // Parsing.
+        CRONZ_NODISCARD_L1 bool _parseTime(std::string_view time) noexcept;
+
+        // Instance-based utility functions.
+        void _resetTime() noexcept;
 
     public:
         /**
@@ -44,14 +62,40 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          */
         explicit(false) Time(const TimeOfDayType &timeOfDay, const ZoneType &zone = ZoneType::CurrentZone()) noexcept;
 
+        /**
+         * @brief Constructor with time string.
+         * @param[in] time The time string to parse.
+         */
+        explicit(false) Time(std::string_view time) noexcept;
+
         /** @} */
 
         /**
          * @name Properties.
          */
         /** @{ */
+        /**
+         * @brief Get the time of day.
+         * @return The time of day.
+         */
+        CRONZ_NODISCARD_L1 TimeOfDayType timeOfDay() const noexcept;
+
+        /**
+         * @brief Get the time of day.
+         * @return The time of day.
+         */
+        CRONZ_NODISCARD_L1 TimeOfDayType getTimeOfDay() const noexcept;
+
+        /**
+         * @brief Get the zone.
+         * @return The zone.
+         */
         CRONZ_NODISCARD_L1 ZoneType zone() const noexcept;
 
+        /**
+         * @brief Get the zone.
+         * @return The zone.
+         */
         CRONZ_NODISCARD_L1 ZoneType getZone() const noexcept;
 
         /** @} */
@@ -63,7 +107,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         /**
          * @brief Default destructor.
          */
-        ~Time() noexcept = default;
+        ~Time() noexcept override = default;
 
         /** @} */
     };

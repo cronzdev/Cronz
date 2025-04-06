@@ -92,7 +92,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
     inline bool Zone::_parseOffset(const std::string_view offset) noexcept {
         auto value = static_cast<ZoneOffsetType>(0);
 
-        for (auto i = static_cast<std::size_t>(0); i < offset.length(); ++i) {
+        for (auto i = static_cast<std::size_t>(1); i < offset.length(); ++i) {
             const char c = offset[i];
             if (!RFC::IsDigit(c))
                 goto parse_bad;
