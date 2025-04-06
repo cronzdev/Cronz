@@ -8,12 +8,12 @@
  * https://opensource.org/license/mit/
  */
 
-#ifndef CRONZ_HTTP_DATE_HPP
-#define CRONZ_HTTP_DATE_HPP 1
+#ifndef CRONZ_HTTP_DATE_IMPL_TIME_IPP
+#define CRONZ_HTTP_DATE_IMPL_TIME_IPP 1
 
-#include "cronz/http/date/flags.hpp"
 #include "cronz/http/date/time.hpp"
-#include "cronz/http/date/time_of_day.hpp"
-#include "cronz/http/date/zone.hpp"
 
-#endif // CRONZ_HTTP_DATE_HPP
+CRONZ_BEGIN_HTTP_NAMESPACE
+CRONZ_END_HTTP_NAMESPACE
+
+#endif // CRONZ_HTTP_DATE_IMPL_TIME_IPP

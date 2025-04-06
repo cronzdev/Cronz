@@ -227,10 +227,15 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         MinutesType _minutes = MinutesMin;
         SecondsType _seconds = SecondsMin;
 
+        void _addSeconds(const MathType seconds) noexcept requires(AreMillisecondsEnabled) {
+            if (static_cast<MathType>(0) == seconds)
+                return;
+
+            addSeconds(seconds);
+        }
+
         // Instance-based utility functions.
         CRONZ_NODISCARD_L1 MathType _n() const noexcept;
-
-        void _resetTimeOfDay() noexcept;
 
         // Operators.
         template<typename CompareOp, DateConfigurationFlags IConfigurationFlags>
@@ -249,16 +254,14 @@ CRONZ_BEGIN_HTTP_NAMESPACE
                             const TimeOfDay<SrcConfigurationFlags> &src) noexcept;
 
     protected:
+        // Instance-based utility functions.
+        void _resetTimeOfDay() noexcept;
+
         // Parsing.
         CRONZ_NODISCARD_L1 bool _parseTimeOfDay(std::string_view timeOfDay) noexcept;
 
         // Virtual.
         virtual void _addDays(MathType) noexcept {
-        }
-
-        void _addSeconds(const MathType seconds) noexcept requires(AreMillisecondsEnabled) {
-            if (static_cast<MathType>(0) == seconds)
-                return;
         }
 
     public:
