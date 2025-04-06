@@ -14,6 +14,18 @@
 #include "cronz/http/date/time.hpp"
 
 CRONZ_BEGIN_HTTP_NAMESPACE
+    // Properties.
+    template<DateConfigurationFlags ConfigurationFlags>
+    inline Zone Time<ConfigurationFlags>::getZone() const noexcept {
+        return getZone();
+    }
+
+    template<DateConfigurationFlags ConfigurationFlags>
+    inline Zone Time<ConfigurationFlags>::getZone() const noexcept {
+        ZoneType z;
+        z._offset = this->_offset;
+        return z;
+    }
 CRONZ_END_HTTP_NAMESPACE
 
 #endif // CRONZ_HTTP_DATE_IMPL_TIME_IPP

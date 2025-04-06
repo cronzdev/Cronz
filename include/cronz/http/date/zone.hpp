@@ -14,6 +14,11 @@
 #include "cronz/http/date/time_of_day.hpp"
 
 CRONZ_BEGIN_HTTP_NAMESPACE
+    /**
+     * @ingroup cronz_http
+     * @brief Time zone class.
+     * @class Zone
+     */
     class Zone {
     public:
         /**
