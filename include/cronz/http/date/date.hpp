@@ -14,7 +14,54 @@
 #include "cronz/http/date/zone.hpp"
 
 CRONZ_BEGIN_HTTP_NAMESPACE
+    /**
+     * @ingroup cronz_http
+     * @brief Date class.
+     * @class Date
+     */
     class Date {
+        // Static constants and types.
+        inline static constexpr std::string_view Sunday = "Sunday";
+        inline static constexpr std::string_view Monday = "Monday";
+        inline static constexpr std::string_view Tuesday = "Tuesday";
+        inline static constexpr std::string_view Wednesday = "Wednesday";
+        inline static constexpr std::string_view Thursday = "Thursday";
+        inline static constexpr std::string_view Friday = "Friday";
+        inline static constexpr std::string_view Saturday = "Saturday";
+
+        inline static constexpr std::string_view Sun = "Sun";
+        inline static constexpr std::string_view Mon = "Mon";
+        inline static constexpr std::string_view Tue = "Tue";
+        inline static constexpr std::string_view Wed = "Wed";
+        inline static constexpr std::string_view Thu = "Thu";
+        inline static constexpr std::string_view Fri = "Fri";
+        inline static constexpr std::string_view Sat = "Sat";
+
+        inline static constexpr std::string_view January = "January";
+        inline static constexpr std::string_view February = "February";
+        inline static constexpr std::string_view March = "March";
+        inline static constexpr std::string_view April = "April";
+        inline static constexpr std::string_view May = "May";
+        inline static constexpr std::string_view June = "June";
+        inline static constexpr std::string_view July = "July";
+        inline static constexpr std::string_view August = "August";
+        inline static constexpr std::string_view September = "September";
+        inline static constexpr std::string_view October = "October";
+        inline static constexpr std::string_view November = "November";
+        inline static constexpr std::string_view December = "December";
+
+        inline static constexpr std::string_view Jan = "Jan";
+        inline static constexpr std::string_view Feb = "Feb";
+        inline static constexpr std::string_view Mar = "Mar";
+        inline static constexpr std::string_view Apr = "Apr";
+        inline static constexpr std::string_view Jun = "Jun";
+        inline static constexpr std::string_view Jul = "Jul";
+        inline static constexpr std::string_view Aug = "Aug";
+        inline static constexpr std::string_view Sep = "Sep";
+        inline static constexpr std::string_view Oct = "Oct";
+        inline static constexpr std::string_view Nov = "Nov";
+        inline static constexpr std::string_view Dec = "Dec";
+
     public:
         /**
          * @name Static constants and types.
@@ -172,6 +219,31 @@ CRONZ_BEGIN_HTTP_NAMESPACE
             Invalid = static_cast<MonthType>(-1)
         };
 
+        /**
+         * @brief Day of week names.
+         */
+        static const std::unordered_map<DayOfWeek, std::string_view> DayOfWeekNames;
+
+        /**
+         * @brief Day of week name abbreviations.
+         */
+        static const std::unordered_map<DayOfWeek, std::string_view> DayOfWeekNameAbbreviations;
+
+        /**
+         * @brief Months.
+         */
+        static const std::array<Month, static_cast<std::size_t>(12)> Months;
+
+        /**
+         * @brief Month names.
+         */
+        static const std::unordered_map<Month, std::string_view> MonthNames;
+
+        /**
+         * @brief Month name abbreviations.
+         */
+        static const std::unordered_map<Month, std::string_view> MonthNameAbbreviations;
+
         /** @} */
     private:
         // Properties.
@@ -189,9 +261,39 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 
         CRONZ_NODISCARD_L1 DayOfWeek _getDayOfWeek() const noexcept;
 
+        // Operators.
+        CRONZ_NODISCARD_L1 MathType _n() const noexcept;
+
+        template<typename CompareOp>
+        CRONZ_NODISCARD_L1 bool _compare(const Date &date) const noexcept;
+
         // Static utility functions.
+        CRONZ_NODISCARD_L1 static bool _isLeapYear(YearType year) noexcept;
+
+        CRONZ_NODISCARD_L1 static DayType _getDaysInMonth(YearType year, MonthType month) noexcept;
+
         template<auto Callback>
         CRONZ_NODISCARD_L1 static Date _today(std::chrono::system_clock::time_point tp) noexcept;
+
+        CRONZ_NODISCARD_L1 static bool _c(const char *s1, const char *s2) noexcept;
+
+        template<typename T>
+        CRONZ_NODISCARD_L1 static T _p(std::string_view s) noexcept;
+
+    protected:
+        // Instance-based utility functions.
+        void _resetDate() noexcept;
+
+        // Parsing.
+        CRONZ_NODISCARD_L1 static DayOfWeek _parseDayOfWeek(std::string_view dayOfWeek) noexcept;
+
+        CRONZ_NODISCARD_L1 bool _parseDay(std::string_view day) noexcept;
+
+        CRONZ_NODISCARD_L1 bool _parseMonth(std::string_view month) noexcept;
+
+        CRONZ_NODISCARD_L1 bool _parseYear(std::string_view year) noexcept;
+
+        CRONZ_NODISCARD_L1 bool _parseDate(std::string_view date) noexcept;
 
     public:
         /**
@@ -211,6 +313,15 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @remark Value overflow is handled by the class.
          */
         Date(MathType day, MathType month, MathType year) noexcept;
+
+        /**
+         * @brief Constructor with a string representation of the date.
+         * @param[in] date The string representation of the date.
+         * @remark The string representation must be in one of the following formats:
+         * - DD Mon YYYY
+         * - DoW, DD Mon YYYY
+         */
+        explicit(false) Date(std::string_view date) noexcept;
 
         /** @} */
 
@@ -364,6 +475,12 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          */
         CRONZ_NODISCARD_L1 DayOfWeek getDayOfWeek() const noexcept;
 
+        void setDayOfWeek(DayOfWeek dayOfWeek) noexcept;
+
+        CRONZ_NODISCARD_L1 DayType getDayOfWeekValue() const noexcept;
+
+        void setDayOfWeek(DayType dayOfWeek) noexcept;
+
         /**
          * @brief Sets the current date.
          * @param[in] day Day to be set.
@@ -399,6 +516,54 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @name Operators.
          */
         /** @{ */
+        /**
+         * @name Equality operator.
+         * @param[in] date The `Date` object to be compared.
+         * @return `true` if the two objects are equal.
+         * @return `false` if the two objects are not equal.
+         */
+        CRONZ_NODISCARD_L1 bool operator==(const Date &date) const noexcept;
+
+        /**
+         * @brief Inequality operator.
+         * @param[in] date The `Date` object to be compared.
+         * @return `true` if the two objects are not equal.
+         * @return `false` if the two objects are equal.
+         */
+        CRONZ_NODISCARD_L1 bool operator!=(const Date &date) const noexcept;
+
+        /**
+         * @brief Less than operator.
+         * @param[in] date The `Date` object to be compared.
+         * @return `true` if the current object is less than the `date` object.
+         * @return `false` if the current object is not less than the `date` object.
+         */
+        CRONZ_NODISCARD_L1 bool operator<(const Date &date) const noexcept;
+
+        /**
+         * @brief Less than or equal to operator.
+         * @param[in] date The `Date` object to be compared.
+         * @return `true` if the current object is less than or equal to the `date` object.
+         * @return `false` if the current object is not less than or equal to the `date` object.
+         */
+        CRONZ_NODISCARD_L1 bool operator<=(const Date &date) const noexcept;
+
+        /**
+         * @brief Greater than operator.
+         * @param[in] date The `Date` object to be compared.
+         * @return `true` if the current object is greater than the `date` object.
+         * @return `false` if the current object is not greater than the `date` object.
+         */
+        CRONZ_NODISCARD_L1 bool operator>(const Date &date) const noexcept;
+
+        /*
+         * @brief Greater than or equal to operator.
+         * @param[in] date The `Date` object to be compared.
+         * @return `true` if the current object is greater than or equal to the `date` object.
+         * @return `false` if the current object is not greater than or equal to the `date` object.
+         */
+        CRONZ_NODISCARD_L1 bool operator>=(const Date &date) const noexcept;
+
         /** @} */
 
         /**
@@ -428,6 +593,8 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @return The current date in the specified zone.
          */
         CRONZ_NODISCARD_L1 static Date Today(const Zone &zone) noexcept;
+
+        CRONZ_NODISCARD_L1 static bool IsDateValid(MathType day, MathType month, MathType year) noexcept;
 
         /** @} */
     };

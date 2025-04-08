@@ -13,10 +13,54 @@
 
 #include "cronz/http/date/date.hpp"
 
+#include "cronz/rfc/rule/alpha.hpp"
+#include "cronz/rfc/rule/date_time.hpp"
+
+#include <cstring>
+
 CRONZ_BEGIN_HTTP_NAMESPACE
+    // Static constants and types.
+    inline const std::unordered_map<Date::DayOfWeek, std::string_view> Date::DayOfWeekNames = {
+        {DayOfWeek::Sunday, Sunday}, {DayOfWeek::Monday, Monday}, {DayOfWeek::Tuesday, Tuesday},
+        {DayOfWeek::Wednesday, Wednesday}, {DayOfWeek::Thursday, Thursday}, {DayOfWeek::Friday, Friday},
+        {DayOfWeek::Saturday, Saturday}, {DayOfWeek::Invalid, ""}
+    };
+
+    inline const std::unordered_map<Date::DayOfWeek, std::string_view> Date::DayOfWeekNameAbbreviations = {
+        {DayOfWeek::Sunday, Sun}, {DayOfWeek::Monday, Mon}, {DayOfWeek::Tuesday, Tue},
+        {DayOfWeek::Wednesday, Wed}, {DayOfWeek::Thursday, Thu}, {DayOfWeek::Friday, Fri},
+        {DayOfWeek::Saturday, Sat}, {DayOfWeek::Invalid, ""}
+    };
+
+    inline const std::array<Date::Month, static_cast<std::size_t>(12)> Date::Months = {
+        Month::January, Month::February, Month::March, Month::April,
+        Month::May, Month::June, Month::July, Month::August,
+        Month::September, Month::October, Month::November, Month::December
+    };
+
+    inline const std::unordered_map<Date::Month, std::string_view> Date::MonthNames = {
+        {Month::January, January}, {Month::February, February}, {Month::March, March},
+        {Month::April, April}, {Month::May, May}, {Month::June, June},
+        {Month::July, July}, {Month::August, August}, {Month::September, September},
+        {Month::October, October}, {Month::November, November}, {Month::December, December},
+        {Month::Invalid, ""}
+    };
+
+    inline const std::unordered_map<Date::Month, std::string_view> Date::MonthNameAbbreviations = {
+        {Month::January, Jan}, {Month::February, Feb}, {Month::March, Mar},
+        {Month::April, Apr}, {Month::May, May}, {Month::June, Jun},
+        {Month::July, Jul}, {Month::August, Aug}, {Month::September, Sep},
+        {Month::October, Oct}, {Month::November, Nov}, {Month::December, Dec},
+        {Month::Invalid, ""}
+    };
+
     // Constructors.
     inline Date::Date(const MathType day, const MathType month, const MathType year) noexcept {
         setDate(day, month, year);
+    }
+
+    inline Date::Date(const std::string_view date) noexcept {
+        [[maybe_unused]] const bool _ = _parseDate(date);
     }
 
     // Properties.
@@ -244,6 +288,21 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         return _getDayOfWeek();
     }
 
+    inline void Date::setDayOfWeek(const DayOfWeek dayOfWeek) noexcept {
+        if (DayOfWeek::Invalid != dayOfWeek)
+            addDays(static_cast<MathType>(_day) - static_cast<MathType>(getDayOfWeekValue()));
+    }
+
+    inline Date::DayType Date::getDayOfWeekValue() const noexcept {
+        return static_cast<DayType>(getDayOfWeek());
+    }
+
+    inline void Date::setDayOfWeek(const DayType dayOfWeek) noexcept {
+        if (static_cast<DayType>(DayOfWeek::Sunday) <= dayOfWeek &&
+            dayOfWeek <= static_cast<DayType>(DayOfWeek::Saturday))
+            addDays(static_cast<MathType>(_day) - static_cast<MathType>(dayOfWeek));
+    }
+
     inline void Date::setDate(const MathType day, const MathType month, const MathType year) noexcept {
         setYear(year);
         setMonth(month);
@@ -251,15 +310,134 @@ CRONZ_BEGIN_HTTP_NAMESPACE
     }
 
     // Instance-based utility functions.
+    inline void Date::_resetDate() noexcept {
+        _year = YearMin;
+        _month = static_cast<MonthType>(Month::January);
+        _day = static_cast<DayType>(1);
+    }
+
     inline bool Date::isLeapYear() const noexcept {
-        return static_cast<YearType>(0) < _year &&
-               ((static_cast<YearType>(0) == (_year % static_cast<YearType>(400))) ||
-                ((static_cast<YearType>(0) == (_year % static_cast<YearType>(4))) &&
-                 static_cast<YearType>(0) != (_year % static_cast<YearType>(100))));
+        return _isLeapYear(_year);
     }
 
     inline Date::DayType Date::getDaysInMonth() const noexcept {
-        switch (_month) {
+        return _getDaysInMonth(_year, _month);
+    }
+
+    // Parsing.
+    inline Date::DayOfWeek Date::_parseDayOfWeek(const std::string_view dayOfWeek) noexcept {
+        if (static_cast<std::size_t>(3) != dayOfWeek.length())
+            return DayOfWeek::Invalid;
+
+        for (const auto &[d, s]: DayOfWeekNameAbbreviations) {
+            if (_c(dayOfWeek.data(), s.data()))
+                return static_cast<DayOfWeek>(d);
+        }
+
+        return DayOfWeek::Invalid;
+    }
+
+    inline bool Date::_parseDay(const std::string_view day) noexcept {
+        if (static_cast<std::size_t>(2) != day.length() || !RFC::IsDigit(day))
+            return false;
+
+        _day = _p<DayType>(day);
+        return true;
+    }
+
+    inline bool Date::_parseMonth(const std::string_view month) noexcept {
+        if (static_cast<std::size_t>(3) != month.length())
+            return false;
+
+        for (const auto &[m, s]: MonthNameAbbreviations) {
+            if (_c(month.data(), s.data())) {
+                _month = static_cast<MonthType>(m);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    inline bool Date::_parseYear(const std::string_view year) noexcept {
+        if (static_cast<std::size_t>(4) != year.length() || !RFC::IsDigit(year))
+            return false;
+
+        _year = _p<YearType>(year);
+        return true;
+    }
+
+    inline bool Date::_parseDate(std::string_view date) noexcept {
+        const bool hasDayOfWeek = (static_cast<std::size_t>(16) == date.length());
+        if (!hasDayOfWeek && static_cast<std::size_t>(11) != date.length())
+            return false;
+
+        const DayOfWeek dayOfWeek = (hasDayOfWeek ? _parseDayOfWeek(date.substr(0, 3)) : DayOfWeek::Invalid);
+        if (hasDayOfWeek) {
+            if (DayOfWeek::Invalid == dayOfWeek)
+                return false;
+
+            date.remove_prefix(static_cast<std::size_t>(5));
+        }
+
+        if (!_parseDay(date.substr(0, 2)) || ' ' != date[2] ||
+            !_parseMonth(date.substr(3, 3)) || ' ' != date[6] ||
+            !_parseYear(date.substr(7, 4)) ||
+            !IsDateValid(_day, _month, _year) ||
+            (hasDayOfWeek && dayOfWeek != _getDayOfWeek())) {
+            _resetDate();
+            return false;
+        }
+
+        return true;
+    }
+
+    // Operators.
+    inline Date::MathType Date::_n() const noexcept {
+        return static_cast<MathType>(_year) * static_cast<MathType>(1'00'00) +
+               static_cast<MathType>(_month) * static_cast<MathType>(1'00) +
+               static_cast<MathType>(_day);
+    }
+
+    template<typename CompareOp>
+    inline bool Date::_compare(const Date &date) const noexcept {
+        return CompareOp()(_n(), date._n());
+    }
+
+    inline bool Date::operator==(const Date &date) const noexcept {
+        return _compare<std::equal_to<> >(date);
+    }
+
+    inline bool Date::operator!=(const Date &date) const noexcept {
+        return _compare<std::not_equal_to<> >(date);
+    }
+
+    inline bool Date::operator<(const Date &date) const noexcept {
+        return _compare<std::less<> >(date);
+    }
+
+    inline bool Date::operator<=(const Date &date) const noexcept {
+        return _compare<std::less_equal<> >(date);
+    }
+
+    inline bool Date::operator>(const Date &date) const noexcept {
+        return _compare<std::greater<> >(date);
+    }
+
+    inline bool Date::operator>=(const Date &date) const noexcept {
+        return _compare<std::greater_equal<> >(date);
+    }
+
+    // Static utility functions.
+    inline bool Date::_isLeapYear(const YearType year) noexcept {
+        return static_cast<YearType>(0) < year &&
+               ((static_cast<YearType>(0) == (year % static_cast<YearType>(400))) ||
+                ((static_cast<YearType>(0) == (year % static_cast<YearType>(4))) &&
+                 static_cast<YearType>(0) != (year % static_cast<YearType>(100))));
+    }
+
+    inline Date::DayType Date::_getDaysInMonth(const YearType year, const MonthType month) noexcept {
+        switch (month) {
             case static_cast<MonthType>(Month::January):
             case static_cast<MonthType>(Month::March):
             case static_cast<MonthType>(Month::May):
@@ -274,13 +452,12 @@ CRONZ_BEGIN_HTTP_NAMESPACE
             case static_cast<MonthType>(Month::November):
                 return static_cast<DayType>(30);
             case static_cast<MonthType>(Month::February):
-                return isLeapYear() ? static_cast<DayType>(29) : static_cast<DayType>(28);
+                return _isLeapYear(year) ? static_cast<DayType>(29) : static_cast<DayType>(28);
             default:
                 return static_cast<DayType>(0);
         }
     }
 
-    // Static utility functions.
     template<auto Callback>
     inline Date Date::_today(const std::chrono::system_clock::time_point tp) noexcept {
         const std::time_t n = std::chrono::system_clock::to_time_t(tp);
@@ -294,6 +471,20 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         return date;
     }
 
+    inline bool Date::_c(const char *s1, const char *s2) noexcept {
+        return 0 == std::memcmp(s1, s2, static_cast<std::size_t>(3));
+    }
+
+    template<typename T>
+    inline T Date::_p(const std::string_view s) noexcept {
+        T t = static_cast<T>(0);
+
+        for (const char c: s)
+            t = (t * static_cast<T>(10)) + static_cast<T>(c - '0');
+
+        return t;
+    }
+
     inline Date Date::Today() noexcept {
         const std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
         return _today<std::localtime>(tp);
@@ -302,6 +493,17 @@ CRONZ_BEGIN_HTTP_NAMESPACE
     inline Date Date::Today(const Zone &zone) noexcept {
         const auto tp = (std::chrono::system_clock::now() + std::chrono::minutes(zone.getTimezoneOffsetInMinutes()));
         return _today<std::gmtime>(tp);
+    }
+
+    inline bool Date::IsDateValid(const MathType day, const MathType month, const MathType year) noexcept {
+        if (static_cast<MathType>(YearMin) > year || year > static_cast<MathType>(YearMax))
+            return false;
+
+        if (static_cast<MathType>(static_cast<MonthType>(Month::January)) > month ||
+            month > static_cast<MathType>(static_cast<MonthType>(Month::December)))
+            return false;
+
+        return static_cast<MathType>(0) < day && day <= static_cast<MathType>(_getDaysInMonth(year, month));
     }
 
 CRONZ_END_HTTP_NAMESPACE
