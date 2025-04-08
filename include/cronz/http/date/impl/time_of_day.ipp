@@ -70,13 +70,13 @@ CRONZ_END_HTTP_NAMESPACE
 
 CRONZ_BEGIN_HTTP_NAMESPACE
     // Constructors.
-    template<DateConfigurationFlags ConfigurationFlags>
-    template<DateConfigurationFlags IConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags IConfigurationFlags>
     inline TimeOfDay<ConfigurationFlags>::TimeOfDay(const TimeOfDay<IConfigurationFlags> &timeOfDay) noexcept {
         _assign(this, timeOfDay);
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline TimeOfDay<ConfigurationFlags>::TimeOfDay(const MathType hours, const MathType minutes,
                                                     const MathType seconds) noexcept requires (!
         TimeOfDay<ConfigurationFlags>::AreMillisecondsEnabled) {
@@ -85,7 +85,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         addHours(hours);
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline TimeOfDay<ConfigurationFlags>::TimeOfDay(const MathType hours, const MathType minutes,
                                                     const MathType seconds,
                                                     const MathType milliseconds) noexcept requires (
@@ -96,95 +96,95 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         addHours(hours);
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline TimeOfDay<ConfigurationFlags>::TimeOfDay(const std::string_view timeOfDay) noexcept {
         [[maybe_unused]] const bool result = _parseTimeOfDay(timeOfDay);
     }
 
     // Properties.
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline typename TimeOfDay<ConfigurationFlags>::HoursType TimeOfDay<ConfigurationFlags>::hours() const noexcept {
         return getHours();
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline typename TimeOfDay<ConfigurationFlags>::HoursType TimeOfDay<ConfigurationFlags>::getHours() const noexcept {
         return _hours;
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     void TimeOfDay<ConfigurationFlags>::hours(const MathType hours) noexcept {
         setHours(hours);
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     void TimeOfDay<ConfigurationFlags>::setHours(const MathType hours) noexcept {
         _hours = static_cast<HoursType>(hours % static_cast<MathType>(HoursDivisor));
         _addDays(static_cast<MathType>(hours / static_cast<MathType>(HoursDivisor)));
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     void TimeOfDay<ConfigurationFlags>::addHours(const MathType hours) noexcept {
         setHours(hours + static_cast<MathType>(_hours));
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline typename TimeOfDay<ConfigurationFlags>::HoursType TimeOfDay<ConfigurationFlags>::minutes() const noexcept {
         return getMinutes();
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline typename TimeOfDay<ConfigurationFlags>::MinutesType TimeOfDay<
         ConfigurationFlags>::getMinutes() const noexcept {
         return _minutes;
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     void TimeOfDay<ConfigurationFlags>::minutes(const MathType minutes) noexcept {
         setMinutes(minutes);
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     void TimeOfDay<ConfigurationFlags>::setMinutes(const MathType minutes) noexcept {
         _minutes = static_cast<MinutesType>(minutes % static_cast<MathType>(MinutesDivisor));
         addHours(static_cast<MathType>(minutes / static_cast<MathType>(MinutesDivisor)));
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     void TimeOfDay<ConfigurationFlags>::addMinutes(const MathType minutes) noexcept {
         setMinutes(minutes + static_cast<MathType>(_minutes));
     }
 
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline typename TimeOfDay<ConfigurationFlags>::HoursType TimeOfDay<ConfigurationFlags>::seconds() const noexcept {
         return getSeconds();
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline typename TimeOfDay<ConfigurationFlags>::SecondsType TimeOfDay<
         ConfigurationFlags>::getSeconds() const noexcept {
         return _seconds;
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     void TimeOfDay<ConfigurationFlags>::seconds(const MathType seconds) noexcept {
         setSeconds(seconds);
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     void TimeOfDay<ConfigurationFlags>::setSeconds(const MathType seconds) noexcept {
         _seconds = static_cast<SecondsType>(seconds % static_cast<MathType>(SecondsDivisor));
         addMinutes(static_cast<MathType>(seconds / static_cast<MathType>(SecondsDivisor)));
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     void TimeOfDay<ConfigurationFlags>::addSeconds(const MathType seconds) noexcept {
         setSeconds(seconds + static_cast<MathType>(_seconds));
     }
 
     // Instance-based utility functions.
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline typename TimeOfDay<ConfigurationFlags>::MathType TimeOfDay<ConfigurationFlags>::_n() const noexcept {
         if constexpr (AreMillisecondsEnabled)
             return static_cast<MathType>(_hours) * static_cast<MathType>(1'00'00'000) +
@@ -197,7 +197,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
                    static_cast<MathType>(_seconds);
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline void TimeOfDay<ConfigurationFlags>::_resetTimeOfDay() noexcept {
         _hours = HoursMin;
         _minutes = MinutesMin;
@@ -208,65 +208,65 @@ CRONZ_BEGIN_HTTP_NAMESPACE
     }
 
     // Operators.
-    template<DateConfigurationFlags ConfigurationFlags>
-    template<typename CompareOp, DateConfigurationFlags IConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
+    template<typename CompareOp, DateTimeConfigurationFlags IConfigurationFlags>
     inline bool TimeOfDay<
         ConfigurationFlags>::_compare(const TimeOfDay<IConfigurationFlags> &timeOfDay) const noexcept {
         return CompareOp()(_n(), timeOfDay._n());
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
-    template<DateConfigurationFlags IConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags IConfigurationFlags>
     inline typename TimeOfDay<ConfigurationFlags>::TimeOfDayType &TimeOfDay<ConfigurationFlags>::operator=(
         const TimeOfDay<IConfigurationFlags> &timeOfDay) noexcept {
         _assign(this, timeOfDay);
         return *this;
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
-    template<DateConfigurationFlags IConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags IConfigurationFlags>
     inline bool TimeOfDay<ConfigurationFlags>::operator==(
         const TimeOfDay<IConfigurationFlags> &timeOfDay) const noexcept {
         return _compare<std::equal_to<> >(timeOfDay);
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
-    template<DateConfigurationFlags IConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags IConfigurationFlags>
     inline bool TimeOfDay<ConfigurationFlags>::operator!=(
         const TimeOfDay<IConfigurationFlags> &timeOfDay) const noexcept {
         return _compare<std::not_equal_to<> >(timeOfDay);
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
-    template<DateConfigurationFlags IConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags IConfigurationFlags>
     inline bool TimeOfDay<ConfigurationFlags>::operator
     <(const TimeOfDay<IConfigurationFlags> &timeOfDay) const noexcept {
         return _compare<std::less<> >(timeOfDay);
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
-    template<DateConfigurationFlags IConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags IConfigurationFlags>
     inline bool TimeOfDay<ConfigurationFlags>::operator<=(
         const TimeOfDay<IConfigurationFlags> &timeOfDay) const noexcept {
         return _compare<std::less_equal<> >(timeOfDay);
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
-    template<DateConfigurationFlags IConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags IConfigurationFlags>
     inline bool TimeOfDay<ConfigurationFlags>::operator
     >(const TimeOfDay<IConfigurationFlags> &timeOfDay) const noexcept {
         return _compare<std::greater<> >(timeOfDay);
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
-    template<DateConfigurationFlags IConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags IConfigurationFlags>
     inline bool TimeOfDay<ConfigurationFlags>::operator>=(
         const TimeOfDay<IConfigurationFlags> &timeOfDay) const noexcept {
         return _compare<std::greater_equal<> >(timeOfDay);
     }
 
     // Parsing.
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     template<typename T, T Min, T Max>
     inline bool TimeOfDay<ConfigurationFlags>::_parseTimeOfDayComponent(T &component, const char c1,
                                                                         const char c2) noexcept {
@@ -278,7 +278,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         return (Min <= component && component <= Max);
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline bool TimeOfDay<ConfigurationFlags>::_parseTimeOfDay(std::string_view timeOfDay) noexcept {
         if (static_cast<std::size_t>(5) > timeOfDay.length())
             goto parse_bad;
@@ -321,12 +321,11 @@ CRONZ_BEGIN_HTTP_NAMESPACE
     }
 
     // Static utility functions.
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     template<auto Callback>
     inline typename TimeOfDay<ConfigurationFlags>::TimeOfDayType
-    TimeOfDay<ConfigurationFlags>::_current() noexcept {
-        const auto n = std::chrono::system_clock::now();
-        const std::time_t c = std::chrono::system_clock::to_time_t(n);
+    TimeOfDay<ConfigurationFlags>::_current(const std::chrono::system_clock::time_point &tp) noexcept {
+        const std::time_t c = std::chrono::system_clock::to_time_t(tp);
         const std::tm *t = Callback(&c);
 
         if constexpr (AreMillisecondsEnabled) {
@@ -334,7 +333,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
                 static_cast<MathType>(t->tm_hour),
                 static_cast<MathType>(t->tm_min),
                 static_cast<MathType>(t->tm_sec),
-                static_cast<MathType>(std::chrono::duration_cast<std::chrono::milliseconds>(n.time_since_epoch()).
+                static_cast<MathType>(std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch()).
                                       count() %
                                       static_cast<MathType>(TimeOfDayMillisecondsComponent::MillisecondsDivisor))
             );
@@ -347,8 +346,8 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         }
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
-    template<DateConfigurationFlags DstConfigurationFlags, DateConfigurationFlags SrcConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags DstConfigurationFlags, DateTimeConfigurationFlags SrcConfigurationFlags>
     inline void TimeOfDay<ConfigurationFlags>::_assign(TimeOfDay<DstConfigurationFlags> &dst,
                                                        const TimeOfDay<SrcConfigurationFlags> &src) noexcept {
         dst._hours = src._hours;
@@ -363,16 +362,18 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         }
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline typename TimeOfDay<ConfigurationFlags>::TimeOfDayType
     TimeOfDay<ConfigurationFlags>::CurrentTimeOfDay() noexcept {
-        return _current<std::localtime>();
+        const auto tp = std::chrono::system_clock::now();
+        return _current<std::localtime>(tp);
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline typename TimeOfDay<ConfigurationFlags>::TimeOfDayType
-    TimeOfDay<ConfigurationFlags>::CurrentTimeOfDayGMT() noexcept {
-        return _current<std::gmtime>();
+    TimeOfDay<ConfigurationFlags>::CurrentTimeOfDay(const Zone &zone) noexcept {
+        const auto tp = (std::chrono::system_clock::now() + std::chrono::minutes(zone.getTimezoneOffsetInMinutes()));
+        return _current<std::gmtime>(tp);
     }
 
 CRONZ_END_HTTP_NAMESPACE

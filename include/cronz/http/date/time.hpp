@@ -11,10 +11,10 @@
 #ifndef CRONZ_HTTP_DATE_TIME_HPP
 #define CRONZ_HTTP_DATE_TIME_HPP 1
 
-#include "cronz/http/date/zone.hpp"
+#include "cronz/http/date/time_of_day.hpp"
 
 CRONZ_BEGIN_HTTP_NAMESPACE
-    template<DateConfigurationFlags ConfigurationFlags = DefaultDateConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags = DefaultDateTimeConfigurationFlags>
     class Time : public TimeOfDay<ConfigurationFlags>, public Zone {
     public:
         /**

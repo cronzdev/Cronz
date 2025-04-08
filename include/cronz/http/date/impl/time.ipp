@@ -15,39 +15,39 @@
 
 CRONZ_BEGIN_HTTP_NAMESPACE
     // Constructors.
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline Time<ConfigurationFlags>::Time(const TimeOfDayType &timeOfDay, const ZoneType &zone) noexcept
         : TimeOfDay<ConfigurationFlags>(timeOfDay), Zone(zone) {
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline Time<ConfigurationFlags>::Time(const std::string_view time) noexcept {
         [[maybe_unused]] const bool _ = this->_parseTime(time);
     }
 
     // Properties.
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline typename Time<ConfigurationFlags>::TimeOfDayType Time<ConfigurationFlags>::timeOfDay() const noexcept {
         return getTimeOfDay();
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline typename Time<ConfigurationFlags>::TimeOfDayType Time<ConfigurationFlags>::getTimeOfDay() const noexcept {
         return *this;
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline typename Time<ConfigurationFlags>::ZoneType Time<ConfigurationFlags>::zone() const noexcept {
         return getZone();
     }
 
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline typename Time<ConfigurationFlags>::ZoneType Time<ConfigurationFlags>::getZone() const noexcept {
         return *this;
     }
 
     // Parsing.
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline bool Time<ConfigurationFlags>::_parseTime(std::string_view time) noexcept {
         this->_resetTime();
 
@@ -80,7 +80,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
     }
 
     // Instance-based utility functions.
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline void Time<ConfigurationFlags>::_resetTime() noexcept {
         this->_resetTimeOfDay();
         this->_resetZone();

@@ -19,13 +19,13 @@ CRONZ_BEGIN_HTTP_NAMESPACE
     /**
      * @ingroup cronz_http
      * @brief Date configuration flags.
-     * @enum DateConfigurationFlagBits
+     * @enum DateTimeConfigurationFlagBits
      */
-    enum DateConfigurationFlagBits : std::uint64_t {
+    enum DateTimeConfigurationFlagBits : std::uint64_t {
         /**
          * @brief Enables milliseconds in `TimeOfDay` class.
          */
-        DATE_ENABLE_MILLISECONDS = 0x0000000000000001,
+        DATE_TIME_ENABLE_MILLISECONDS = 0x0000000000000001,
     };
 
     /**
@@ -33,18 +33,18 @@ CRONZ_BEGIN_HTTP_NAMESPACE
      * @brief Date configuration flag type.
      * @typedef std::uint64_t DateConfigurationFlags
      */
-    typedef std::uint64_t DateConfigurationFlags;
+    typedef std::uint64_t DateTimeConfigurationFlags;
 
     /**
      * @ingroup cronz_http
      * @brief Default date configuration flags.
      */
-    inline constexpr DateConfigurationFlags DefaultDateConfigurationFlags = 0;
+    inline constexpr DateTimeConfigurationFlags DefaultDateTimeConfigurationFlags = 0;
 
 CRONZ_END_HTTP_NAMESPACE
 
 CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     CRONZ_NODISCARD_L1 constexpr bool AreMillisecondsEnabled() noexcept;
 
 CRONZ_END_HTTP_INTERNAL_NAMESPACE

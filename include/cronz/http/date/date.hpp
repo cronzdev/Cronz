@@ -11,7 +11,7 @@
 #ifndef CRONZ_HTTP_DATE_DATE_HPP
 #define CRONZ_HTTP_DATE_DATE_HPP 1
 
-#include "cronz/http/types.hpp"
+#include "cronz/http/date/zone.hpp"
 
 CRONZ_BEGIN_HTTP_NAMESPACE
     class Date {
@@ -179,6 +179,20 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         MonthType _month = static_cast<MonthType>(Month::January);
         DayType _day = static_cast<DayType>(1);
 
+        void _setYear(YearType year) noexcept;
+
+        template<bool AddOrSubtract>
+        void _addMonths(MathType months) noexcept;
+
+        template<bool AddOrSubtract>
+        void _addDays(MathType days) noexcept;
+
+        CRONZ_NODISCARD_L1 DayOfWeek _getDayOfWeek() const noexcept;
+
+        // Static utility functions.
+        template<auto Callback>
+        CRONZ_NODISCARD_L1 static Date _today(std::chrono::system_clock::time_point tp) noexcept;
+
     public:
         /**
          * @name Constructors.
@@ -188,6 +202,15 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @brief Default constructor.
          */
         Date() noexcept = default;
+
+        /**
+         * @brief Constructor with year, month and day values.
+         * @param[in] year Year to be assigned.
+         * @param[in] month Month to be assigned.
+         * @param[in] day Day to be assigned.
+         * @remark Value overflow is handled by the class.
+         */
+        Date(MathType day, MathType month, MathType year) noexcept;
 
         /** @} */
 
@@ -234,6 +257,148 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          */
         void addYears(MathType years) noexcept;
 
+        /**
+         * @brief Returns the current month.
+         * @return Current month.
+         */
+        CRONZ_NODISCARD_L1 Month month() const noexcept;
+
+        /**
+         * @brief Returns the current month.
+         * @return Current month.
+         */
+        CRONZ_NODISCARD_L1 Month getMonth() const noexcept;
+
+        /**
+         * @brief Sets the current month.
+         * @param[in] month Month to be set.
+         * @remark If `month` is `Month::Invalid`, nothing happens.
+         */
+        void month(Month month) noexcept;
+
+        /**
+         * @brief Sets the current month.
+         * @param[in] month Month to be set.
+         * @remark If `month` is `Month::Invalid`, nothing happens.
+         */
+        void setMonth(Month month) noexcept;
+
+        /**
+         * @brief Returns the current month value.
+         * @return Current month value.
+         */
+        CRONZ_NODISCARD_L1 MonthType monthValue() const noexcept;
+
+        /**
+         * @brief Returns the current month value.
+         * @return Current month value.
+         */
+        CRONZ_NODISCARD_L1 MonthType getMonthValue() const noexcept;
+
+        /**
+         * @brief Sets the current month.
+         * @param[in] month Month to be set.
+         */
+        void month(MathType month) noexcept;
+
+        /**
+         * @brief Sets the current month.
+         * @param[in] month Month to be set.
+         */
+        void setMonth(MathType month) noexcept;
+
+        /**
+         * @brief Adds to the current month.
+         * @param[in] months Months to be added.
+         */
+        void addMonths(MathType months) noexcept;
+
+        /**
+         * @brief Returns the current day (of the month).
+         * @return Current day (of the month).
+         */
+        CRONZ_NODISCARD_L1 DayType day() const noexcept;
+
+        /**
+         * @brief Returns the current day (of the month).
+         * @return Current day (of the month).
+         */
+        CRONZ_NODISCARD_L1 DayType getDay() const noexcept;
+
+        /**
+         * @brief Sets the current day (of the month).
+         * @param[in] day Day to be set.
+         * @remark If `day` is out of range (1-28/29/30/31), the day is normalized and the month is
+         * incremented/decremented accordingly. For example, the day `32` in the month `January` will update the month
+         * as `February` and the day as `1`.
+         */
+        void day(MathType day) noexcept;
+
+        /**
+         * @brief Sets the current day (of the month).
+         * @param[in] day Day to be set.
+         * @remark If `day` is out of range (1-28/29/30/31), the day is normalized and the month is
+         * incremented/decremented accordingly. For example, the day `32` in the month `January` will update the month
+         * as `February` and the day as `1`.
+         */
+        void setDay(MathType day) noexcept;
+
+        /**
+         * @brief Adds days the current day (of the month).
+         * @param[in] days Day to be added.
+         * @remark If `day` is out of range (1-28/29/30/31), the day is normalized and the month is
+         * incremented/decremented accordingly. For example, the day `32` in the month `January` will update the month
+         * as `February` and the day as `1`.
+         */
+        void addDays(MathType days) noexcept;
+
+        /**
+         * @brief Returns the current day of the week.
+         * @return Current day of the week.
+         */
+        CRONZ_NODISCARD_L1 DayOfWeek dayOfWeek() const noexcept;
+
+        /**
+         * @brief Returns the current day of the week.
+         * @return Current day of the week.
+         */
+        CRONZ_NODISCARD_L1 DayOfWeek getDayOfWeek() const noexcept;
+
+        /**
+         * @brief Sets the current date.
+         * @param[in] day Day to be set.
+         * @param[in] month Month to be set.
+         * @param[in] year Year to be set.
+         * @remark Value overflow is handled by the class.
+         */
+        void setDate(MathType day, MathType month, MathType year) noexcept;
+
+        /** @} */
+
+        /**
+         * @name Instance-based utility functions.
+         */
+        /** @{ */
+        /**
+         * @brief Tells if the current year is a leap year.
+         * @return `true` if the current year is a leap year.
+         * @return `false` if the current year is not a leap year.
+         */
+        CRONZ_NODISCARD_L1 bool isLeapYear() const noexcept;
+
+        /**
+         * @brief Returns the number of days in the current month.
+         * @return Number of days in the current month.
+         * @remark Leap years are taken into account for February.
+         */
+        CRONZ_NODISCARD_L1 DayType getDaysInMonth() const noexcept;
+
+        /** @} */
+
+        /**
+         * @name Operators.
+         */
+        /** @{ */
         /** @} */
 
         /**
@@ -244,6 +409,25 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @brief Default destructor.
          */
         ~Date() noexcept = default;
+
+        /** @} */
+
+        /**
+         * @name Static utility functions.
+         */
+        /** @{ */
+        /**
+         * @brief Returns the current date.
+         * @return The current date.
+         */
+        CRONZ_NODISCARD_L1 static Date Today() noexcept;
+
+        /**
+         * @brief Returns the current date in the specified zone.
+         * @param[in] zone The zone to be used.
+         * @return The current date in the specified zone.
+         */
+        CRONZ_NODISCARD_L1 static Date Today(const Zone &zone) noexcept;
 
         /** @} */
     };

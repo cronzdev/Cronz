@@ -11,7 +11,7 @@
 #ifndef CRONZ_HTTP_DATE_ZONE_HPP
 #define CRONZ_HTTP_DATE_ZONE_HPP 1
 
-#include "cronz/http/date/time_of_day.hpp"
+#include "cronz/http/date/flags.hpp"
 
 CRONZ_BEGIN_HTTP_NAMESPACE
     /**
@@ -134,19 +134,19 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @brief Constructor with offset.
          * @param[in] offset The offset to UTC.
          */
-        explicit(true) Zone(ZoneOffsetType offset) noexcept;
+        explicit(false) Zone(ZoneOffsetType offset) noexcept;
 
         /**
          * @brief Constructor with offset.
          * @param[in] offset The offset to UTC.
          */
-        explicit(true) Zone(Offset offset) noexcept;
+        explicit(false) Zone(Offset offset) noexcept;
 
         /**
          * @brief Constructor with offset abbreviation.
          * @param[in] zone The offset value or zone abbreviation.
          */
-        explicit(true) Zone(std::string_view zone) noexcept;
+        explicit(false) Zone(std::string_view zone) noexcept;
 
         /** @} */
 

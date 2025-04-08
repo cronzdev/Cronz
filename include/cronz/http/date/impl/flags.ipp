@@ -14,9 +14,9 @@
 #include "cronz/http/date/flags.hpp"
 
 CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline constexpr bool AreMillisecondsEnabled() noexcept {
-        return static_cast<bool>(ConfigurationFlags & DATE_ENABLE_MILLISECONDS);
+        return static_cast<bool>(ConfigurationFlags & DATE_TIME_ENABLE_MILLISECONDS);
     }
 
 CRONZ_END_HTTP_INTERNAL_NAMESPACE

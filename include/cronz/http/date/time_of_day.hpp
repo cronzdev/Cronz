@@ -12,6 +12,7 @@
 #define CRONZ_HTTP_DATE_TIME_OF_DAY_HPP 1
 
 #include "cronz/http/date/flags.hpp"
+#include "cronz/http/date/zone.hpp"
 
 CRONZ_BEGIN_HTTP_NAMESPACE
     /**
@@ -123,7 +124,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
      * @tparam ConfigurationFlags The configuration flags.
      * @class TimeOfDay
      */
-    template<DateConfigurationFlags ConfigurationFlags = DefaultDateConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags = DefaultDateTimeConfigurationFlags>
     class TimeOfDay : public std::conditional_t<
                 CRONZ_HTTP_NAMESPACE_INTERNAL::AreMillisecondsEnabled<ConfigurationFlags>(),
                 TimeOfDayMillisecondsComponent,
@@ -238,7 +239,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         CRONZ_NODISCARD_L1 MathType _n() const noexcept;
 
         // Operators.
-        template<typename CompareOp, DateConfigurationFlags IConfigurationFlags>
+        template<typename CompareOp, DateTimeConfigurationFlags IConfigurationFlags>
         CRONZ_NODISCARD_L1 bool _compare(const TimeOfDay<IConfigurationFlags> &timeOfDay) const noexcept;
 
         // Parsing.
@@ -247,9 +248,9 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 
         // Static utility functions.
         template<auto Callback>
-        CRONZ_NODISCARD_L1 static TimeOfDayType _current() noexcept;
+        CRONZ_NODISCARD_L1 static TimeOfDayType _current(const std::chrono::system_clock::time_point &tp) noexcept;
 
-        template<DateConfigurationFlags DstConfigurationFlags, DateConfigurationFlags SrcConfigurationFlags>
+        template<DateTimeConfigurationFlags DstConfigurationFlags, DateTimeConfigurationFlags SrcConfigurationFlags>
         static void _assign(TimeOfDay<DstConfigurationFlags> &dst,
                             const TimeOfDay<SrcConfigurationFlags> &src) noexcept;
 
@@ -278,7 +279,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @brief Copy constructor.
          * @param[in] timeOfDay The `TimeOfDay` object to be copied.
          */
-        template<DateConfigurationFlags IConfigurationFlags>
+        template<DateTimeConfigurationFlags IConfigurationFlags>
         explicit(false) TimeOfDay(const TimeOfDay<IConfigurationFlags> &timeOfDay) noexcept;
 
         /**
@@ -420,7 +421,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @param[in] timeOfDay The `TimeOfDay` object to be assigned.
          * @return The current object.
          */
-        template<DateConfigurationFlags IConfigurationFlags>
+        template<DateTimeConfigurationFlags IConfigurationFlags>
         TimeOfDayType &operator=(const TimeOfDay<IConfigurationFlags> &timeOfDay) noexcept;
 
         /**
@@ -430,7 +431,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @return `true` if the two objects are equal.
          * @return `false` if the two objects are not equal.
          */
-        template<DateConfigurationFlags IConfigurationFlags>
+        template<DateTimeConfigurationFlags IConfigurationFlags>
         CRONZ_NODISCARD_L1 bool operator==(const TimeOfDay<IConfigurationFlags> &timeOfDay) const noexcept;
 
         /**
@@ -440,7 +441,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @return `true` if the two objects are not equal.
          * @return `false` if the two objects are equal.
          */
-        template<DateConfigurationFlags IConfigurationFlags>
+        template<DateTimeConfigurationFlags IConfigurationFlags>
         CRONZ_NODISCARD_L1 bool operator!=(const TimeOfDay<IConfigurationFlags> &timeOfDay) const noexcept;
 
         /**
@@ -450,7 +451,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @return `true` if the current object is less than the `timeOfDay` object.
          * @return `false` if the current object is not less than the `timeOfDay` object.
          */
-        template<DateConfigurationFlags IConfigurationFlags>
+        template<DateTimeConfigurationFlags IConfigurationFlags>
         CRONZ_NODISCARD_L1 bool operator<(const TimeOfDay<IConfigurationFlags> &timeOfDay) const noexcept;
 
         /**
@@ -460,7 +461,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @return `true` if the current object is less than or equal to the `timeOfDay` object.
          * @return `false` if the current object is not less than or equal to the `timeOfDay` object.
          */
-        template<DateConfigurationFlags IConfigurationFlags>
+        template<DateTimeConfigurationFlags IConfigurationFlags>
         CRONZ_NODISCARD_L1 bool operator<=(const TimeOfDay<IConfigurationFlags> &timeOfDay) const noexcept;
 
         /**
@@ -470,7 +471,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @return `true` if the current object is greater than the `timeOfDay` object.
          * @return `false` if the current object is not greater than the `timeOfDay` object.
          */
-        template<DateConfigurationFlags IConfigurationFlags>
+        template<DateTimeConfigurationFlags IConfigurationFlags>
         CRONZ_NODISCARD_L1 bool operator>(const TimeOfDay<IConfigurationFlags> &timeOfDay) const noexcept;
 
         /**
@@ -480,7 +481,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @return `true` if the current object is greater than or equal to the `timeOfDay` object.
          * @return `false` if the current object is not greater than or equal to the `timeOfDay` object.
          */
-        template<DateConfigurationFlags IConfigurationFlags>
+        template<DateTimeConfigurationFlags IConfigurationFlags>
         CRONZ_NODISCARD_L1 bool operator>=(const TimeOfDay<IConfigurationFlags> &timeOfDay) const noexcept;
 
         /** @} */
@@ -507,10 +508,11 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         CRONZ_NODISCARD_L1 static TimeOfDayType CurrentTimeOfDay() noexcept;
 
         /**
-         * @brief Returns a `TimeOfDay` container initialized with the GMT/UTC time.
-         * @return `TimeOfDay` container initialized with the GMT/UTC time.
+         * @brief Returns a `TimeOfDay` container initialized with the specified zone.
+         * @param[in] zone The zone to be used.
+         * @return `TimeOfDay` container initialized with the specified zone.
          */
-        CRONZ_NODISCARD_L1 static TimeOfDayType CurrentTimeOfDayGMT() noexcept;
+        CRONZ_NODISCARD_L1 static TimeOfDayType CurrentTimeOfDay(const Zone &zone) noexcept;
 
         /** @} */
     };

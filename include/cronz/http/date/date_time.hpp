@@ -15,8 +15,11 @@
 #include "cronz/http/date/time.hpp"
 
 CRONZ_BEGIN_HTTP_NAMESPACE
-    template<DateConfigurationFlags ConfigurationFlags>
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     class DateTime final : public Date, public Time<ConfigurationFlags> {
+        void _addDays(const MathType days) noexcept override {
+            addDays(days);
+        }
     };
 
 CRONZ_END_HTTP_NAMESPACE
