@@ -58,7 +58,6 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         /** @{ */
 
         /** @} */
-    public:
         /**
          * @name Constructors.
          */
