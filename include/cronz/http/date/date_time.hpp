@@ -15,6 +15,12 @@
 #include "cronz/http/date/time.hpp"
 
 CRONZ_BEGIN_HTTP_NAMESPACE
+    /**
+     * @ingroup cronz_http
+     * @brief DateTime class.
+     * @class DateTime
+     * @tparam ConfigurationFlags The configuration flags for the DateTime.
+     */
     template<DateTimeConfigurationFlags ConfigurationFlags = DefaultDateTimeConfigurationFlags>
     class DateTime final : public Date, public Time<ConfigurationFlags> {
     public:
@@ -41,7 +47,8 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         void _resetDateTime() noexcept;
 
         // Stringification.
-        CRONZ_NODISCARD_L1 bool _stringify(const DateTime<ConfigurationFlags> &dt, std::string &str, std::size_t &offset) const noexcept;
+        CRONZ_NODISCARD_L1 bool _stringify(const DateTime<ConfigurationFlags> &dt, std::string &str,
+                                           std::size_t &offset) const noexcept;
 
         // Operators.
         template<DateTimeConfigurationFlags IConfigurationFlags, typename CompareOp>
