@@ -185,6 +185,12 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         return _c<IConfigurationFlags, std::greater_equal<> >(dateTime);
     }
 
+    // Static utility functions.
+    template<DateTimeConfigurationFlags ConfigurationFlags>
+    inline typename DateTime<ConfigurationFlags>::DateTimeType DateTime<ConfigurationFlags>::Now() noexcept {
+        return DateTime<ConfigurationFlags>(Date::Today(), TimeType::CurrentTime());
+    }
+
 CRONZ_END_HTTP_NAMESPACE
 
 #endif // CRONZ_HTTP_DATE_IMPL_DATE_TIME_IPP

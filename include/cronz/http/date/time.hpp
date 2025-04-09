@@ -110,6 +110,18 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         ~Time() noexcept override = default;
 
         /** @} */
+
+        /**
+         * @name Static utility functions.
+         */
+        /** @{ */
+        /**
+         * @brief Get the current time.
+         * @return The current time.
+         */
+        CRONZ_NODISCARD_L1 static TimeType CurrentTime() noexcept;
+
+        /** @} */
     };
 
 CRONZ_END_HTTP_NAMESPACE

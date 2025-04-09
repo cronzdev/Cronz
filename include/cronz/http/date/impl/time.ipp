@@ -86,6 +86,12 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         this->_resetZone();
     }
 
+    // Static utility functions.
+    template<DateTimeConfigurationFlags ConfigurationFlags>
+    inline typename Time<ConfigurationFlags>::TimeType Time<ConfigurationFlags>::CurrentTime() noexcept {
+        return TimeType(Time::CurrentTimeOfDay(), Zone::CurrentZone());
+    }
+
 CRONZ_END_HTTP_NAMESPACE
 
 #endif // CRONZ_HTTP_DATE_IMPL_TIME_IPP

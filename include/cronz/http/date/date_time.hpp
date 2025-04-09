@@ -216,6 +216,18 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         ~DateTime() noexcept override = default;
 
         /** @} */
+
+        /**
+         * @name Static utility functions.
+         */
+        /** @{ */
+        /**
+         * @brief Returns the current date and time.
+         * @return The current date and time.
+         */
+        CRONZ_NODISCARD_L1 static DateTimeType Now() noexcept;
+
+        /** @} */
     };
 
 CRONZ_END_HTTP_NAMESPACE
