@@ -40,6 +40,9 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 
         void _resetDateTime() noexcept;
 
+        // Stringification.
+        CRONZ_NODISCARD_L1 bool _stringify(const DateTime<ConfigurationFlags> &dt, std::string &str, std::size_t &offset) const noexcept;
+
         // Operators.
         template<DateTimeConfigurationFlags IConfigurationFlags, typename CompareOp>
         CRONZ_NODISCARD_L1 bool _c(const DateTime<IConfigurationFlags> &dateTime) const noexcept;
@@ -134,9 +137,31 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         /** @} */
 
         /**
-         * @name Instance-based utility functions.
+         * @name Stringification.
          */
         /** @{ */
+        /**
+         * @brief Returns the string representation of the DateTime.
+         * @return The string representation of the DateTime.
+         */
+        CRONZ_NODISCARD_L1 std::string stringify() const noexcept;
+
+        /**
+         * @brief Returns the string representation of the DateTime.
+         * @param[out] str The string to store the representation.
+         * @return `true` if the string representation is generated successfully.
+         * @return `false` if the string representation is not generated.
+         */
+        CRONZ_NODISCARD_L2 bool stringify(std::string &str) const noexcept;
+
+        /**
+         * @brief Returns the string representation of the DateTime.
+         * @param[out] str The string to store the representation.
+         * @param[in] offset The offset to start writing to the string.
+         * @return `true` if the string representation is generated successfully.
+         * @return `false` if the string representation is not generated.
+         */
+        CRONZ_NODISCARD_L2 bool stringify(std::string &str, std::size_t &offset) const noexcept;
 
         /** @} */
 

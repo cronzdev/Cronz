@@ -198,6 +198,14 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          */
         CRONZ_NODISCARD_L2 bool setTimezoneOffsetInMinutes(ZoneOffsetType minutes) noexcept;
 
+        /**
+         * @brief Changes the timezone offset value.
+         * @param[in] zone The timezone offset value to be assigned.
+         * @return `true` if the timezone offset value is changed successfully.
+         * @return `false` if the timezone offset value is not changed.
+         */
+        void setTimezone(const Zone &zone) noexcept;
+
         /** @} */
 
         /**

@@ -138,6 +138,63 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         TimeType::_resetTime();
     }
 
+    // Stringification.
+    template<DateTimeConfigurationFlags ConfigurationFlags>
+    inline bool DateTime<ConfigurationFlags>::_stringify(const DateTime<ConfigurationFlags> &dt, std::string &str,
+                                                         std::size_t &offset) const noexcept {
+        constexpr auto l = static_cast<std::size_t>(29);
+
+        if (const std::size_t len = (l + offset);
+            len > str.length()) {
+            try {
+                str.resize(len);
+            } catch (const std::bad_alloc &) {
+                return false;
+            }
+        }
+
+        const std::string_view dayOfWeek = DateType::DayOfWeekNameAbbreviations.at(dt.getDayOfWeek());
+        const std::string_view month = DateType::MonthNameAbbreviations.at(dt.getMonth());
+
+        const auto res = std::format_to_n(&str[offset], l, "{:3s}, {:02d} {:3s} {:04d} {:02d}:{:02d}:{:02d} GMT",
+                                          dayOfWeek, dt.getDay(), month, dt.getYear(), dt.getHours(), dt.getMinutes(),
+                                          dt.getSeconds());
+        if (res.size != l)
+            return false;
+
+        offset = static_cast<std::size_t>(l);
+        return true;
+    }
+
+    template<DateTimeConfigurationFlags ConfigurationFlags>
+    inline std::string DateTime<ConfigurationFlags>::stringify() const noexcept {
+        std::string str;
+        [[maybe_unused]] const bool _ = stringify(str);
+        return str;
+    }
+
+    template<DateTimeConfigurationFlags ConfigurationFlags>
+    inline bool DateTime<ConfigurationFlags>::stringify(std::string &str) const noexcept {
+        str.clear();
+
+        if (auto offset = static_cast<std::size_t>(0);
+            stringify(str, offset))
+            return true;
+
+        str.clear();
+        return false;
+    }
+
+    template<DateTimeConfigurationFlags ConfigurationFlags>
+    inline bool DateTime<ConfigurationFlags>::stringify(std::string &str, std::size_t &offset) const noexcept {
+        if (static_cast<typename TimeType::ZoneType::ZoneOffsetType>(0) == this->getTimezoneOffsetInMinutes())
+            return _stringify(*this, str, offset);
+
+        DateTimeType dt = *this;
+        dt.adjustZone(TimeType::ZoneType::GMT);
+        return _stringify(dt, str, offset);
+    }
+
     // Operators.
     template<DateTimeConfigurationFlags ConfigurationFlags>
     template<DateTimeConfigurationFlags IConfigurationFlags, typename CompareOp>

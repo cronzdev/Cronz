@@ -86,6 +86,13 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         this->_resetZone();
     }
 
+    template<DateTimeConfigurationFlags ConfigurationFlags>
+    inline void Time<ConfigurationFlags>::adjustZone(const Zone &zone) noexcept {
+        const ZoneType::ZoneOffsetType offset = zone.getTimezoneOffsetInMinutes() - this->getTimezoneOffsetInMinutes();
+        this->addMinutes(static_cast<typename TimeOfDayType::MathType>(offset));
+        this->setTimezone(zone);
+    }
+
     // Static utility functions.
     template<DateTimeConfigurationFlags ConfigurationFlags>
     inline typename Time<ConfigurationFlags>::TimeType Time<ConfigurationFlags>::CurrentTime() noexcept {

@@ -101,6 +101,20 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         /** @} */
 
         /**
+         * @name Instance-based utility functions.
+         */
+        /** @{ */
+        /**
+         * @brief Updates the time according to the given zone.
+         * @param[in] zone The zone to be set.
+         * @remark The time is adjusted according to the given zone. For example, converting from UTC to CET will add
+         * 1 hour to the time.
+         */
+        void adjustZone(const Zone &zone) noexcept;
+
+        /** @} */
+
+        /**
          * @name Destructor.
          */
         /** @{ */

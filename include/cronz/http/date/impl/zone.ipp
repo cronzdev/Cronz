@@ -83,6 +83,10 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         return setTimezoneOffset((minutes < static_cast<ZoneOffsetType>(0)) ? -v : v);
     }
 
+    inline void Zone::setTimezone(const Zone &zone) noexcept {
+        _offset = zone._offset;
+    }
+
     // Instance-based utility functions.
     inline void Zone::_resetZone() noexcept {
         _offset = static_cast<ZoneOffsetType>(0);

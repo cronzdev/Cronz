@@ -228,6 +228,9 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         MinutesType _minutes = MinutesMin;
         SecondsType _seconds = SecondsMin;
 
+        template <typename T, T Max, T Divisor>
+        static MathType _s(T &v, MathType c) noexcept;
+
         void _addSeconds(const MathType seconds) noexcept requires(AreMillisecondsEnabled) {
             if (static_cast<MathType>(0) == seconds)
                 return;

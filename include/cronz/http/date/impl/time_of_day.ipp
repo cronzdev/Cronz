@@ -103,6 +103,28 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 
     // Properties.
     template<DateTimeConfigurationFlags ConfigurationFlags>
+    template<typename T, T Max, T Divisor>
+    inline typename TimeOfDay<ConfigurationFlags>::MathType
+    TimeOfDay<ConfigurationFlags>::_s(T &v, MathType c) noexcept {
+        auto u = static_cast<MathType>(0);
+
+        if (static_cast<MathType>(0) > c) {
+            while (static_cast<MathType>(0) > c) {
+                c += static_cast<MathType>(Divisor);
+                --u;
+            }
+        } else {
+            while (static_cast<MathType>(Max) < c) {
+                c -= static_cast<MathType>(Divisor);
+                ++u;
+            }
+        }
+
+        v = static_cast<T>(c);
+        return u;
+    }
+
+    template<DateTimeConfigurationFlags ConfigurationFlags>
     inline typename TimeOfDay<ConfigurationFlags>::HoursType TimeOfDay<ConfigurationFlags>::hours() const noexcept {
         return getHours();
     }
@@ -119,8 +141,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 
     template<DateTimeConfigurationFlags ConfigurationFlags>
     void TimeOfDay<ConfigurationFlags>::setHours(const MathType hours) noexcept {
-        _hours = static_cast<HoursType>(hours % static_cast<MathType>(HoursDivisor));
-        _addDays(static_cast<MathType>(hours / static_cast<MathType>(HoursDivisor)));
+        _addDays(_s<HoursType, HoursMax, HoursDivisor>(_hours, hours));
     }
 
     template<DateTimeConfigurationFlags ConfigurationFlags>
@@ -146,15 +167,13 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 
     template<DateTimeConfigurationFlags ConfigurationFlags>
     void TimeOfDay<ConfigurationFlags>::setMinutes(const MathType minutes) noexcept {
-        _minutes = static_cast<MinutesType>(minutes % static_cast<MathType>(MinutesDivisor));
-        addHours(static_cast<MathType>(minutes / static_cast<MathType>(MinutesDivisor)));
+        addHours(_s<MinutesType, MinutesMax, MinutesDivisor>(_minutes, minutes));
     }
 
     template<DateTimeConfigurationFlags ConfigurationFlags>
     void TimeOfDay<ConfigurationFlags>::addMinutes(const MathType minutes) noexcept {
         setMinutes(minutes + static_cast<MathType>(_minutes));
     }
-
 
     template<DateTimeConfigurationFlags ConfigurationFlags>
     inline typename TimeOfDay<ConfigurationFlags>::HoursType TimeOfDay<ConfigurationFlags>::seconds() const noexcept {
@@ -174,8 +193,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 
     template<DateTimeConfigurationFlags ConfigurationFlags>
     void TimeOfDay<ConfigurationFlags>::setSeconds(const MathType seconds) noexcept {
-        _seconds = static_cast<SecondsType>(seconds % static_cast<MathType>(SecondsDivisor));
-        addMinutes(static_cast<MathType>(seconds / static_cast<MathType>(SecondsDivisor)));
+        addMinutes(_s<SecondsType, SecondsMax, SecondsDivisor>(_seconds, seconds));
     }
 
     template<DateTimeConfigurationFlags ConfigurationFlags>
