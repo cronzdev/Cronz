@@ -15,17 +15,17 @@
 #include "cronz/http/server/flags.hpp"
 
 CRONZ_BEGIN_HTTP_NAMESPACE
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
     class Server;
 
 CRONZ_END_HTTP_NAMESPACE
 
 CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
     class ServerWorker;
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
-    using ServerWorkerRef = ServerWorker<Version, ConfigurationFlags> *;
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    using ServerWorkerRef = ServerWorker<Version, ConfigurationFlags, Extensions...> *;
 
 CRONZ_END_HTTP_INTERNAL_NAMESPACE
 

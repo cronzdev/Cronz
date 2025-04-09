@@ -19,12 +19,12 @@
 #include <vector>
 
 CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
     class ServerWorker final {
         // Type definitions.
-        using ServerType = Server<Version, ConfigurationFlags>;
-        using ServerConnectionType = ServerConnection<Version, ConfigurationFlags>;
-        using ServerConnectionRefType = ServerConnectionRef<Version, ConfigurationFlags>;
+        using ServerType = Server<Version, ConfigurationFlags, Extensions...>;
+        using ServerConnectionType = ServerConnection<Version, ConfigurationFlags, Extensions...>;
+        using ServerConnectionRefType = ServerConnectionRef<Version, ConfigurationFlags, Extensions...>;
 
         // Properties.
         std::vector<ServerConnectionRefType> _connections{};
@@ -40,8 +40,8 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
         std::atomic_bool _running = false;
 
         // Friends.
-        friend class Server<Version, ConfigurationFlags>;
-        friend class ServerConnection<Version, ConfigurationFlags>;
+        friend class Server<Version, ConfigurationFlags, Extensions...>;
+        friend class ServerConnection<Version, ConfigurationFlags, Extensions...>;
 
         // Constructors.
         explicit ServerWorker(ServerType *server) noexcept;

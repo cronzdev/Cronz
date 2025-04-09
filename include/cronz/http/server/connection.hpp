@@ -12,7 +12,6 @@
 #define CRONZ_HTTP_SERVER_CONNECTION_HPP 1
 
 #include "cronz/http/server/connection/connection.hpp"
-#include "cronz/http/server/connection/manager.hpp"
 #include "cronz/http/server/connection/types.hpp"
 
 #endif // CRONZ_HTTP_SERVER_CONNECTION_HPP

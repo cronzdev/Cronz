@@ -12,6 +12,7 @@
 #define CRONZ_HTTP_RESPONSE_IMPL_BUILDER_IPP 1
 
 #include "cronz/http/response/builder.hpp"
+#include "cronz/http/cookie.hpp"
 
 CRONZ_BEGIN_HTTP_NAMESPACE
     // Properties.
@@ -21,6 +22,9 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 
     // Response building.
     inline bool ResponseBuilder::prepare(const Version &version, Response &response) noexcept {
+        const DateTime<> now = DateTime<>::Now();
+        const std::string dateString = now.stringify();
+
         // HTTP version.
         if (Version::HTTP_1_1 != version)
             return false;
@@ -34,14 +38,28 @@ CRONZ_BEGIN_HTTP_NAMESPACE
             response.status.reason() = StatusCode::StatusCodeReasons.at(response.status.code());
 
         // Headers.
-        if (!response.headers.set("Server", "Cronz") ||
-            !response.headers.set("Content-Length", std::to_string(response.body.length())))
+        if (dateString.empty() || !response.headers.set("Date", dateString) ||
+            !response.headers.set("Server", "Cronz"))
             return false;
+
+        if (!response.headers.contains("Content-Type") &&
+            !response.headers.set("Content-Type", "application/octet-stream"))
+            return false;
+
+        if (response.contentCallback.has_value()) {
+            if (!response.headers.set("Transfer-Encoding", "chunked"))
+                return false;
+        } else {
+            if (!response.headers.set("Content-Length", std::to_string(response.body.length()))) {
+                return false;
+            }
+        }
 
         // State.
         _state = State::PREPARED;
 
         _size = static_cast<std::size_t>(0);
+        _offset = static_cast<std::size_t>(0);
 
         return true;
     }
@@ -82,15 +100,67 @@ CRONZ_BEGIN_HTTP_NAMESPACE
                 if (!response.headers.stringify(_block))
                     return false;
 
+                if (response.contentCallback.has_value()) {
+                    _state = State::BODY_CHUNKED;
+                } else {
+                    try {
+                        _block.push_back('\r');
+                        _block.push_back('\n');
+                    } catch (...) {
+                        return false;
+                    }
+
+                    _state = State::BODY_CONTENT;
+                }
+
+                _size = _block.size();
+                return true;
+
+            case State::BODY_CHUNKED:
+                response.body.clear();
+
+                _hasMore = response.contentCallback.value()(response.body);
+                if (response.body.empty()) {
+                    if (!_hasMore)
+                        _state = State::BODY_CHUNKED_COMPLETE;
+
+                    _size = static_cast<std::size_t>(0);
+                    return true;
+                }
+
                 try {
-                    _block.push_back('\r');
-                    _block.push_back('\n');
+                    _block = std::format("\r\n{:X}\r\n", response.body.length());
+                    _size = _block.size();
+                } catch (...) {
+                    return false;
+                }
+
+                _state = State::BODY_CHUNKED_PHASE1;
+                return true;
+
+            case State::BODY_CHUNKED_PHASE1:
+                _block.swap(response.body);
+                _size = _block.size();
+                _state = State::BODY_CHUNKED_PHASE2;
+                return true;
+
+            case State::BODY_CHUNKED_PHASE2:
+                if (_hasMore)
+                    _state = State::BODY_CHUNKED;
+                else
+                    _state = State::BODY_CHUNKED_COMPLETE;
+
+                return true;
+
+            case State::BODY_CHUNKED_COMPLETE:
+                try {
+                    _block.assign("\r\n0\r\n\r\n");
                 } catch (...) {
                     return false;
                 }
 
                 _size = _block.size();
-                _state = State::BODY_CONTENT;
+                _state = State::BODY_FINISHED;
                 return true;
 
             case State::BODY_CONTENT:
@@ -101,6 +171,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
                     _state = State::COMPLETE;
                 else
                     _state = State::BODY_FINISHED;
+
                 return true;
 
             case State::BODY_FINISHED:

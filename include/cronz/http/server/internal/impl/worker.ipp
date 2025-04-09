@@ -15,13 +15,14 @@
 
 CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
     // Constructors.
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
-    inline ServerWorker<Version, ConfigurationFlags>::ServerWorker(ServerType *server) noexcept : _server(server) {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    inline ServerWorker<Version, ConfigurationFlags, Extensions
+        ...>::ServerWorker(ServerType *server) noexcept : _server(server) {
     }
 
     // Instance management.
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
-    inline bool ServerWorker<Version, ConfigurationFlags>::_allocate() noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    inline bool ServerWorker<Version, ConfigurationFlags, Extensions...>::_allocate() noexcept {
         _free();
 
         try {
@@ -51,8 +52,8 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
         return false;
     }
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
-    inline void ServerWorker<Version, ConfigurationFlags>::_free() noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    inline void ServerWorker<Version, ConfigurationFlags, Extensions...>::_free() noexcept {
         for (ServerConnectionRefType &connection: _connections) {
             if (!connection)
                 continue;
@@ -66,9 +67,9 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
     }
 
     // Connection management.
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
-    inline bool ServerWorker<Version,
-        ConfigurationFlags>::_add(const CRONZ_SOCKET handle, ConnectionAddress &address) noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    inline bool ServerWorker<Version, ConfigurationFlags, Extensions...>::_add(
+        const CRONZ_SOCKET handle, ConnectionAddress &address) noexcept {
         std::lock_guard _(_lock);
 
         if (_numConnections >= _connections.size())
@@ -93,8 +94,8 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
         return false;
     }
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
-    inline void ServerWorker<Version, ConfigurationFlags>::_remove(std::size_t index) noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    inline void ServerWorker<Version, ConfigurationFlags, Extensions...>::_remove(std::size_t index) noexcept {
         ServerConnectionRefType connection = _connections[index];
 
         connection->_metrics.timeClosed = std::chrono::system_clock::now();
@@ -104,8 +105,8 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
         --_numConnections;
     }
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
-    inline void ServerWorker<Version, ConfigurationFlags>::_run() noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    inline void ServerWorker<Version, ConfigurationFlags, Extensions...>::_run() noexcept {
         if (_running)
             return;
 
@@ -114,8 +115,8 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
         std::thread(&_loop, this).detach();
     }
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
-    inline void ServerWorker<Version, ConfigurationFlags>::_loop() noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    inline void ServerWorker<Version, ConfigurationFlags, Extensions...>::_loop() noexcept {
         while (_running) {
             std::shared_lock _(_lock);
 

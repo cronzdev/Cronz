@@ -16,6 +16,9 @@
 CRONZ_BEGIN_HTTP_NAMESPACE
     inline void Response::reset() noexcept {
         status = StatusCode::OK;
+        headers.clear();
+        body.clear();
+        contentCallback.reset();
     }
 
 CRONZ_END_HTTP_NAMESPACE

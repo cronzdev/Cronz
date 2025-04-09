@@ -14,6 +14,7 @@
 #include "cronz/http/status_code.hpp"
 #include "cronz/http/header.hpp"
 
+#include <functional>
 #include <optional>
 
 CRONZ_BEGIN_HTTP_NAMESPACE
@@ -24,6 +25,8 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         HeaderManager headers;
 
         std::string body;
+
+        std::optional<std::function<bool(std::string &chunk)>> contentCallback;
 
         void reset() noexcept;
     };

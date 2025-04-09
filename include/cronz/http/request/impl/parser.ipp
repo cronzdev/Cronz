@@ -83,7 +83,9 @@ CRONZ_BEGIN_HTTP_NAMESPACE
                     break;
                 case State::HTTP_PATH:
                     if (' ' == c) {
-                        if (static_cast<std::size_t>(0) == _bufferLength) {
+                        if (static_cast<std::size_t>(0) == _bufferLength ||
+                            !_request.uri.parse<Path>(std::string_view(_buffer.data(), _bufferLength)) ||
+                            !_request.uri.path.isRoot()) {
                             _state = State::BAD_PATH;
                             return false;
                         }
@@ -203,6 +205,11 @@ CRONZ_BEGIN_HTTP_NAMESPACE
                 case State::HTTP_BODY_LF:
                     if (!RFC::IsLF(c)) {
                         _state = State::BAD_CRLF;
+                        return false;
+                    }
+
+                    if (!_request.headers.contains("Host")) {
+                        _state = State::BAD_HEADER;
                         return false;
                     }
 

@@ -12,6 +12,7 @@
 #define CRONZ_HTTP_SERVER_SERVER_HPP 1
 
 #include "cronz/http/server/config.hpp"
+#include "cronz/http/server/extension.hpp"
 #include "cronz/http/server/flags.hpp"
 #include "cronz/http/server/tls.hpp"
 #include "cronz/http/version.hpp"
@@ -19,6 +20,7 @@
 #include "cronz/http/server/internal/worker.hpp"
 
 #include <shared_mutex>
+#include <tuple>
 
 CRONZ_BEGIN_HTTP_NAMESPACE
     /**
@@ -29,8 +31,9 @@ CRONZ_BEGIN_HTTP_NAMESPACE
      * @class Server
      */
     template<Version::Enum Version = Version::HighestSupportedVersion,
-        ServerConfigurationFlags ConfigurationFlags = DefaultServerConfigurationFlags>
-    class Server : public ServerConfiguration {
+        ServerConfigurationFlags ConfigurationFlags = DefaultServerConfigurationFlags, typename... Extensions>
+    class Server : public ServerConfiguration,
+                   public Extensions... {
     public:
         /**
          * @name Type definitions.
@@ -39,7 +42,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         /**
          * @brief Server connection type.
          */
-        using ServerConnectionRefType = ServerConnectionRef<Version, ConfigurationFlags>;
+        using ServerConnectionRefType = ServerConnectionRef<Version, ConfigurationFlags, Extensions...>;
 
         /** @} */
     private:
@@ -54,11 +57,15 @@ CRONZ_BEGIN_HTTP_NAMESPACE
                       CRONZ_HTTP_NAMESPACE_INTERNAL::IsServerIPv6<ConfigurationFlags>(),
                       "Invalid server configuration. At least one of IPv4 or IPv6 must be enabled.");
 
-        // Type definitions.
-        using ServerType = Server<Version, ConfigurationFlags>;
+        static_assert((std::is_base_of_v<ServerExtension, Extensions> && ...));
 
-        using ServerWorkerType = CRONZ_HTTP_NAMESPACE_INTERNAL::ServerWorker<Version, ConfigurationFlags>;
-        using ServerWorkerRefType = CRONZ_HTTP_NAMESPACE_INTERNAL::ServerWorkerRef<Version, ConfigurationFlags>;
+        // Type definitions.
+        using ServerType = Server<Version, ConfigurationFlags, Extensions...>;
+
+        using ServerWorkerType = CRONZ_HTTP_NAMESPACE_INTERNAL::ServerWorker<Version, ConfigurationFlags, Extensions...>
+        ;
+        using ServerWorkerRefType = CRONZ_HTTP_NAMESPACE_INTERNAL::ServerWorkerRef<Version, ConfigurationFlags,
+            Extensions...>;
 
         using ServerSocketType = std::conditional_t<CRONZ_HTTP_NAMESPACE_INTERNAL::IsServerIPv4<ConfigurationFlags>(),
             CRONZ_HTTP_NAMESPACE_INTERNAL::BasicSocketTCP4,
@@ -76,6 +83,8 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         ServerSocketType _socket{};
 
         std::shared_mutex _lock{};
+
+        // std::tuple<Extensions...> _extensions{Extensions{_lock}...};
 
         std::int_fast8_t _state = STATE_NONE;
 
@@ -98,6 +107,11 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 
         // Connection management.
         void _addConnection(CRONZ_NAMESPACE_INTERNAL::CRONZ_SOCKET handle, ConnectionAddress &address) noexcept;
+
+        // Extensions.
+        CRONZ_NODISCARD_L1 bool _installExtensions() noexcept;
+
+        void _uninstallExtensions() noexcept;
 
     public:
         /**
@@ -199,10 +213,39 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          */
         virtual bool onAccept(const ConnectionAddress &address) noexcept = 0;
 
+        /**
+         * @brief Called when a request is received.
+         * @param[in] connection Connection reference.
+         * @param[in] request Request object.
+         * @param[out] response Response object.
+         * @remark This function is called on the worker thread. Thus, until this function returns, the worker will not
+         * be able to process other requests.
+         */
         virtual void onRequest(const ServerConnectionRefType &connection, const Request &request,
                                Response &response) noexcept = 0;
 
+        /**
+         * @brief Called when a connection is closed.
+         * @param[in] connection Connection reference.
+         * @remark This function is called on the worker thread. Thus, until this function returns, the worker will not
+         * be able to process other requests.
+         */
         virtual void onConnectionClosed(const ServerConnectionRefType &connection) noexcept = 0;
+
+        /** @} */
+
+        /**
+         * @name Extensions.
+         */
+        /** @{ */
+        /**
+         * @brief Tells whether the server has the specified extension.
+         * @tparam Extension Type of the extension.
+         * @return `true` if the server has the extension.
+         * @return `false` if the server does not have the extension.
+         */
+        template<typename Extension>
+        CRONZ_NODISCARD_L1 constexpr bool hasExtension() const noexcept;
 
         /** @} */
 

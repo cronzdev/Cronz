@@ -13,6 +13,7 @@
 
 #include "cronz/http/server/config.hpp"
 #include "cronz/http/server/connection.hpp"
+#include "cronz/http/server/extension.hpp"
 #include "cronz/http/server/flags.hpp"
 #include "cronz/http/server/server.hpp"
 #include "cronz/http/server/types.hpp"
