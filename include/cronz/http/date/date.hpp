@@ -268,10 +268,6 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         CRONZ_NODISCARD_L1 bool _compare(const Date &date) const noexcept;
 
         // Static utility functions.
-        CRONZ_NODISCARD_L1 static bool _isLeapYear(YearType year) noexcept;
-
-        CRONZ_NODISCARD_L1 static DayType _getDaysInMonth(YearType year, MonthType month) noexcept;
-
         template<auto Callback>
         CRONZ_NODISCARD_L1 static Date _today(std::chrono::system_clock::time_point tp) noexcept;
 
@@ -294,6 +290,11 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         CRONZ_NODISCARD_L1 bool _parseYear(std::string_view year) noexcept;
 
         CRONZ_NODISCARD_L1 bool _parseDate(std::string_view date) noexcept;
+
+        // Static utility functions.
+        CRONZ_NODISCARD_L1 static bool _isLeapYear(YearType year) noexcept;
+
+        CRONZ_NODISCARD_L1 static DayType _getDaysInMonth(YearType year, MonthType month) noexcept;
 
     public:
         /**
@@ -573,7 +574,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         /**
          * @brief Default destructor.
          */
-        ~Date() noexcept = default;
+        virtual ~Date() noexcept = default;
 
         /** @} */
 
@@ -594,6 +595,14 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          */
         CRONZ_NODISCARD_L1 static Date Today(const Zone &zone) noexcept;
 
+        /**
+         * @brief Tells if the given date is valid.
+         * @param[in] day Day to be checked.
+         * @param[in] month Month to be checked.
+         * @param[in] year Year to be checked.
+         * @return `true` if the date is valid.
+         * @return `false` if the date is not valid.
+         */
         CRONZ_NODISCARD_L1 static bool IsDateValid(MathType day, MathType month, MathType year) noexcept;
 
         /** @} */

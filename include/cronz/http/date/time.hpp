@@ -38,7 +38,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 
         /** @} */
 
-    private:
+    protected:
         // Parsing.
         CRONZ_NODISCARD_L1 bool _parseTime(std::string_view time) noexcept;
 
