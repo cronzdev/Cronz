@@ -49,6 +49,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 
         ts += static_cast<TimestampType>(this->getHours()) * static_cast<TimestampType>(3600 * precision);
         ts += static_cast<TimestampType>(this->getMinutes()) * static_cast<TimestampType>(60 * precision);
+        ts -= static_cast<TimestampType>(this->getTimezoneOffsetInMinutes()) * static_cast<TimestampType>(60 * precision);
         ts += static_cast<TimestampType>(this->getSeconds()) * precision;
 
         if constexpr (IncludeMilliseconds &&
