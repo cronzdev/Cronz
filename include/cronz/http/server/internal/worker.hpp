@@ -12,6 +12,7 @@
 #define CRONZ_HTTP_SERVER_INTERNAL_WORKER_HPP 1
 
 #include "cronz/http/server/connection/connection.hpp"
+#include "cronz/http/server/interface.hpp"
 
 #include <atomic>
 #include <shared_mutex>
@@ -19,13 +20,14 @@
 #include <vector>
 
 CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
     class ServerWorker final {
         // Type definitions.
-        using ServerType = Server<Version, ConfigurationFlags, Extensions...>;
-        using ServerConnectionType = ServerConnection<Version, ConfigurationFlags, Extensions...>;
-        using ServerConnectionRefType = ServerConnectionRef<Version, ConfigurationFlags, Extensions...>;
+        using ServerType = ServerInterface<Version, ConfigurationFlags>;
+        using ServerConnectionType = typename ServerType::ServerConnectionType;
+        using ServerConnectionRefType = typename ServerType::ServerConnectionRefType;
 
+    public:
         // Properties.
         std::vector<ServerConnectionRefType> _connections{};
         std::vector<CRONZ_POLL_STRUCT> _fds{};
@@ -40,8 +42,8 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
         std::atomic_bool _running = false;
 
         // Friends.
-        friend class Server<Version, ConfigurationFlags, Extensions...>;
-        friend class ServerConnection<Version, ConfigurationFlags, Extensions...>;
+        friend class ServerInterface<Version, ConfigurationFlags>;
+        friend class ServerConnection<Version, ConfigurationFlags>;
 
         // Constructors.
         explicit ServerWorker(ServerType *server) noexcept;

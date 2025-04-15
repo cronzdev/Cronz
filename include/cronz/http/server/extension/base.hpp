@@ -11,7 +11,9 @@
 #ifndef CRONZ_HTTP_SERVER_EXTENSION_BASE_HPP
 #define CRONZ_HTTP_SERVER_EXTENSION_BASE_HPP 1
 
-#include "cronz/http/server/types.hpp"
+#include "cronz/http/server/callback.hpp"
+#include "cronz/http/server/flags.hpp"
+#include "cronz/http/version.hpp"
 
 #include <concepts>
 #include <shared_mutex>
@@ -25,10 +27,11 @@ CRONZ_BEGIN_HTTP_NAMESPACE
      * @remark Constructors and destructors must be in public section.
      * @remark Extension setup functions must be in protected section.
      */
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
     class ServerExtension {
-        std::shared_mutex &_mutex;
-
     protected:
+        using ServerConnectionRefType = typename ServerCallbacks<Version, ConfigurationFlags>::ServerConnectionRefType;
+
         /**
          * @name Extension setup.
          */
@@ -56,8 +59,13 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @name Interceptors.
          */
         /** @{ */
+        virtual bool onBeforeRequest(const ServerConnectionRefType &connection, const Request &request,
+                                     Response &response) {
+            return true;
+        }
 
         /** @} */
+
         /**
          * @name Constructors.
          */
@@ -65,15 +73,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         /**
          * @brief Default constructor.
          */
-        ServerExtension() noexcept = delete;
-
-        /**
-         * @brief Constructor.
-         * @param[in] mutex Mutex to be used by the extension.
-         */
-        explicit ServerExtension(std::shared_mutex &mutex) noexcept
-            : _mutex(mutex) {
-        }
+        ServerExtension() noexcept = default;
 
         /** @} */
 

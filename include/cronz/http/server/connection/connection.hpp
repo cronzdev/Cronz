@@ -19,12 +19,11 @@
 #include <memory>
 
 CRONZ_BEGIN_HTTP_NAMESPACE
-    template<Version::Enum IVersion, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
-    class ServerConnection final : public std::enable_shared_from_this<ServerConnection<IVersion, ConfigurationFlags, Extensions...> > {
-    protected:
+    template<Version::Enum IVersion, ServerConfigurationFlags ConfigurationFlags>
+    class ServerConnection final : public std::enable_shared_from_this<ServerConnection<IVersion, ConfigurationFlags> > {
         // Type definitions.
         using ServerConnectionSocketType = CRONZ_HTTP_NAMESPACE_INTERNAL::BasicSocketTCP4;
-        using ServerWorkerRefType = CRONZ_HTTP_NAMESPACE_INTERNAL::ServerWorkerRef<IVersion, ConfigurationFlags, Extensions...>;
+        using ServerWorkerRefType = CRONZ_HTTP_NAMESPACE_INTERNAL::ServerWorkerRef<IVersion, ConfigurationFlags>;
 
         // Properties.
         std::array<char, static_cast<std::size_t>(1024)> _buffer{};
@@ -65,8 +64,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         CRONZ_NODISCARD_L1 bool _out() noexcept;
 
         // Friends.
-        friend class Server<IVersion, ConfigurationFlags, Extensions...>;
-        friend class CRONZ_HTTP_NAMESPACE_INTERNAL::ServerWorker<IVersion, ConfigurationFlags, Extensions...>;
+        friend class CRONZ_HTTP_NAMESPACE_INTERNAL::ServerWorker<IVersion, ConfigurationFlags>;
 
     public:
         /**
@@ -118,8 +116,8 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         /** @} */
     };
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
-    using ServerConnectionRef = std::shared_ptr<ServerConnection<Version, ConfigurationFlags, Extensions...> >;
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
+    using ServerConnectionRef = std::shared_ptr<ServerConnection<Version, ConfigurationFlags> >;
 
 CRONZ_END_HTTP_NAMESPACE
 

@@ -17,47 +17,47 @@
 
 CRONZ_BEGIN_HTTP_NAMESPACE
     // Constructors.
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
-    inline Server<Version, ConfigurationFlags, Extensions...>::Server() noexcept : Extensions(_lock)... {
-        port(DefaultPort());
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
+    inline Server<Version, ConfigurationFlags, Extensions...>::Server() noexcept : Extensions()... {
+        this->port(DefaultPort());
     }
 
     // Properties.
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
     inline bool Server<Version, ConfigurationFlags, Extensions...>::_initialized() const noexcept {
         return STATE_INITIALIZED <= _state;
     }
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
     inline bool Server<Version, ConfigurationFlags, Extensions...>::_running() const noexcept {
         return STATE_RUNNING <= _state;
     }
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
     inline bool Server<Version, ConfigurationFlags, Extensions...>::_stopping() const noexcept {
         return STATE_STOPPING <= _state;
     }
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
     inline bool Server<Version, ConfigurationFlags, Extensions...>::isInitialized() const noexcept {
         std::shared_lock _(_lock);
         return _initialized();
     }
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
     inline bool Server<Version, ConfigurationFlags, Extensions...>::isRunning() const noexcept {
         std::shared_lock _(_lock);
         return _running();
     }
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
     inline bool Server<Version, ConfigurationFlags, Extensions...>::isStopping() const noexcept {
         std::shared_lock _(_lock);
         return _stopping();
     }
 
     // Server management.
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
     inline bool Server<Version, ConfigurationFlags, Extensions...>::_initialize() noexcept {
         constexpr bool _ipv4 = CRONZ_HTTP_NAMESPACE_INTERNAL::IsServerIPv4<ConfigurationFlags>();
         constexpr bool _ipv6 = CRONZ_HTTP_NAMESPACE_INTERNAL::IsServerIPv6<ConfigurationFlags>();
@@ -71,7 +71,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 #endif // CRONZ_OS_WINDOWS && !CRONZ_OS_CYGWIN
 
         try {
-            _workers.resize(numWorkers(), nullptr);
+            _workers.resize(this->numWorkers(), nullptr);
 
             for (ServerWorkerRefType &worker: _workers) {
                 worker = new(std::nothrow) ServerWorkerType(this);
@@ -83,14 +83,14 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         }
 
         if (!_socket.create() ||
-            !_socket.bind(port(), !(_ipv4 && _ipv6)))
+            !_socket.bind(this->port(), !(_ipv4 && _ipv6)))
             goto init_bad;
 
         if (!_installExtensions())
             goto init_bad;
 
         _state = STATE_INITIALIZED;
-        _configurationLocked = true;
+        this->_configurationLocked = true;
         return true;
 
     init_bad:
@@ -98,7 +98,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         return false;
     }
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
     inline void Server<Version, ConfigurationFlags, Extensions...>::_terminate() noexcept {
         if (!_workers.empty()) {
             for (ServerWorkerRefType worker: _workers) {
@@ -123,10 +123,10 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         _uninstallExtensions();
 
         _state = STATE_NONE;
-        _configurationLocked = false;
+        this->_configurationLocked = false;
     }
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
     inline void Server<Version, ConfigurationFlags, Extensions...>::_serve() noexcept {
         ConnectionAddress address{};
         CRONZ_NAMESPACE_INTERNAL::CRONZ_SOCKET handle = CRONZ_NAMESPACE_INTERNAL::CRONZ_INVALID_SOCKET;
@@ -140,7 +140,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
                 continue;
             }
 
-            if (!onAccept(address)) {
+            if (!this->onAccept(address)) {
                 [[maybe_unused]] const bool _ = CRONZ_NAMESPACE_INTERNAL::CRONZ_CLOSE_SOCKET(handle);
                 continue;
             }
@@ -149,7 +149,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         }
     }
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
     inline bool Server<Version, ConfigurationFlags, Extensions...>::initialize() noexcept {
         std::lock_guard _(_lock);
 
@@ -162,7 +162,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         return _initialize();
     }
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
     inline bool Server<Version, ConfigurationFlags, Extensions...>::serve(const bool async) noexcept {
         std::lock_guard _(_lock);
 
@@ -185,7 +185,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         return true;
     }
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
     inline void Server<Version, ConfigurationFlags, Extensions...>::stop(bool abort) noexcept {
         std::lock_guard _(_lock);
 
@@ -197,7 +197,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         _state = STATE_INITIALIZED;
     }
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
     inline void Server<Version, ConfigurationFlags, Extensions...>::terminate() noexcept {
         std::lock_guard _(_lock);
 
@@ -208,7 +208,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
     }
 
     // Connection management.
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
     inline void Server<Version, ConfigurationFlags, Extensions...>::_addConnection(
         CRONZ_HTTP_NAMESPACE_INTERNAL::CRONZ_SOCKET handle,
         ConnectionAddress &address) noexcept {
@@ -216,7 +216,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         std::size_t candidateLoad = std::numeric_limits<std::size_t>::max();
         for (const ServerWorkerRefType worker: _workers) {
             if (const std::size_t workerLoad = worker->_numConnections;
-                workerLoad < candidateLoad && workerLoad < maxConnectionsPerWorker()) {
+                workerLoad < candidateLoad && workerLoad < this->maxConnectionsPerWorker()) {
                 candidate = worker;
                 candidateLoad = workerLoad;
             }
@@ -227,27 +227,27 @@ CRONZ_BEGIN_HTTP_NAMESPACE
     }
 
     // Extensions.
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
     inline bool Server<Version, ConfigurationFlags, Extensions...>::_installExtensions() noexcept {
         return (Extensions::install() && ...);
     }
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
     inline void Server<Version, ConfigurationFlags, Extensions...>::_uninstallExtensions() noexcept {
         (Extensions::uninstall(), ...);
     }
 
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
-    template<typename Extension>
+ /*   template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
+    template<ServerExtensionType<Version, ConfigurationFlags> Extension>
     inline constexpr bool Server<Version, ConfigurationFlags, Extensions...>::hasExtension() const noexcept {
-        if constexpr (!std::derived_from<Extension, ServerExtension>)
+        if constexpr (!std::derived_from<Extension, ServerExtension<Version, ConfigurationFlags>>)
             return false;
 
         return (... || std::is_same_v<Extension, Extensions>);
-    }
+    }*/
 
     // Static properties.
-    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename... Extensions>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
     inline constexpr Port Server<Version, ConfigurationFlags, Extensions...>::DefaultPort() noexcept {
         if constexpr (CRONZ_HTTP_NAMESPACE_INTERNAL::IsHTTPSEnabled<ConfigurationFlags>())
             return static_cast<Port>(443);

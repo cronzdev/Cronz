@@ -15,12 +15,15 @@
 
 CRONZ_BEGIN_HTTP_NAMESPACE
     // Constructor.
-    inline ServerRouterExtension::ServerRouterExtension(std::shared_mutex &mutex) noexcept : ServerExtension(mutex) {
+    /*template <class ServerConnectionRefType>
+    inline ServerRouterExtension<ServerConnectionRefType>::ServerRouterExtension(std::shared_mutex &mutex) noexcept : ServerExtension(mutex) {
     }
 
     // Destructor.
-    inline ServerRouterExtension::~ServerRouterExtension() noexcept {
-    }
+    template <class ServerConnectionRefType>
+    inline ServerRouterExtension<ServerConnectionRefType>::~ServerRouterExtension() noexcept {
+        ServerRouterExtension<ServerConnectionRefType>::uninstall();
+    }*/
 CRONZ_END_HTTP_NAMESPACE
 
 #endif // CRONZ_HTTP_SERVER_EXTENSION_IMPL_ROUTER_IPP
