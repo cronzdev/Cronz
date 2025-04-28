@@ -18,8 +18,11 @@
 #include <shared_mutex>
 
 CRONZ_BEGIN_HTTP_NAMESPACE
-    template<typename ServerConnectionRefType>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
     class ServerRouter;
+
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
+    class ServerRouterExtension;
 CRONZ_END_HTTP_NAMESPACE
 
 CRONZ_BEGIN_HTTP_NAMESPACE
@@ -29,7 +32,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 CRONZ_END_HTTP_NAMESPACE
 
 CRONZ_BEGIN_HTTP_NAMESPACE
-    template<typename ServerConnectionRefType>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
     class ServerRouterHost {
     public:
         // Static type definitions.
@@ -67,12 +70,17 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         std::vector<Route> _routes{};
         std::shared_mutex &_lock;
 
+        std::optional<RequestCallbackType> _onRouteMatch = std::nullopt;
+        std::optional<RequestCallbackType> _onFallback = std::nullopt;
+
         // Constructor & Destructor.
         explicit ServerRouterHost(std::shared_mutex &m) noexcept;
 
         ~ServerRouterHost() noexcept = default;
 
         // Instance-based utility functions.
+        CRONZ_NODISCARD_L1 bool _match(const Path &path, ServerConnectionRefType connection, const Request &request,
+                                       Response &response, bool &r) noexcept;
 
         // Static utility functions.
         CRONZ_NODISCARD_L1 static bool _parse(std::string_view path, Route &route) noexcept;
@@ -82,12 +90,13 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         CRONZ_NODISCARD_L1 static bool _match(const std::vector<Part> &p1, const std::vector<Part> &p2) noexcept;
 
         // Friends.
-        friend class ServerRouter<ServerConnectionRefType>;
+        friend class ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>;
+        friend class ServerRouterExtension<Version, ConfigurationFlags>;
 
     public:
-        std::optional<RequestCallbackType> routeMatchCallback = std::nullopt;
+        void onRouteMatch(RequestCallbackType callback) noexcept;
 
-        std::optional<RequestCallbackType> fallbackCallback = std::nullopt;
+        void onFallback(RequestCallbackType callback) noexcept;
 
         CRONZ_NODISCARD_L1 bool onRoute(std::string_view path, RequestParamCallbackType callback) noexcept;
 
@@ -98,10 +107,10 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 CRONZ_END_HTTP_NAMESPACE
 
 CRONZ_BEGIN_HTTP_NAMESPACE
-    template<typename ServerConnectionRefType>
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
     class ServerRouter {
     public:
-        using ServerRouterHostType = ServerRouterHost<ServerConnectionRefType>;
+        using ServerRouterHostType = ServerRouterHost<Version, ConfigurationFlags, ServerConnectionRefType>;
         using ServerRouterHostRefType = ServerRouterHostType *;
 
     private:
@@ -155,6 +164,13 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          */
         CRONZ_NODISCARD_L1 ServerRouterHostRefType matchHost(
             const std::vector<typename ServerRouterHostType::Part> &parts) noexcept;
+
+        /**
+         * @brief Matches a host by its hostname.
+         * @param[in] host Hostname to match.
+         * @return Pointer to the matched host.
+         */
+        CRONZ_NODISCARD_L1 ServerRouterHostRefType matchHost(const Host &host) noexcept;
 
         /**
          * @brief Deletes a host by its hostname.
@@ -230,7 +246,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @name Properties.
          */
         /** @{ */
-        ServerRouter<ServerConnectionRefType> router{};
+        ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType> router{};
 
         /** @} */
 

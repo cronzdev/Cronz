@@ -20,13 +20,52 @@ CRONZ_END_HTTP_NAMESPACE
 
 CRONZ_BEGIN_HTTP_NAMESPACE
     // Constructor & Destructor.
-    template<typename ServerConnectionRefType>
-    inline ServerRouterHost<ServerConnectionRefType>::ServerRouterHost(std::shared_mutex &m) noexcept : _lock(m) {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline ServerRouterHost<Version, ConfigurationFlags, ServerConnectionRefType>::ServerRouterHost(
+        std::shared_mutex &m) noexcept : _lock(m) {
+    }
+
+    // Instance-based utility functions.
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline bool ServerRouterHost<Version, ConfigurationFlags, ServerConnectionRefType>::_match(const Path &path,
+        const ServerConnectionRefType connection,
+        const Request &request, Response &response,
+        bool &r) noexcept {
+        for (const Route &route: _routes) {
+            if (route.parts.size() != path.count())
+                continue;
+
+            if (!route.method.value.empty() && !route.method.compare(request.method))
+                continue;
+
+            if (!std::ranges::equal(route.parts, path,
+                                    [](const typename Route::RoutePart &part, const std::string &segment) -> bool {
+                                        return part.isWildcard || part.segment == segment;
+                                    }))
+                continue;
+
+            ServerRouterRouteParams params{};
+            for (const auto &[name, index]: route.params) {
+                try {
+                    params.emplace(name, path[index]);
+                } catch (...) {
+                }
+            }
+
+            if (_onRouteMatch.has_value() && !_onRouteMatch.value()(connection, request, response))
+                return false;
+
+            r = route.callback(connection, request, response, params);
+            return true;
+        }
+
+        return false;
     }
 
     // Static utility functions.
-    template<typename ServerConnectionRefType>
-    inline bool ServerRouterHost<ServerConnectionRefType>::_parse(const std::string_view path, Route &route) noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline bool ServerRouterHost<Version, ConfigurationFlags, ServerConnectionRefType>::_parse(
+        const std::string_view path, Route &route) noexcept {
         std::vector<std::string_view> segments{};
 
         const std::size_t sc = std::ranges::count(path, '/') + static_cast<std::size_t>(1);
@@ -103,9 +142,10 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         return true;
     }
 
-    template<typename ServerConnectionRefType>
-    inline bool ServerRouterHost<ServerConnectionRefType>::_split(const std::string_view hostname,
-                                                                  std::vector<Part> &parts) noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline bool ServerRouterHost<Version, ConfigurationFlags, ServerConnectionRefType>::_split(
+        const std::string_view hostname,
+        std::vector<Part> &parts) noexcept {
         if (hostname.empty() || hostname.size() > RFC::MAX_DOMAIN_LENGTH)
             return false;
 
@@ -150,24 +190,45 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         return false;
     }
 
-    template<typename ServerConnectionRefType>
-    inline bool ServerRouterHost<ServerConnectionRefType>::_match(const std::vector<Part> &p1,
-                                                                  const std::vector<Part> &p2) noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline bool ServerRouterHost<Version, ConfigurationFlags, ServerConnectionRefType>::_match(
+        const std::vector<Part> &p1,
+        const std::vector<Part> &p2) noexcept {
         return (p1.size() == p2.size()) &&
                std::ranges::equal(p1, p2, [](const Part &l, const Part &r) -> bool {
                    return l.isWildcard || r.isWildcard || (l.label == r.label);
                });
     }
 
-    template<typename ServerConnectionRefType>
-    inline bool ServerRouterHost<ServerConnectionRefType>::onRoute(const std::string_view path,
-                                                                   RequestParamCallbackType callback) noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline void ServerRouterHost<Version, ConfigurationFlags, ServerConnectionRefType>::onRouteMatch(
+        RequestCallbackType callback) noexcept {
+        if (nullptr == callback)
+            _onRouteMatch.reset();
+        else
+            _onRouteMatch = callback;
+    }
+
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline void ServerRouterHost<Version, ConfigurationFlags, ServerConnectionRefType>::onFallback(
+        RequestCallbackType callback) noexcept {
+        if (nullptr == callback)
+            _onFallback.reset();
+        else
+            _onFallback = callback;
+    }
+
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline bool ServerRouterHost<Version, ConfigurationFlags, ServerConnectionRefType>::onRoute(
+        const std::string_view path,
+        RequestParamCallbackType callback) noexcept {
         return onRoute(Method(), path, callback);
     }
 
-    template<typename ServerConnectionRefType>
-    inline bool ServerRouterHost<ServerConnectionRefType>::onRoute(const Method &method, const std::string_view path,
-                                                                   RequestParamCallbackType callback) noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline bool ServerRouterHost<Version, ConfigurationFlags, ServerConnectionRefType>::onRoute(
+        const Method &method, const std::string_view path,
+        RequestParamCallbackType callback) noexcept {
         std::lock_guard _(_lock);
 
         if (!method.value.empty() && !method.isValid())
@@ -188,6 +249,8 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         if (!_parse(path, r))
             return false;
 
+        r.callback = callback;
+
         try {
             _routes.emplace_back(std::move(r));
         } catch (...) {
@@ -201,9 +264,10 @@ CRONZ_END_HTTP_NAMESPACE
 
 CRONZ_BEGIN_HTTP_NAMESPACE
     // Host management.
-    template<typename ServerConnectionRefType>
-    inline typename ServerRouter<ServerConnectionRefType>::ServerRouterHostRefType
-    ServerRouter<ServerConnectionRefType>::createHost(const std::string_view hostname) noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline typename ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::ServerRouterHostRefType
+    ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::createHost(
+        const std::string_view hostname) noexcept {
         std::lock_guard _(_lock);
 
         std::vector<typename ServerRouterHostType::Part> parts{};
@@ -250,9 +314,10 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         return host;
     }
 
-    template<typename ServerConnectionRefType>
-    inline typename ServerRouter<ServerConnectionRefType>::ServerRouterHostRefType
-    ServerRouter<ServerConnectionRefType>::getHost(const std::string_view hostname) noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline typename ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::ServerRouterHostRefType
+    ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::getHost(
+        const std::string_view hostname) noexcept {
         std::lock_guard _(_lock);
         for (const ServerRouterHostRefType &host: _hosts) {
             if (host->_domain == hostname)
@@ -262,9 +327,10 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         return nullptr;
     }
 
-    template<typename ServerConnectionRefType>
-    inline typename ServerRouter<ServerConnectionRefType>::ServerRouterHostRefType
-    ServerRouter<ServerConnectionRefType>::matchHost(const std::string_view hostname) noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline typename ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::ServerRouterHostRefType
+    ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::matchHost(
+        const std::string_view hostname) noexcept {
         std::vector<typename ServerRouterHostType::Part> parts{};
         if (!ServerRouterHostType::_split(hostname, parts))
             return nullptr;
@@ -272,9 +338,9 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         return matchHost(parts);
     }
 
-    template<typename ServerConnectionRefType>
-    inline typename ServerRouter<ServerConnectionRefType>::ServerRouterHostRefType
-    ServerRouter<ServerConnectionRefType>::matchHost(
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline typename ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::ServerRouterHostRefType
+    ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::matchHost(
         const std::vector<typename ServerRouterHostType::Part> &parts) noexcept {
         std::lock_guard _(_lock);
 
@@ -286,8 +352,34 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         return nullptr;
     }
 
-    template<typename ServerConnectionRefType>
-    inline void ServerRouter<ServerConnectionRefType>::deleteHost(const std::string_view hostname) noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline typename ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::ServerRouterHostRefType
+    ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::matchHost(const Host &host) noexcept {
+        std::lock_guard _(_lock);
+
+        for (const ServerRouterHostRefType &h: _hosts) {
+            if (h->_parts.size() != host.count())
+                continue;
+
+            auto i = static_cast<std::size_t>(0);
+            bool m = true;
+            host.forEach([&m, &i, &h](const std::string_view &hl) noexcept -> void {
+                if (h->_parts[i].isWildcard || h->_parts[i].label == hl)
+                    ++i;
+                else
+                    m = false;
+            });
+
+            if (m)
+                return h;
+        }
+
+        return nullptr;
+    }
+
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline void ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::deleteHost(
+        const std::string_view hostname) noexcept {
         std::lock_guard _(_lock);
 
         for (auto it = _hosts.begin(); it != _hosts.end(); ++it) {
@@ -299,8 +391,9 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         }
     }
 
-    template<typename ServerConnectionRefType>
-    inline void ServerRouter<ServerConnectionRefType>::deleteHost(ServerRouterHostRefType host) noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline void ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::deleteHost(
+        ServerRouterHostRefType host) noexcept {
         std::lock_guard _(_lock);
 
         for (auto it = _hosts.begin(); it != _hosts.end(); ++it) {
@@ -312,8 +405,8 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         }
     }
 
-    template<typename ServerConnectionRefType>
-    inline void ServerRouter<ServerConnectionRefType>::deleteAllHosts() noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline void ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::deleteAllHosts() noexcept {
         std::lock_guard _(_lock);
 
         for (auto &host: _hosts)
@@ -322,8 +415,8 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         _hosts.clear();
     }
 
-    template<typename ServerConnectionRefType>
-    inline bool ServerRouter<ServerConnectionRefType>::createDefaultHost() noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline bool ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::createDefaultHost() noexcept {
         std::lock_guard _(_lock);
 
         if (nullptr == _defaultHost)
@@ -332,15 +425,15 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         return nullptr != _defaultHost;
     }
 
-    template<typename ServerConnectionRefType>
-    inline typename ServerRouter<ServerConnectionRefType>::ServerRouterHostRefType
-    ServerRouter<ServerConnectionRefType>::getDefaultHost() noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline typename ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::ServerRouterHostRefType
+    ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::getDefaultHost() noexcept {
         std::lock_guard _(_lock);
         return _defaultHost;
     }
 
-    template<typename ServerConnectionRefType>
-    inline void ServerRouter<ServerConnectionRefType>::deleteDefaultHost() noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline void ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::deleteDefaultHost() noexcept {
         std::lock_guard _(_lock);
 
         if (nullptr != _defaultHost) {
@@ -350,8 +443,8 @@ CRONZ_BEGIN_HTTP_NAMESPACE
     }
 
     // Destructor.
-    template<typename ServerConnectionRefType>
-    inline ServerRouter<ServerConnectionRefType>::~ServerRouter() noexcept {
+    template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
+    inline ServerRouter<Version, ConfigurationFlags, ServerConnectionRefType>::~ServerRouter() noexcept {
         deleteDefaultHost();
         deleteAllHosts();
     }
@@ -378,6 +471,21 @@ CRONZ_BEGIN_HTTP_NAMESPACE
     template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
     inline bool ServerRouterExtension<Version, ConfigurationFlags>::onBeforeRequest(
         const ServerConnectionRefType &connection, const Request &request, Response &response) {
+        const auto header = request.headers.get("Host");
+        if (nullptr == header)
+            return true;
+
+        const auto host = router.matchHost(header->value());
+        if (nullptr == host)
+            return true;
+
+        if (bool r = false;
+            host->_match(request.uri.path, connection, request, response, r))
+            return r;
+
+        if (host->_onFallback.has_value())
+            return host->_onFallback.value()(connection, request, response);
+
         return true;
     }
 
