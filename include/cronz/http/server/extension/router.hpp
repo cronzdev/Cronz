@@ -120,6 +120,9 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 
         std::shared_mutex _lock{};
 
+        // Friends.
+        friend class ServerRouterExtension<Version, ConfigurationFlags>;
+
     public:
         /**
          * @name Constructors.

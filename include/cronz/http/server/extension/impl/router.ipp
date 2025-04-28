@@ -477,7 +477,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 
         const auto host = router.matchHost(header->value());
         if (nullptr == host)
-            return true;
+            host = router._defaultHost;
 
         if (bool r = false;
             host->_match(request.uri.path, connection, request, response, r))
