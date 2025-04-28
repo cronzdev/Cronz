@@ -49,7 +49,6 @@ CRONZ_BEGIN_HTTP_NAMESPACE
                 try {
                     segments.emplace_back(cur, slash);
                 } catch (...) {
-                    printf("f\n");
                     return false;
                 }
             }
@@ -171,10 +170,8 @@ CRONZ_BEGIN_HTTP_NAMESPACE
                                                                    RequestParamCallbackType callback) noexcept {
         std::lock_guard _(_lock);
 
-        if (!method.value.empty() && !method.isValid()) {
-            printf("m\n");
+        if (!method.value.empty() && !method.isValid())
             return false;
-        }
 
         for (auto it = _routes.begin(); it != _routes.end(); ++it) {
             if (it->method == method && it->path == path) {
@@ -194,7 +191,6 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         try {
             _routes.emplace_back(std::move(r));
         } catch (...) {
-            printf("r\n");
             return false;
         }
 
