@@ -20,7 +20,7 @@
 
 CRONZ_BEGIN_RFC_NAMESPACE
     inline bool IsDomain(const std::string_view domain) noexcept {
-        return static_cast<std::size_t>(255) >= domain.length() &&
+        return MAX_DOMAIN_LENGTH >= domain.length() &&
                (IsSubdomain(domain) ||
                 (static_cast<std::size_t>(1) == domain.length() && ' ' == domain.front()));
     }

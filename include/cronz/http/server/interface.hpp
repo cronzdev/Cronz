@@ -18,11 +18,6 @@ CRONZ_BEGIN_HTTP_NAMESPACE
     template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
     struct ServerInterface : public ServerCallbacks<Version, ConfigurationFlags>,
                              public ServerConfiguration {
-    protected:
-        template<typename WorkerType>
-        WorkerType *_createWorker(ServerInterface<Version, ConfigurationFlags> *i) noexcept {
-            return new(std::nothrow) WorkerType(i);
-        }
     };
 
 CRONZ_END_HTTP_NAMESPACE

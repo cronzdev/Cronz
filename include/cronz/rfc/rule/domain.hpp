@@ -16,6 +16,8 @@
 #include <string_view>
 
 CRONZ_BEGIN_RFC_NAMESPACE
+    inline constexpr std::size_t MAX_DOMAIN_LENGTH = static_cast<std::size_t>(255);
+
     CRONZ_NODISCARD_L1 bool IsDomain(std::string_view domain) noexcept;
 
     CRONZ_NODISCARD_L1 bool IsSubdomain(std::string_view subdomain) noexcept;

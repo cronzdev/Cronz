@@ -18,7 +18,7 @@
 CRONZ_BEGIN_HTTP_NAMESPACE
     // Constructors.
     template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, ServerExtensionType<Version, ConfigurationFlags>... Extensions>
-    inline Server<Version, ConfigurationFlags, Extensions...>::Server() noexcept : Extensions()... {
+    inline Server<Version, ConfigurationFlags, Extensions...>::Server() noexcept : Extensions(this)... {
         this->port(DefaultPort());
     }
 

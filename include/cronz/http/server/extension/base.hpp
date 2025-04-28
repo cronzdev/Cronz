@@ -11,12 +11,10 @@
 #ifndef CRONZ_HTTP_SERVER_EXTENSION_BASE_HPP
 #define CRONZ_HTTP_SERVER_EXTENSION_BASE_HPP 1
 
-#include "cronz/http/server/callback.hpp"
-#include "cronz/http/server/flags.hpp"
+#include "cronz/http/server/interface.hpp"
 #include "cronz/http/version.hpp"
 
 #include <concepts>
-#include <shared_mutex>
 
 CRONZ_BEGIN_HTTP_NAMESPACE
     /**
@@ -30,7 +28,10 @@ CRONZ_BEGIN_HTTP_NAMESPACE
     template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
     class ServerExtension {
     protected:
+        using ServerInterfaceType = ServerInterface<Version, ConfigurationFlags>;
         using ServerConnectionRefType = typename ServerCallbacks<Version, ConfigurationFlags>::ServerConnectionRefType;
+
+        const ServerInterfaceType *const server;
 
         /**
          * @name Extension setup.
@@ -59,6 +60,16 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @name Interceptors.
          */
         /** @{ */
+        /**
+         * @brief Interceptor function for request processing.
+         * @param[in] connection Pointer to the server connection.
+         * @param[in] request Reference to the request object.
+         * @param[out] response Reference to the response object.
+         * @return `true` if the request should be passed to the next interceptor or the server.
+         * @return `false` if the request processing should be concluded here.
+         * @remark This function is called before the request is processed. It can be used to modify the request or
+         * response objects.
+         */
         virtual bool onBeforeRequest(const ServerConnectionRefType &connection, const Request &request,
                                      Response &response) {
             return true;
@@ -71,9 +82,12 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          */
         /** @{ */
         /**
-         * @brief Default constructor.
+         * @brief Constructor with server parameter.
+         * @param[in] server Pointer to the server interface.
+         * @remark This constructor is used to initialize the server extension.
          */
-        ServerExtension() noexcept = default;
+        explicit ServerExtension(const ServerInterfaceType *server) noexcept : server(server) {
+        }
 
         /** @} */
 
@@ -85,6 +99,19 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @brief Destructor.
          */
         virtual ~ServerExtension() noexcept = default;
+
+        /** @} */
+
+    public:
+        /**
+         * @name Constructors.
+         */
+        /** @{ */
+        /**
+         * @brief Default constructor.
+         * @remark This constructor is deleted. Use the constructor with the server parameter.
+         */
+        ServerExtension() = delete;
 
         /** @} */
     };
