@@ -18,6 +18,7 @@
 #include "cronz/http/server/flags.hpp"
 #include "cronz/http/server/interface.hpp"
 #include "cronz/http/server/server.hpp"
+#include "cronz/http/server/tls.hpp"
 #include "cronz/http/server/types.hpp"
 
 #endif // CRONZ_HTTP_SERVER_HPP
