@@ -14,6 +14,7 @@
 #include "cronz/http/server/connection/types.hpp"
 #include "cronz/http/server/internal/request.hpp"
 #include "cronz/http/connection/address.hpp"
+#include "cronz/http/connection/metrics.hpp"
 #include "cronz/http/version.hpp"
 
 #include <memory>

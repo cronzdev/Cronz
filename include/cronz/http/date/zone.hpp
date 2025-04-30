@@ -13,6 +13,9 @@
 
 #include "cronz/http/date/flags.hpp"
 
+#include <ctime>
+#include <chrono>
+
 CRONZ_BEGIN_HTTP_NAMESPACE
     /**
      * @ingroup cronz_http
