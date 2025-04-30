@@ -13,6 +13,7 @@
 
 #include "cronz/http/types.hpp"
 
+#include <string>
 #include <string_view>
 
 CRONZ_BEGIN_HTTP_NAMESPACE
