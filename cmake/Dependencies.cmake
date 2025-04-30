@@ -5,6 +5,13 @@ if (CRONZ_ENABLE_BROTLI)
     cronz_add_dependency(Brotli 1.1 FALSE)
 endif ()
 
+# OpenSSL (Optional; 3.4+); See https://www.openssl.org
+option(CRONZ_ENABLE_OPENSSL "Enable OpenSSL support." ON)
+
+if (CRONZ_ENABLE_OPENSSL)
+    cronz_add_dependency(OpenSSL 3.4 FALSE)
+endif ()
+
 # ws2_32 (Conditional)
 if (WIN32)
     cronz_add_dependency_link_library(ws2_32)
