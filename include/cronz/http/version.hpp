@@ -13,6 +13,8 @@
 
 #include "cronz/http/types.hpp"
 
+#include <string_view>
+
 CRONZ_BEGIN_HTTP_NAMESPACE
     /**
      * @ingroup cronz_http
