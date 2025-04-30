@@ -14,7 +14,9 @@
 #include "cronz/session/flags.hpp"
 #include "cronz/session/session.hpp"
 
+#include <algorithm>
 #include <shared_mutex>
+#include <thread>
 
 CRONZ_BEGIN_SESSION_NAMESPACE
     CRONZ_NODISCARD_L1 SessionId DefaultSessionIdGenerator() noexcept;
