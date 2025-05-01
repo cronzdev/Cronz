@@ -94,9 +94,9 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         friend class ServerRouterExtension<Version, ConfigurationFlags>;
 
     public:
-        void onRouteMatch(RequestCallbackType callback) noexcept;
+        void onRouteMatch(const RequestCallbackType &callback) noexcept;
 
-        void onFallback(RequestCallbackType callback) noexcept;
+        void onFallback(const RequestCallbackType &callback) noexcept;
 
         CRONZ_NODISCARD_L1 bool onRoute(std::string_view path, RequestParamCallbackType callback) noexcept;
 

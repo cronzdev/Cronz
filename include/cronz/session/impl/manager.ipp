@@ -162,7 +162,7 @@ CRONZ_BEGIN_SESSION_NAMESPACE
     inline typename SessionManager<SessionDataType, ConfigurationFlags>::SessionArrayType::iterator
     SessionManager<SessionDataType, ConfigurationFlags>::_destroyIt(
         SessionArrayType &arr, typename SessionArrayType::iterator it) noexcept {
-        SessionConstRefType session = (*it);
+        SessionRefType session = (*it);
         session->_destroyed = true;
 
         if constexpr (_hasCallbacks())
@@ -364,9 +364,9 @@ CRONZ_BEGIN_SESSION_NAMESPACE
     }
 
     template<typename SessionDataType, SessionManagerConfigurationFlags ConfigurationFlags>
-    inline typename std::vector<typename SessionManager<SessionDataType, ConfigurationFlags>::SessionType>::iterator
+    inline typename SessionManager<SessionDataType, ConfigurationFlags>::SessionArrayType::iterator
     SessionManager<SessionDataType, ConfigurationFlags>::_getSessionRangeStartIterator(
-        const SessionArrayType &arr, const SessionTime startTime) const noexcept {
+        SessionArrayType &arr, const SessionTime startTime) noexcept {
         if (arr.empty())
             return arr.end();
 
@@ -400,11 +400,13 @@ CRONZ_BEGIN_SESSION_NAMESPACE
         SessionArrayType &arr, const SessionId id, const SessionTime startTime) noexcept {
         auto it = _getSessionRangeStartIterator(arr, startTime);
         while (it != arr.end()) {
-            if (it->_sessionId == id)
+            if ((*it)->_sessionId == id)
                 return it;
 
-            if (it->_startTime > startTime)
+            if ((*it)->_startTime > startTime)
                 break;
+
+            ++it;
         }
 
         return arr.end();

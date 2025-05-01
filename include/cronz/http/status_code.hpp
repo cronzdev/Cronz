@@ -13,6 +13,9 @@
 
 #include "cronz/http/types.hpp"
 
+#include <string>
+#include <string_view>
+
 CRONZ_BEGIN_HTTP_NAMESPACE
     // [RFC9110 - Section 15](https://datatracker.ietf.org/doc/html/rfc9110#section-15)
     //    * @remark The list is generated based on the following documents:

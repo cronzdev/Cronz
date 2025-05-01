@@ -202,7 +202,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 
     template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
     inline void ServerRouterHost<Version, ConfigurationFlags, ServerConnectionRefType>::onRouteMatch(
-        RequestCallbackType callback) noexcept {
+        const RequestCallbackType &callback) noexcept {
         if (nullptr == callback)
             _onRouteMatch.reset();
         else
@@ -211,7 +211,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
 
     template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags, typename ServerConnectionRefType>
     inline void ServerRouterHost<Version, ConfigurationFlags, ServerConnectionRefType>::onFallback(
-        RequestCallbackType callback) noexcept {
+        const RequestCallbackType &callback) noexcept {
         if (nullptr == callback)
             _onFallback.reset();
         else
@@ -244,6 +244,9 @@ CRONZ_BEGIN_HTTP_NAMESPACE
                 return true;
             }
         }
+
+        if (nullptr == callback)
+            return true;
 
         Route r{};
         if (!_parse(path, r))

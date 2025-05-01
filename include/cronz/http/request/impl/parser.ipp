@@ -247,6 +247,10 @@ CRONZ_BEGIN_HTTP_NAMESPACE
                         _state = State::BAD_BODY;
                         return false;
                     }
+
+                    if (static_cast<std::size_t>(0) == _bufferLength)
+                        _state = State::COMPLETE;
+
                     break;
                 default:
                     return false;

@@ -80,6 +80,10 @@ CRONZ_BEGIN_SESSION_INTERNAL_NAMESPACE
         SessionPtr<SessionDataType>, SessionRef<SessionDataType> >;
 
     template<typename SessionDataType, SessionManagerConfigurationFlags ConfigurationFlags>
+    using SessionRefType = std::conditional_t<IsSessionManagerUsingRawPointers<ConfigurationFlags>(),
+        SessionPtr<SessionDataType>, SessionRef<SessionDataType> &>;
+
+    template<typename SessionDataType, SessionManagerConfigurationFlags ConfigurationFlags>
     using SessionConstRefType = std::conditional_t<IsSessionManagerUsingRawPointers<ConfigurationFlags>(),
         const SessionPtr<SessionDataType>, const SessionRef<SessionDataType> &>;
 

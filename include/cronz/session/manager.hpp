@@ -92,6 +92,11 @@ CRONZ_BEGIN_SESSION_NAMESPACE
         using RawSessionType = Session<SessionDataType>;
 
         /**
+         * @brief Session reference type.
+         */
+        using SessionRefType = CRONZ_SESSION_NAMESPACE_INTERNAL::SessionRefType<SessionDataType, ConfigurationFlags>;
+
+        /**
          * @brief Session const reference type.
          */
         using SessionConstRefType = CRONZ_SESSION_NAMESPACE_INTERNAL::SessionConstRefType<SessionDataType,
@@ -193,7 +198,7 @@ CRONZ_BEGIN_SESSION_NAMESPACE
         CRONZ_NODISCARD_L1 const SessionArrayType &_getSessionArray(SessionId id) const noexcept;
 
         CRONZ_NODISCARD_L1 typename SessionArrayType::iterator _getSessionRangeStartIterator(
-            const SessionArrayType &arr, SessionTime startTime) const noexcept;
+            SessionArrayType &arr, SessionTime startTime) noexcept;
 
         CRONZ_NODISCARD_L1 typename SessionArrayType::iterator _getSessionIterator(
             SessionArrayType &arr, SessionId id) noexcept;
