@@ -54,7 +54,7 @@ CRONZ_BEGIN_SESSION_NAMESPACE
     // Instance-based utility functions.
     template<typename SessionDataType>
     inline SessionTime Session<SessionDataType>::_now() const noexcept {
-        return static_cast<SessionTime>(std::chrono::duration_cast<std::chrono::microseconds>(
+        return static_cast<SessionTime>(std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::system_clock::now().time_since_epoch()).count());
     }
 

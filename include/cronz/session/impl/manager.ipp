@@ -373,7 +373,7 @@ CRONZ_BEGIN_SESSION_NAMESPACE
         auto index = static_cast<typename SessionArrayType::size_type>(0);
         while (index < static_cast<typename SessionArrayType::size_type>(arr.size())) {
             const auto next = std::min((index + IterationStep), arr.size());
-            if (arr[next - static_cast<typename SessionArrayType::size_type>(1)]->_startTime > startTime)
+            if (arr[next - static_cast<typename SessionArrayType::size_type>(1)]->_startTime <= startTime)
                 break;
 
             index = next;
@@ -448,7 +448,7 @@ CRONZ_BEGIN_SESSION_NAMESPACE
 
     template<typename SessionDataType, SessionManagerConfigurationFlags ConfigurationFlags>
     inline SessionTime SessionManager<SessionDataType, ConfigurationFlags>::_now() noexcept {
-        return static_cast<SessionTime>(std::chrono::duration_cast<std::chrono::microseconds>(
+        return static_cast<SessionTime>(std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::system_clock::now().time_since_epoch()).count());
     }
 
