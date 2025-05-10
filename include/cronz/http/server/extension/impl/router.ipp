@@ -255,6 +255,8 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         r.callback = callback;
 
         try {
+            r.method = method;
+
             _routes.emplace_back(std::move(r));
         } catch (...) {
             return false;
