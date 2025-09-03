@@ -14,6 +14,7 @@
 #include "cronz/internal/namespace.hpp"
 
 #include <array>
+#include <cstring>
 #include <cstdint>
 #include <limits>
 #include <unordered_map>

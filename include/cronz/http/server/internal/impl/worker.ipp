@@ -120,13 +120,13 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
             std::shared_lock _(_lock);
 
             if (static_cast<std::size_t>(0) == _numConnections) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                std::this_thread::sleep_for(std::chrono::milliseconds(20));
                 continue;
             }
 
             const auto res = CRONZ_POLL(_fds.data(), _fds.size(), 100);
             if (0 == res) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                std::this_thread::sleep_for(std::chrono::milliseconds(20));
                 continue;
             }
 

@@ -17,9 +17,9 @@ CRONZ_BEGIN_HTTP_NAMESPACE
     /**
      * @ingroup cronz_http
      * @brief Cookie date type.
-     * @type DateTime<static_cast<DateConfigurationFlags>(0)> CookieDate
+     * @type DateTime<DateTimeConfigurationFlags{0}> CookieDate
      */
-    using CookieDate = DateTime<static_cast<DateTimeConfigurationFlags>(0)>;
+    using CookieDate = DateTime<DateTimeConfigurationFlags{0}>;
 
 CRONZ_END_HTTP_NAMESPACE
 

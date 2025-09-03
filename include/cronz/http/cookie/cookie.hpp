@@ -25,7 +25,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
      * @remark If the timestamp of `Expires` is `0`, it is interpreted as invalid/empty.
      * @remark If the `MaxAge` has a value of `0`, it is interpreted as invalid/empty.
      */
-    template<bool Renamable = true>
+    template <bool Renamable = true>
     class Cookie final {
     public:
         /**
@@ -98,13 +98,13 @@ CRONZ_BEGIN_HTTP_NAMESPACE
          * @brief Returns the name of the cookie.
          * @return The name of the cookie.
          */
-        CRONZ_NODISCARD_L1 const std::string &name() const noexcept;
+        CRONZ_NODISCARD_L1 const std::string& name() const noexcept;
 
         /**
          * @brief Returns the name of the cookie.
          * @return The name of the cookie.
          */
-        CRONZ_NODISCARD_L1 const std::string &getName() const noexcept;
+        CRONZ_NODISCARD_L1 const std::string& getName() const noexcept;
 
         /** @} */
 
