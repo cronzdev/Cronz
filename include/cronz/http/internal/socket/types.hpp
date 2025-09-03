@@ -61,7 +61,7 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
 
     inline static constexpr auto CRONZ_INVALID_SOCKET = -1;
     inline static constexpr auto CRONZ_SOCKET_ERROR = -1;
-    inline static constexpr auto CRONZ_SOCKET_GET_ERROR = errno;
+    inline static constexpr auto CRONZ_SOCKET_GET_ERROR() { return errno; }
     inline static constexpr auto CRONZ_CREATE_SOCKET = ::socket;
     inline static constexpr auto CRONZ_CLOSE_SOCKET = ::close;
     inline static constexpr auto CRONZ_BIND_SOCKET = ::bind;
