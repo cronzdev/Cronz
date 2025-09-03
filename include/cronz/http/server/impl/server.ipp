@@ -115,10 +115,12 @@ CRONZ_BEGIN_HTTP_NAMESPACE
             [[maybe_unused]] const bool _ = _socket.close();
         }
 
+#if CRONZ_OS_WINDOWS && !CRONZ_OS_CYGWIN
         if (_wsa) {
             WSACleanup();
             _wsa = false;
         }
+#endif // CRONZ_OS_WINDOWS && !CRONZ_OS_CYGWIN
 
         _uninstallExtensions();
 
