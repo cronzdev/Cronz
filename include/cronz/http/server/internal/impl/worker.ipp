@@ -111,7 +111,7 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
 
         _running = true;
 
-        std::thread(&_loop, this).detach();
+        std::thread(&ServerWorker::_loop, this).detach();
     }
 
     template<Version::Enum Version, ServerConfigurationFlags ConfigurationFlags>
