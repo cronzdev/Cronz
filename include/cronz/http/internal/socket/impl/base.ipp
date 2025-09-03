@@ -98,8 +98,25 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
 
     template<int AddressFamily, int Type, int Protocol>
     inline bool SocketBase<AddressFamily, Type, Protocol>::setNonBlocking(const bool enabled) const noexcept {
+#if CRONZ_OS_WINDOWS && !CRONZ_OS_WINDOWS_CYGWIN
         u_long mode = enabled ? 1 : 0;
         return 0 == (ioctlsocket(_socket, FIONBIO, &mode));
+#endif // CRONZ_OS_WINDOWS && !CRONZ_OS_WINDOWS_CYGWIN
+
+#if CRONZ_OS_LINUX || CRONZ_OS_UNIX || CRONZ_OS_WINDOWS_CYGWIN
+        int flags = ::fcntl(_socket, F_GETFL, 0);
+        if (flags < 0)
+            return false;
+
+        if (enabled)
+            flags |= O_NONBLOCK;
+        else
+            flags &= ~O_NONBLOCK;
+
+        return (0 == ::fcntl(_socket, F_SETFL, flags));
+#endif // CRONZ_OS_LINUX || CRONZ_OS_UNIX || CRONZ_OS_WINDOWS_CYGWIN
+
+        return false;
     }
 
 CRONZ_END_HTTP_INTERNAL_NAMESPACE
