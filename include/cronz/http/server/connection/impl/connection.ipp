@@ -129,7 +129,11 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         std::size_t len = block.length();
         if (!_socket.write(block.data(), len)) {
             if (const int err = CRONZ_HTTP_NAMESPACE_INTERNAL::CRONZ_SOCKET_GET_ERROR();
-                err == EWOULDBLOCK || err == WSAEWOULDBLOCK)
+                err == EWOULDBLOCK
+#if CRONZ_OS_WINDOWS && !CRONZ_OS_WINDOWS_CYGWIN
+                || err == WSAEWOULDBLOCK
+#endif // CRONZ_OS_WINDOWS && !CRONZ_OS_WINDOWS_CYGWIN
+                )
                 return true;
 
             return false;

@@ -47,6 +47,7 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
             if (!setOption(SOL_SOCKET, SO_LINGER, l))
                 return false;
 
+#else
 #error "Unsupported platform."
 #endif // CRONZ_OS_WINDOWS && !CRONZ_OS_CYGWIN
 
