@@ -48,6 +48,7 @@ CRONZ_END_HTTP_INTERNAL_NAMESPACE
 
 #include <arpa/inet.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <netinet/in.h>
 #include <poll.h>
 #include <sys/types.h>
