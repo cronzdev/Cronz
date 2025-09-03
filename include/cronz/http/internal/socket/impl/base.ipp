@@ -38,7 +38,15 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
             if (!setOption(SOL_SOCKET, SO_LINGER, l))
                 return false;
 
-#else // CRONZ_OS_WINDOWS && !CRONZ_OS_CYGWIN
+#elif CRONZ_OS_LINUX || CRONZ_OS_UNIX || CRONZ_OS_WINDOWS_CYGWIN
+            constexpr struct linger l = {
+                .l_onoff = 1,
+                .l_linger = 0
+            };
+
+            if (!setOption(SOL_SOCKET, SO_LINGER, l))
+                return false;
+
 #error "Unsupported platform."
 #endif // CRONZ_OS_WINDOWS && !CRONZ_OS_CYGWIN
 

@@ -51,6 +51,9 @@ CRONZ_END_HTTP_INTERNAL_NAMESPACE
 #include <unistd.h>
 #include <poll.h>
 #include <errno.h>
+#include <netinet/in.h>
+
+#include <cstring>
 
 CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
     using CRONZ_SOCKET = int;
