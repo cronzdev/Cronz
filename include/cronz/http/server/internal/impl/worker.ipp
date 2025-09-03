@@ -131,8 +131,6 @@ CRONZ_BEGIN_HTTP_INTERNAL_NAMESPACE
             }
 
             if (CRONZ_SOCKET_ERROR == res) {
-                printf("fds.size() %zu\n", _fds.size());
-                printf("poll error %i %i\n", WSAGetLastError(), res);
                 std::abort();
             }
 

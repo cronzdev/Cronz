@@ -71,7 +71,11 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         _bufferLength = _buffer.size();
         if (!_socket.read(_buffer.data(), _bufferLength)) {
             if (const int err = CRONZ_HTTP_NAMESPACE_INTERNAL::CRONZ_SOCKET_GET_ERROR();
-                err == EWOULDBLOCK || err == WSAEWOULDBLOCK)
+                err == EWOULDBLOCK
+#if CRONZ_OS_WINDOWS && !CRONZ_OS_WINDOWS_CYGWIN
+                || err == WSAEWOULDBLOCK
+#endif // CRONZ_OS_WINDOWS && !CRONZ_OS_WINDOWS_CYGWIN
+                )
                 return true;
 
             return false;
