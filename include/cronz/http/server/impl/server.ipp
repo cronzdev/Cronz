@@ -180,7 +180,7 @@ CRONZ_BEGIN_HTTP_NAMESPACE
         _state = STATE_RUNNING;
 
         if (async)
-            std::thread(&_serve, this).detach();
+            std::thread(&Server<Version, ConfigurationFlags, Extensions...>::_serve, this).detach();
         else
             _serve();
 
