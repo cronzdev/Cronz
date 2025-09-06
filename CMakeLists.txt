@@ -2,7 +2,7 @@
 # Project configuration #
 # # # # # # # # # # # # #
 # Cmake version
-cmake_minimum_required(VERSION 4.0.0)
+cmake_minimum_required(VERSION 3.25.0)
 
 # Project definition
 project(Cronz
